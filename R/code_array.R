@@ -1,3 +1,14 @@
+#' Code survey data in array form
+#'
+#' @param Qnr
+#' @param data
+#' @param Qtext
+#' @param multicode
+#' @param remove.other
+#' @param index Crossbreak variable
+#' @param weight
+#' @param ...
+#' @export
 code_array <- function(Qnr="Q1",
 		data=kd,
 		Qtext=Qs,
