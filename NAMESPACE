@@ -1,0 +1,9 @@
+#' Tools to analyse, report and plot survey data
+#'
+#' surveyor does...
+#'
+#' @doctype package
+#' @imports plyr, reshape2, ggplot2
+
+
+
