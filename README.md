@@ -1,3 +1,3 @@
 # surveyor
 
-This is a set of tools for analysing surveys in R
+This is a set of tools for analysing, reporting and plotting surveys in R
