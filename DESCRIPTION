@@ -2,12 +2,18 @@ Package: surveyor
 Version: 0.0-1
 Date: 2010-11-15
 Title: Tools for analysing, reporting and plotting survey data
-Description: This is a set of tools to analyse, report and plot survey data
-URL: 
+Description: This is a set of tools to analyse, report and plot survey
+    data
+URL:
 Maintainer: Andrie de Vries <apdevries@gmail.com>
 Author: Andrie de Vries <apdevries@gmail.com>
-Depends: R (>= 2.11.0) 
-Suggests: 
+Depends: R (>= 2.11.0)
+Suggests:
 Imports: plyr, reshape2, ggplot2, xtable
 License: GPL (>=2)
 LazyData: true
+Collate: 'code_array.R' 'code_net_score.R' 'code_rank.R'
+    'code_single.R' 'code_text.R' 'ggplot_defaults.R' 'initialise.R'
+    'latex.R' 'plot_bar.R' 'plot_bar_stacked.R' 'plot_net_score.R'
+    'plot_point.R' 'plot_single.R' 'plot_text.R' 'plumbing.R'
+    'print_crossbreak.R' 'question_handling.R' 'redefine.R' 'strings.R'
