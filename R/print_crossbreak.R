@@ -29,7 +29,7 @@ printCB <- function(x, Qtext=x){
 	align <- paste(c("l", rep("r", dim(v)[2])), collapse="")
 	
 	cat("\\clearpage")
-	printQLatex(getQtext(Qtext))
+	printQLatex(get_qtext(Qtext))
 	
 #  cat("\n\n")
 	cat("\\vspace{1 pc}\n")

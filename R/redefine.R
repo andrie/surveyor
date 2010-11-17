@@ -3,8 +3,17 @@
 ################################################################################
 
 
+#' For a contingency table in array form, compute the sum of table entries for a given index. 
+#' 
+#' Redefines margin.table to deal with NA values
+#' 
+#' @param x an array
+#' @param margin index number (1 for rows, etc.)
+#' @examples 
+#' m <- matrix(1:4,2)
+#' surveyor:::margin.table(m,1)
+#' surveyor:::margin.table(m,2)
 margin.table <- function (x, margin = NULL)
-# Redefines margin.table to deal with na.rm
 {
 	if (!is.array(x))
 		stop("'x' is not an array")
@@ -19,6 +28,16 @@ margin.table <- function (x, margin = NULL)
 }
 
 
+#' Express Table Entries as Fraction of Marginal Table
+#' 
+#' Redefines prop.table to deal with NA values
+#' 
+#' @param x an array
+#' @param margin index number (1 for rows, etc.)
+#' @examples 
+#' m <- matrix(1:4,2)
+#' surveyor:::prop.table(m,1)
+#' surveyor:::prop.table(m,2)
 prop.table <- function (x, margin = NULL, na.rm=false)
 # Redefines prop.table to deal with na.rm
 {
@@ -28,7 +47,16 @@ prop.table <- function (x, margin = NULL, na.rm=false)
 }
 
 
-# Version with apply()
+#' Paste matrix
+#' 
+#' Paste matrix
+#' 
+#' @param mtext Matrix
+#' @param sep Separator text
+#' @param collapse Collapse text
+#' @author Jens Oehlschlägel-Akiyoshi
+#' @examples 
+#' surveyor:::paste.matrix(matrix(1:(100), ncol=10))
 paste.matrix <- function(mtext, sep=" ", collapse=NULL){
 	if (is.null(collapse))
 		apply(mtext, 1, paste, collapse=sep)

@@ -1,17 +1,17 @@
-#' Code survey data in array form
+#' Code survey data in array question form (i.e. with subquestions)
 #'
-#' @param Qnr
-#' @param data
-#' @param Qtext
-#' @param multicode
-#' @param remove.other
+#' @param surveyor Surveyor object
+#' @param Qid Question id
+#' @param multicode Boolean
+#' @param remove.other Boolean
 #' @param index Crossbreak variable
 #' @param weight
 #' @param ...
+#' @seealso code_single, code_rank
 #' @export
-code_array <- function(Qnr="Q1",
-		data=kd,
-		Qtext=Qs,
+code_array <- function(
+		surveyor,
+		Qid,
 		multicode=FALSE,
 		remove.other=FALSE,
 		index="crossbreak",
@@ -26,29 +26,31 @@ code_array <- function(Qnr="Q1",
 	# index is the crosstab variable
 	
 #  data <- kd
-#  Qnr <- "Q22"
+#  Qid <- "Q22"
 #  Qtext <- Qs
 #  multicode <- TRUE
 #  index <- "crossbreak"
 #  remove.other <- FALSE
 #  weight=TRUE
 	
+	Qdata <- surveyor$qdata
+	Qtext <- surveyor$qtext
 	
-	r <- getQunique(data, Qnr, Qtext)
-	names(r) <- idQuestionGroup(data, Qnr, Qtext)
+	r <- get_qtext_unique(Qdata, Qid, Qtext)
+	names(r) <- get_q_subquestions(Qdata, Qid)
 	
 	if (remove.other==TRUE) r <- r[-length(r)]
 	
-	x <- as.list(data[names(r)])
+	x <- as.list(Qdata[names(r)])
 	x[x=="NA"] <- NA
 	if (multicode==TRUE) x <- llply(x, as.numeric)
-	if (!is.null(weight)) x$weight <- data$weight
+	if (!is.null(weight)) x$weight <- Qdata$weight
 	
 	# Scale to 100%
 	x$weight <- x$weight / sum(x$weight)
 	
 	x <- as.data.frame(x, stringsAsFactors=TRUE)
-	x$crossbreak <- kd[,index]
+	x$crossbreak <- Qdata[,index]
 	if (weight==FALSE){
 		x <- melt(x, id.vars=c("crossbreak",), na.rm=TRUE)
 	} else {
@@ -58,7 +60,12 @@ code_array <- function(Qnr="Q1",
 		x <- subset(x, value!=max(value))
 	}
 	x$variable <- r[as.character(x$variable)]
-	x$variable <- wordwrap(x$variable, 50)
-	x
+	x$variable <- str_wrap(x$variable, 50)
+	data.frame(
+			variable=x$variable,
+			value=x$value,
+			crossbreak=x$crossbreak,
+			weight=x$weight
+	)
 }
 

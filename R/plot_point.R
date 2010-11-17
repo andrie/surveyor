@@ -5,7 +5,7 @@ ggplot_point <- function(f){
 			facet_grid(~crossbreak) +
 #  scale_y_continuous(breaks=unique(f$value)) +
 			opts(
-					panel.grid.minor = theme_blank()
+					panel.grid.minor = ggplot2::theme_blank()
 			)
 }
 

@@ -1,9 +1,6 @@
-#' Tools to analyse, report and plot survey data
-#'
-#' surveyor does...
-#'
-#' @doctype package
-#' @imports plyr, reshape2, ggplot2
-
-
-
+import(xtable, plyr, ggplot2, reshape2)
+export(code_array)
+export(surveyor_defaults)
+export(surveyor_initialise)
+export(surveyor)
+export(plot_q)

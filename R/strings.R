@@ -2,12 +2,19 @@
 ###  String functions                                                        ###
 ################################################################################
 
-substrn <- function(x, n){
-	###  Discards the first n characters in string x
-	substr(as.character(x), n, nchar(as.character(x)))
-}
+#substrn <- function(x, n){
+#	###  Discards the first n characters in string x
+#	substr(as.character(x), n, nchar(as.character(x)))
+#}
 
-strDiff <- function(x){
+#' Finds the common and unique elements in a character vector
+#'
+#' @param x Character vector
+#' @examples
+#' q_string <- c("Q_1", "Q_2", "Q_3") 
+#' str_common_unique(q_string)$common
+#' str_common_unique(q_string)$unique
+str_common_unique <- function(x){
 	# Function takes a character string as input and find the common and
 	# unique elements.  Assumes that the common element is at start of string
 	# Store a copy of x
@@ -33,16 +40,30 @@ strDiff <- function(x){
 	}
 }
 
-wordwrap <- function(x,len)
+#' Wraps a string into separate lengths by inserting line breaks at word boundaries
+#'
+#' @param x Character vector
+#' @param len Length of new strings
+#' @examples
+#' str_wrap("the quick brown fox jumps over the lazy dog", 10)  
+	str_wrap <- function(x, len=30)
 {
-	wordwrapfunction <- function(x, len) (paste(strwrap(x,width=len),collapse="\n"))
-	laply(x, wordwrapfunction, len)
+	str_wrapfunction <- function(x, len) (paste(strwrap(x,width=len),collapse="\n"))
+	str <- laply(x, str_wrapfunction, len)
+	as.character(str)
 }
 
 
-reverse_string <- function(x) {
-	lapply(x, function(x){
+#' Returns a string in reverse order
+#'
+#' @param x Character vector
+#' @examples
+#' str_reverse("the quick brown fox jumps over the lazy dog")  
+str_reverse <- function(x) {
+	as.character(
+			lapply(x, function(x){
 				paste(rev(substring(x,1:nchar(x),1:nchar(x))),collapse="")
 			})
+	)
 }
 

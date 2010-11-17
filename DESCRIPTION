@@ -7,13 +7,14 @@ Description: This is a set of tools to analyse, report and plot survey
 URL:
 Maintainer: Andrie de Vries <apdevries@gmail.com>
 Author: Andrie de Vries <apdevries@gmail.com>
-Depends: R (>= 2.11.0)
+Depends: xtable, plyr, ggplot2, reshape2
 Suggests:
-Imports: xtable, plyr, ggplot2, reshape2, 
+Imports: xtable, plyr, ggplot2, reshape2
 License: GPL (>=2)
+LazyLoad: false
 LazyData: true
 Collate: 'code_array.R' 'code_net_score.R' 'code_rank.R'
-    'code_single.R' 'code_text.R' 'ggplot_defaults.R' 'initialise.R'
-    'latex.R' 'plot_bar.R' 'plot_bar_stacked.R' 'plot_net_score.R'
-    'plot_point.R' 'plot_single.R' 'plot_text.R' 'plumbing.R'
-    'print_crossbreak.R' 'question_handling.R' 'redefine.R' 'strings.R'
+    'code_single.R' 'code_text.R' 'initialise.R' 'latex.R' 'plot_bar.R'
+    'plot_bar_stacked.R' 'plot_net_score.R' 'plot_point.R'
+    'plot_single.R' 'plot_text.R' 'plumbing.R' 'print_crossbreak.R'
+    'question_handling.R' 'redefine.R' 'strings.R'
