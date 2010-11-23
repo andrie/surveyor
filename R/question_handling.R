@@ -10,11 +10,11 @@
 #'
 #' @param Qdata Qdata frame with survey Qdata
 #' @param Qid The question id, e.g. Q4
-#' @examples
-#' qdata <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
-#' qtext <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
-#' names(qtext) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
-#' surveyor:::get_q_subquestions(qdata, "Q4") 					
+## #' @examples
+## #' qdata <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
+## #' qtext <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
+## #' names(qtext) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
+## #' surveyor:::get_q_subquestions(qdata, "Q4") 					
 get_q_subquestions <- function(Qdata, Qid){
 	Q <- grep(paste(Qid, "_[[:digit:]]*$", sep=""), names(Qdata))
 	if (identical(Q, integer(0))){
@@ -35,11 +35,11 @@ get_q_subquestions <- function(Qdata, Qid){
 #' @param Qid The question id, e.g. Q4
 #' @param Qtext Named character vector containing the question text
 #' @seealso get_qtext, get_qtext_common
-#' @examples
-#' qdata <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
-#' qtext <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
-#' names(qtext) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
-#' get_qtext_unique(qdata, "Q4", qtext) 					
+## #' @examples
+## #' qdata <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
+## #' qtext <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
+## #' names(qtext) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
+## #' surveyor:::get_qtext_unique(qdata, "Q4", qtext) 					
 get_qtext_unique <- function(Qdata, Qid, Qtext){
 	Q <- get_q_subquestions(Qdata, Qid)
 	Q <- Qtext[Q]
@@ -58,11 +58,11 @@ get_qtext_unique <- function(Qdata, Qid, Qtext){
 #' @param Qid The question id, e.g. Q4
 #' @param Qtext Named character vector containing the question text
 #' @seealso get_qtext, get_qtext_unique
-#' @examples
-#' qdata <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
-#' qtext <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
-#' names(qtext) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
-#' get_qtext_common(qdata, "Q4", qtext) 					
+## #' @examples
+## #' qdata <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
+## #' qtext <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
+## #' names(qtext) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
+## #' surveyor:::get_qtext_common(qdata, "Q4", qtext) 					
 get_qtext_common <- function(Qdata, Qid, Qtext){
 	Q <- get_q_subquestions(Qdata, Qid)
 	Q <- Qtext[Q]
@@ -78,16 +78,15 @@ get_qtext_common <- function(Qdata, Qid, Qtext){
 #' 
 #' Given a question id, e.g. "Q4", returns question text 
 #'
-#' @param Qdata Qdata frame with survey Qdata
+#' @param surveyor A surveyor object
 #' @param Qid The question id, e.g. Q4
-#' @param Qtext Named character vector containing the question text
 #' @seealso get_qtext_common, get_qtext_unique
-#' @examples
-#' qdata <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
-#' qtext <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
-#' names(qtext) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
-#' get_qtext(qdata, "Q1", qtext)
-#' get_qtext(qdata, "Q4", qtext)
+## #' @examples
+## #' qdata <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
+## #' qtext <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
+## #' names(qtext) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
+## #' surveyor:::get_qtext(qdata, "Q1", qtext)
+## #'' surveyor:::get_qtext(qdata, "Q4", qtext)
 get_qtext <- function(surveyor, Qid){
 	
 	Qdata <- surveyor$qdata
@@ -95,7 +94,6 @@ get_qtext <- function(surveyor, Qid){
 	
 	w <- which(names(Qdata)==Qid)
 	if (length(w)==1){
-#    w <- Qs[which(names(kd)==x)]
 		ret <- Qtext[Qid][1]
 	} else {
 		w <- which(names(Qdata)==paste(Qid, "_1", sep=""))
@@ -108,8 +106,4 @@ get_qtext <- function(surveyor, Qid){
 	as.character(ret)
 }
 
-# TODO: Must fix cb function
-cb <- function(x){
-	data.frame(crossbreak=kd$crossbreak, x=x, weight=kd$weight)
-}
 

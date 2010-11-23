@@ -1,21 +1,26 @@
 #################################################################################
 ####  net score calculation and graphing                                      ###
 #################################################################################
-#
-#netScore <- function(x){
-#	
-##  x <- kd$Q22_1
-#	x <- x[!is.na(x)]
-#	
-#	xu <- unclass(x)
-#	m <- ceiling(length(levels(x))/2)
-#	below <- length(xu[xu < m])
-#	above <- length(xu[xu > m])
-#	net <- above - below
-#	netScore <- net / length(x)
-#	netScore
-#}
-#
+
+#' Calculates a net score
+#'
+#' This assumes that x is an ordered factor, from low to high
+#' It then calculates a net percentage score
+#' 
+#' @param x An ordered factor
+netScore <- function(x){
+	
+	x <- x[!is.na(x)]
+	
+	xu <- unclass(x)
+	m <- ceiling(length(levels(x))/2)
+	below <- length(xu[xu < m])
+	above <- length(xu[xu > m])
+	net <- above - below
+	netScore <- net / length(x)
+	netScore
+}
+
 #code_netScore <- function(Qid="Q1",
 #		data=kd,
 #		Qtext=Qs,

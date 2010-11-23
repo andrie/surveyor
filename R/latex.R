@@ -2,8 +2,16 @@
 ###  Define Latex functions
 ################################################################################
 
-printQLatex <- function(x){
+#' Prints a string to Latex, dealing with special characters
+#'
+#' @param x A string containing question text
+printQlatex <- function(x){
 #  cat("\\section{", x, "}\n\n", sep="")
-	cat(latexTranslate(paste("\\section{", x, "}\n\n", sep=""), inn="&", out="\\&"))
+	inn <- "&"
+	out <- "\\&"
+	latexTranslate(
+					paste("\n\\section{", x, "}\n\n", sep=""), 
+					inn=inn, 
+					out=out)
 }
 

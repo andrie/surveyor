@@ -10,10 +10,10 @@
 #' Finds the common and unique elements in a character vector
 #'
 #' @param x Character vector
-#' @examples
-#' q_string <- c("Q_1", "Q_2", "Q_3") 
-#' str_common_unique(q_string)$common
-#' str_common_unique(q_string)$unique
+## #' @examples
+## #' q_string <- c("Q_1", "Q_2", "Q_3") 
+## #' str_common_unique(q_string)$common
+## #' str_common_unique(q_string)$unique
 str_common_unique <- function(x){
 	# Function takes a character string as input and find the common and
 	# unique elements.  Assumes that the common element is at start of string
@@ -44,8 +44,8 @@ str_common_unique <- function(x){
 #'
 #' @param x Character vector
 #' @param len Length of new strings
-#' @examples
-#' str_wrap("the quick brown fox jumps over the lazy dog", 10)  
+## #' @examples
+## #' str_wrap("the quick brown fox jumps over the lazy dog", 10)  
 	str_wrap <- function(x, len=30)
 {
 	str_wrapfunction <- function(x, len) (paste(strwrap(x,width=len),collapse="\n"))
@@ -57,8 +57,8 @@ str_common_unique <- function(x){
 #' Returns a string in reverse order
 #'
 #' @param x Character vector
-#' @examples
-#' str_reverse("the quick brown fox jumps over the lazy dog")  
+## #' @examples
+## #' str_reverse("the quick brown fox jumps over the lazy dog")  
 str_reverse <- function(x) {
 	as.character(
 			lapply(x, function(x){

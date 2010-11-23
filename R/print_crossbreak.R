@@ -2,8 +2,17 @@
 ###  print crossbreak functions                                              ###
 ################################################################################
 
+# TODO: fix printCB
+# TODO: Fix printCB documentatioj
 
+#' Prints crossbreak information in latex format
+#'
+#' Description
+#' 
+#' @param x What is x?
+#' @param Qtext What is Qtext?
 printCB <- function(x, Qtext=x){
+#	require(xtable)
 #  x <- cb("L")
 	if (is.na(match("variable", names(x)))){
 		v <- tapply(x$weight, list(x$x, x$crossbreak), sum, na.rm=TRUE)
@@ -29,7 +38,7 @@ printCB <- function(x, Qtext=x){
 	align <- paste(c("l", rep("r", dim(v)[2])), collapse="")
 	
 	cat("\\clearpage")
-	printQLatex(get_qtext(Qtext))
+	printQlatex(get_qtext(Qtext))
 	
 #  cat("\n\n")
 	cat("\\vspace{1 pc}\n")

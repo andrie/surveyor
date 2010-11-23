@@ -2,36 +2,17 @@
 #'
 #' @param surveyor Surveyor object
 #' @param Qid Question id
-#' @param multicode Boolean
-#' @param remove.other Boolean
-#' @param index Crossbreak variable
-#' @param weight
-#' @param ...
+#' @param multicode If true, will code for questions with multiple values
+#' @param remove.other If true, will remove last column
 #' @seealso code_single, code_rank
 #' @export
 code_array <- function(
 		surveyor,
 		Qid,
 		multicode=FALSE,
-		remove.other=FALSE,
-		index="crossbreak",
-		weight=TRUE,
-		...){
+		remove.other=FALSE
+		){
 	# Melt multicoded question in data.frame, and code question text to variable
-	
-	# data is a data frame
-	# Qnumber is the number of the question, e.g. "Q4" (text)
-	# Qtext is a list of question text (character vector)
-	# n is the number of characters in Qtext to discard (numeric)
-	# index is the crosstab variable
-	
-#  data <- kd
-#  Qid <- "Q22"
-#  Qtext <- Qs
-#  multicode <- TRUE
-#  index <- "crossbreak"
-#  remove.other <- FALSE
-#  weight=TRUE
 	
 	Qdata <- surveyor$qdata
 	Qtext <- surveyor$qtext
@@ -44,18 +25,18 @@ code_array <- function(
 	x <- as.list(Qdata[names(r)])
 	x[x=="NA"] <- NA
 	if (multicode==TRUE) x <- llply(x, as.numeric)
-	if (!is.null(weight)) x$weight <- Qdata$weight
+	x$weight <- surveyor$weight
 	
 	# Scale to 100%
 	x$weight <- x$weight / sum(x$weight)
 	
 	x <- as.data.frame(x, stringsAsFactors=TRUE)
-	x$crossbreak <- Qdata[,index]
-	if (weight==FALSE){
-		x <- melt(x, id.vars=c("crossbreak",), na.rm=TRUE)
-	} else {
+	x$crossbreak <- surveyor$crossbreak
+#	if (weight==FALSE){
+#		x <- melt(x, id.vars=c("crossbreak",), na.rm=TRUE)
+#	} else {
 		x <- melt(x, id.vars=c("crossbreak", "weight"), na.rm=TRUE)
-	}
+#	}
 	if (multicode==TRUE){
 		x <- subset(x, value!=max(value))
 	}
@@ -65,7 +46,8 @@ code_array <- function(
 			variable=x$variable,
 			value=x$value,
 			crossbreak=x$crossbreak,
-			weight=x$weight
+			weight=x$weight,
+			stringsAsFactors=FALSE
 	)
 }
 
