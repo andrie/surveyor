@@ -1,28 +1,30 @@
-#' Code survey data in array question form
+#TODO: Fix handling of remove_other in code_multi
+
+#' Code survey data in multiple question form
 #'
-#' Code survey data in array question form (i.e. with subquestions)
+#' Code survey data in multiple question form (i.e. with subquestions)
 #' 
 #' @param surveyor Surveyor object
 #' @param q_id Question id
 #' @param remove_other If true, will remove last column
 #' @return data frame
 #' @seealso Coding functions:
-#' 		\code{\link{code_single}}, 
-#' 		\code{\link{code_array}},
-#' 		\code{\link{code_rank}},
-#' 		\code{\link{code_text}}
-#' 		Summarising functions:
-#' 		\code{\link{stats_bin}}, 
-#' 		\code{\link{stats_net_score}}
-#' 		Plot functions: 
-#' 		\code{\link{plot_bar}}, 
-#' 		\code{\link{plot_point}} 
+#' \code{\link{code_single}}, 
+#' \code{\link{code_array}},
+#' \code{\link{code_rank}},
+#' \code{\link{code_text}}
+#' Summarising functions:
+#' \code{\link{stats_bin}}, 
+#' \code{\link{stats_net_score}}
+#' Plot functions: 
+#' \code{\link{plot_bar}}, 
+#' \code{\link{plot_point}} 
 #' @export
-code_array <- function(
+code_multi <- function(
 		surveyor,
 		q_id,
 		remove_other=FALSE
-		){
+){
 	# Melt multicoded question in data.frame, and code question text to variable
 	
 	q_data <- surveyor$q_data
@@ -35,13 +37,7 @@ code_array <- function(
 	
 	x <- as.list(q_data[names(r)])
 	x[x=="NA"] <- NA
-	
-	if (all_na(x)){
-		return(NULL)
-	}
-	
 	#x <- llply(x, as.numeric)  ### This is the line that handles multi-code
-	
 	x$weight <- surveyor$weight
 	
 	# Scale to 100%
@@ -49,8 +45,14 @@ code_array <- function(
 	
 	x <- as.data.frame(x, stringsAsFactors=TRUE)
 	x$crossbreak <- surveyor$crossbreak
+#	if (weight==FALSE){
+#		x <- melt(x, id.vars=c("crossbreak",), na.rm=TRUE)
+#	} else {
 	x <- melt(x, id.vars=c("crossbreak", "weight"), na.rm=TRUE)
+#	}
 
+	#x <- subset(x, value!=max(value)) ### This handles remove_other
+	
 	x$variable <- r[as.character(x$variable)]
 	x$variable <- str_wrap(x$variable, 50)
 	data.frame(

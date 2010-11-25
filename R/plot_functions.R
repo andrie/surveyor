@@ -5,11 +5,21 @@
 #' @seealso plot_bar, plot_bar_stacked, plot_net_score, plot_point, plot_text 
 #' @export
 plot_bar <- function(f, surveyor){
-	ggplot(f, aes(x=variable, weight=weight, fill=factor(crossbreak))) +
+	ggplot(f, aes(x=variable, y=value, fill=factor(crossbreak))) +
 			theme_grey(surveyor$defaults$default_theme_size) +
-			geom_bar(aes(group=1)) + coord_flip() + quiet +
-			facet_grid(~crossbreak)
+			geom_bar(stat="identity") + coord_flip() + quiet +
+			facet_grid(~crossbreak) +
+			scale_y_continuous(formatter="percent")
 }
+
+#plot_bar <- function(f, surveyor){
+#	ggplot(f, aes(x=variable, weight=weight, fill=factor(crossbreak))) +
+#			theme_grey(surveyor$defaults$default_theme_size) +
+#			geom_bar(aes(group=1)) + coord_flip() + quiet +
+#			facet_grid(~crossbreak)
+#}
+
+
 
 #' Plot data in horizontal stacked bar chart format
 #'
@@ -18,9 +28,9 @@ plot_bar <- function(f, surveyor){
 #' @seealso plot_bar, plot_bar_stacked, plot_net_score, plot_point, plot_text 
 #' @export
 plot_bar_stacked <- function(f, surveyor){
-	ggplot(f, aes(x=variable, weight=weight, fill=factor(crossbreak))) +
+	ggplot(f, aes(x=1, y=value, fill=factor(variable))) +
 			theme_grey(surveyor$defaults$default_theme_size) +
-			geom_bar() + coord_flip() + quiet +
+			geom_bar(stat="identity", position="stack") + coord_flip() + quiet +
 			scale_y_continuous(formatter="percent") +
 			facet_grid(~crossbreak)
 }
@@ -32,7 +42,7 @@ plot_bar_stacked <- function(f, surveyor){
 #' @seealso plot_bar, plot_bar_stacked, plot_net_score, plot_point, plot_text 
 #' @export
 plot_point <- function(f, surveyor){
-	ggplot(f, aes(x=variable, y=value, weight=weight, colour=factor(crossbreak), fill=factor(crossbreak))) +
+	ggplot(f, aes(x=variable, y=value, size=value, colour=factor(crossbreak), fill=factor(crossbreak))) +
 			theme_grey(surveyor$defaults$default_theme_size) +
 			geom_point(stat="sum") + coord_flip() + quiet +
 			facet_grid(~crossbreak) +
@@ -40,6 +50,15 @@ plot_point <- function(f, surveyor){
 					panel.grid.minor = theme_blank()
 			)
 }
+#plot_point <- function(f, surveyor){
+#	ggplot(f, aes(x=variable, y=value, weight=weight, colour=factor(crossbreak), fill=factor(crossbreak))) +
+#			theme_grey(surveyor$defaults$default_theme_size) +
+#			geom_point(stat="sum") + coord_flip() + quiet +
+#			facet_grid(~crossbreak) +
+#			opts(
+#					panel.grid.minor = theme_blank()
+#			)
+#}
 
 #' Plot data as text
 #'

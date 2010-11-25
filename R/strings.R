@@ -8,37 +8,101 @@
 #}
 
 #' Finds the common and unique elements in a character vector
-#'
+#' 
+#' Function takes a character string as input and find the common and
+#' unique elements.  Assumes that the common element is at start of string
+#' 
 #' @param x Character vector
+#' @return list of common and unique strings 
 ## #' @examples
 ## #' q_string <- c("Q_1", "Q_2", "Q_3") 
 ## #' str_common_unique(q_string)$common
 ## #' str_common_unique(q_string)$unique
 str_common_unique <- function(x){
-	# Function takes a character string as input and find the common and
-	# unique elements.  Assumes that the common element is at start of string
-	# Store a copy of x
+	x <- as.character(x)
+	y <- x
+	
+	## Handles case with a single string element
 	if (length(x) <= 1){
-		## Handles case with a single string element
-		list(common=x, unique="")
+		return(list(common=x[1], unique=""))
+	} 
+
+	## Handles case where all elements are identical
+	all_identical <- all(as.logical(llply(x, function(f)x[1]==f)))
+	if (all_identical){
+		return(list(common=x[1], unique=rep("", length(x))))			
+	}
+
+	## Handles case where shortest element has length 0
+	if (min(nchar(x))==0){
+		return(list(common="", unique=x))
+	}
+	
+	## Handles case where shortest element has length 1
+	if (min(nchar(x))==1){
+		x1 <- laply(x, function(f){unlist(strsplit(f, NULL))[1]})
+		all_identical <- all(as.logical(llply(x1, function(f)x1[1]==f)))
+		if (all_identical){
+			return(
+					list(common=substr(x[1], 1, 1), unique=substr(x, 2, nchar(x)))
+			)			
+		} else {
+			return(
+					list(common="", unique=x)
+			)
+		}	
+	}
+	
+	
+	# Make all strings the same length as shortest string
+	x1 <- substr(x, 1, min(nchar(x)))
+	# Create matrix of characters
+	split <- laply(x1, function(f){unlist(strsplit(f, NULL))})
+	# Test which characters are identical
+	identical <- aaply(split, 1, function(f){f==split[1, ]})
+	common <- aaply(identical, 1, function(f){which(f==FALSE)[1]})
+	mincommon <- min(common, na.rm=TRUE)-1
+	if (mincommon <1){
+		return(list(common="", unique=x))
 	} else {
-		## Handles case with multiple string elements
-		y <- x
-		# Make all strings the same length as shortest string
-		y <- substr(y, 1, min(nchar(y)))
-		# Create matrix of characters
-		y <- laply(y, function(x){unlist(strsplit(x, NULL))})
-		# Test which characters are identical
-		y <- aaply(y, 1, function(x){x==y[1,]})
-		
-		
-		common <- min(aaply(y, 1, function(x){which(x==FALSE)[1]-1}), na.rm=TRUE)
-		xcommon <- substr(x[1], 1, common)
-		xunique <- substr(x, common+1, nchar(x))
-		
-		list(common=xcommon, unique=xunique)
+		return(list(
+						common=substr(x[1], 1, mincommon),
+						unique=substr(x, mincommon+1, nchar(x))
+				))
 	}
 }
+
+#str_common_unique <- function(x){
+#	x <- as.character(x)
+#	if (length(x) <= 1){
+#		## Handles case with a single string element
+#		list(common=x, unique="")
+#	} else {
+#		## Handles case with multiple string elements
+#		y <- x
+#		all_identical <- all(as.logical(llply(y, function(xt)y[1]==xt)))
+#		if (all_identical){
+#			list(common=x[1], unique=rep("", length(x)))			
+#		} else {
+#			# Make all strings the same length as shortest string
+#			y <- substr(y, 1, min(nchar(y)))
+#			# Create matrix of characters
+#			y <- laply(y, function(xt){unlist(strsplit(xt, NULL))})
+#			# Test which characters are identical
+#			tf <- aaply(y, 1, function(xt){xt==y[1,]})
+#			split <- aaply(tf, 1, function(xt){which(xt==FALSE)[1]})
+#			common <- min(split, na.rm=TRUE)
+#			if (common <1){
+#				list(common="", unique=x)
+#			} else {
+#				xcommon <- substr(x[1], 1, common)
+#				xunique <- substr(x, common+1, nchar(x))
+#				list(common=xcommon, unique=xunique)
+#			}
+#		}	
+#	}
+#}
+
 
 #' Wraps a string into separate lengths by inserting line breaks at word boundaries
 #'

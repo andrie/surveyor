@@ -1,9 +1,9 @@
-\name{code_array}
-\alias{code_array}
-\title{Code survey data in array question form...}
-\usage{code_array(surveyor, q_id, remove_other=FALSE)}
-\description{Code survey data in array question form}
-\details{Code survey data in array question form (i.e. with subquestions)}
+\name{code_multi2}
+\alias{code_multi2}
+\title{Code survey data in multiple question form 2...}
+\usage{code_multi2(surveyor, q_id, remove_other=FALSE)}
+\description{Code survey data in multiple question form 2}
+\details{Code survey data in multiple question form (i.e. with subquestions)}
 \value{data frame}
 \seealso{Coding functions:
 \code{\link{code_single}}, 

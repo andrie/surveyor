@@ -3,8 +3,11 @@
 \title{Finds the common and unique elements in a character vector...}
 \usage{str_common_unique(x)}
 \description{Finds the common and unique elements in a character vector}
-\arguments{\item{x}{Character vector
-#'}}
+\details{Function takes a character string as input and find the common and
+unique elements.  Assumes that the common element is at start of string}
+\value{list of common and unique strings 
+#'}
+\arguments{\item{x}{Character vector}}
 \examples{#' q_string <- c("Q_1", "Q_2", "Q_3") 
 #' str_common_unique(q_string)$common
 #' str_common_unique(q_string)$unique}

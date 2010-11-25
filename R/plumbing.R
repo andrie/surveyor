@@ -4,40 +4,40 @@
 
 #' Creates object of class surveyor
 #' 
-#' @param qdata data frame with survey data
-#' @param qtext The question id, e.g. Q4
+#' @param q_data data frame with survey data
+#' @param q_text The question id, e.g. Q4
 #' @param crossbreak Vector with crossbreak data
 #' @param weight Numeric vector with weighting data
 #' @param defaults Surveyor defaults
 #' @export
 #' @examples
-#' qdata <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
-#' qtext <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
-#' names(qtext) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
-#' s <- surveyor(qdata, qtext, crossbreak=c("aa", "bb"), weight=c(1,1)) 					
+#' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
+#' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
+#' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
+#' s <- surveyor(q_data, q_text, crossbreak=c("aa", "bb"), weight=c(1,1)) 					
 surveyor <- function(
-		qdata, 
-		qtext, 
-		crossbreak=qdata$crossbreak,
-		weight=qdata$weight,
+		q_data, 
+		q_text, 
+		crossbreak=q_data$crossbreak,
+		weight=q_data$weight,
 		defaults=surveyor_defaults()
 	){
-	if (!identical(names(qdata), names(qtext))){
-		stop("Surveyor object: The names of qdata and qtext must match")
+	if (!identical(names(q_data), names(q_text))){
+		stop("Surveyor object: The names of q_data and q_text must match")
 	}
-	if (length(crossbreak) != nrow(qdata)){
-		stop("Surveyor object: Crossbreak must match qdata in length")
+	if (length(crossbreak) != nrow(q_data)){
+		stop("Surveyor object: Crossbreak must match q_data in length")
 	}
-	if (length(weight) != nrow(qdata)){
-		stop("Surveyor object: Weight must match qdata in length")
+	if (length(weight) != nrow(q_data)){
+		stop("Surveyor object: Weight must match q_data in length")
 	}
 	if (!is.numeric(weight)){
 		stop("Surveyor object: Weight must be numeric")
 	}
 	structure(
 			list(
-					qdata=qdata, 
-					qtext=qtext,
+					q_data=q_data, 
+					q_text=q_text,
 					crossbreak=crossbreak,
 					weight=weight,
 					defaults=defaults
@@ -46,22 +46,30 @@ surveyor <- function(
 	)
 }
 
+#' Prints surveyor object
+#' 
+#' @param surveyor surveyor object
+print.surveyor <- function(surveyor){
+	cat("Surveyor\n\n")
+	print.listof(surveyor)
+}
+
 #' Tests that object is a surveyor object
 #' 
 #' @param x Object to be tested
 #' @export
 #' @examples 
-#' qdata <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
-#' qtext <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
-#' names(qtext) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
-#' s <- surveyor(qdata, qtext, crossbreak=c("aa", "bb"), weight=c(1,1))
+#' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
+#' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
+#' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
+#' s <- surveyor(q_data, q_text, crossbreak=c("aa", "bb"), weight=c(1,1))
 #' is.surveyor(s) # TRUE
 #' is.surveyor("String") #FALSE 					
 is.surveyor <- function(x){
 	if (class(x)=="surveyor"){
 		if (all(
-				!is.null(x$qdata),
-				!is.null(x$qtext),
+				!is.null(x$q_data),
+				!is.null(x$q_text),
 				!is.null(x$crossbreak),
 				!is.null(x$weight),
 				!is.null(x$defaults)
@@ -130,20 +138,22 @@ new_counter <- function() {
 #' coded, printed and plotted.
 #' 
 #' @param surveyor Surveyor object
-#' @param Qid Question id
+#' @param q_id Question id
 #' @param counter An integer that defines the figure number to save to
 #' @param code_function A reference to a function that processes the question data
-#' @param plot_function A reference to a function that plots the question data
+#' @param stats_function A reference to a function that summarizes the coded data
+#' @param plot_function A reference to a function that plots the summarized data
 #' @param plot_size Size in inches of plot output, e.g. c(4,3)
 #' @param ... Other parameters passed to code_function
 #' @export
 #' @seealso surveyor
 plot_q <- function(
 		surveyor,
-		Qid,
+		q_id,
 		counter, 
-		code_function,
-		plot_function,
+		code_function = plot_single,
+		stats_function = stats_bin,
+		plot_function = plot_bar,
 		plot_size = surveyor$defaults$default_plot_size,
 		...){
 	
@@ -151,34 +161,45 @@ plot_q <- function(
 		stop("You must pass a valid surveyor object to plot_q")
 	}
 	
-	message(Qid)
-	f <- code_function(surveyor, Qid, ...)
-	g <- plot_function(f, surveyor)
-	if (identical(code_function, code_array)){
-		plot_size[2] <- plot_size[2]*1.5
-	}
-	
-	if (surveyor$defaults$output_to_latex){
-		filename <- paste("fig", counter, ".eps", sep="")
-		message(paste("Now saving ", filename, sep=""))
-		ggsave(
-				g, 
-				filename = filename, 
-				width    = plot_size[1], 
-				height   = plot_size[2],
-				dpi      = surveyor$defaults$dpi, 
-				path     = surveyor$defaults$path_graphics)
-		cat(printQlatex(get_qtext(surveyor, Qid)),
-				file = surveyor$defaults$output_filename, append=TRUE)
-		cat("\\PlaceGraph{graphics/", filename, "}\n", sep="",
-			  file = surveyor$defaults$output_filename, append=TRUE)
-
+	message(q_id)
+	f <- code_function(surveyor, q_id, ...)
+	if (is.null(f)){
+		nothing_to_plot <- TRUE
 	} else {
+		s <- stats_function(f)
+		g <- plot_function(s, surveyor)
+		nothing_to_plot <- FALSE
+	}	
+		
+	if (!surveyor$defaults$output_to_latex){
 		print(g)
-	}
-	
+	} else {
+		cat(printQlatex(get_q_text(surveyor, q_id)),
+				file = surveyor$defaults$output_filename, append=TRUE)
+		if (nothing_to_plot){
+			cat("\nNo data\n\n",
+					file = surveyor$defaults$output_filename, append=TRUE)
+			} else {
+				if (identical(code_function, code_array)){
+					plot_size[2] <- plot_size[2]*1.5
+				}
+				filename <- paste("fig", counter, ".eps", sep="")
+				message(paste("Now saving ", filename, sep=""))
+				ggsave(
+						g, 
+						filename = filename, 
+						width    = plot_size[1], 
+						height   = plot_size[2],
+						dpi      = surveyor$defaults$dpi, 
+						path     = surveyor$defaults$path_graphics
+				)
+				cat("\\PlaceGraph{graphics/", filename, "}\n", sep="",
+						file = surveyor$defaults$output_filename, append=TRUE)
+			}
+		}
 	return(invisible())
 }
+
 
 
 

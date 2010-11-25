@@ -1,5 +1,5 @@
 Package: surveyor
-Version: 0.0-2
+Version: 0.0-6
 Date: 2010-11-15
 Title: Tools for analysing, reporting and plotting survey data
 Description: This is a set of tools to analyse, report and plot survey
@@ -13,7 +13,7 @@ Imports: xtable, plyr, ggplot2, reshape2
 License: GPL (>=2)
 LazyLoad: false
 LazyData: true
-Collate: 'code_array.R' 'code_net_score.R' 'code_rank.R'
-    'code_single.R' 'code_text.R' 'help.R' 'initialise.R' 'latex.R'
+Collate: 'code_array.R' 'code_multi.R' 'code_rank.R' 'code_single.R'
+    'code_text.R' 'help.R' 'initialise.R' 'latex.R' 'multi2.R'
     'plot_functions.R' 'plumbing.R' 'print_crossbreak.R'
-    'question_handling.R' 'redefine.R' 'strings.R'
+    'question_handling.R' 'redefine.R' 'strings.R' 'summarize.R'

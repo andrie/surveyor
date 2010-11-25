@@ -1,25 +1,27 @@
-#' Code survey data in rank question form (i.e. with subquestions)
+#' Code survey data in rank question form
 #'
+#' Code survey data in rank question form (i.e. with subquestions)
+#' 
 #' @param surveyor Surveyor object
-#' @param Qid Question id
+#' @param q_id Question id
 #' @param remove.other Boolean
-#' @seealso code_single, code_array
+#' @return data frame
+#' @seealso \code{\link{code_single}}, \code{\link{code_array}}
 #' @export
-
 code_rank <- function(
 		surveyor,
-		Qid,
+		q_id,
 		remove.other=FALSE
 	){
 	
-	Qdata <- surveyor$qdata
-	Qtext <- surveyor$qtext
+	q_data <- surveyor$q_data
+	q_text <- surveyor$q_text
 	
-	r <- get_qtext_unique(Qdata, Qid, Qtext)
+	r <- get_q_text_unique(q_data, q_id, q_text)
 	if (remove.other==TRUE) r <- r[-length(r)]
-	names(r) <- paste(Qid, "_", 1:length(r), sep="")
+	names(r) <- paste(q_id, "_", 1:length(r), sep="")
 #  x <- as.list(data[names(r)])
-	x <- Qdata[, names(r)]
+	x <- q_data[, names(r)]
 	x[x=="NA"] <- NA
 #  if (multicode) x <- llply(x, as.numeric)
 	if (!is.null(weight)) 	x$weight <- surveyor$weight
@@ -31,7 +33,7 @@ code_rank <- function(
 			x <- melt(as.data.frame(x), id.vars="weight", na.rm=TRUE)
 		}
 	} else{
-		x <- data.frame(crossbreak=Qdata[,index], as.data.frame(x))
+		x <- data.frame(crossbreak=q_data[,index], as.data.frame(x))
 		if (is.null(weight)){
 			x <- melt(x, id.vars=c("crossbreak",), na.rm=TRUE)
 		} else {

@@ -10,8 +10,8 @@
 #' Description
 #' 
 #' @param x What is x?
-#' @param Qtext What is Qtext?
-printCB <- function(x, Qtext=x){
+#' @param q_text What is q_text?
+printCB <- function(x, q_text=x){
 #	require(xtable)
 #  x <- cb("L")
 	if (is.na(match("variable", names(x)))){
@@ -38,7 +38,7 @@ printCB <- function(x, Qtext=x){
 	align <- paste(c("l", rep("r", dim(v)[2])), collapse="")
 	
 	cat("\\clearpage")
-	printQlatex(get_qtext(Qtext))
+	printQlatex(get_q_text(q_text))
 	
 #  cat("\n\n")
 	cat("\\vspace{1 pc}\n")
