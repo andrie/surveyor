@@ -9,7 +9,6 @@
 #' @seealso Coding functions:
 #' 		\code{\link{code_single}}, 
 #' 		\code{\link{code_array}},
-#' 		\code{\link{code_rank}},
 #' 		\code{\link{code_text}}
 #' 		Summarising functions:
 #' 		\code{\link{stats_bin}}, 
@@ -54,9 +53,9 @@ code_array <- function(
 	x$variable <- r[as.character(x$variable)]
 	x$variable <- str_wrap(x$variable, 50)
 	data.frame(
-			variable=x$variable,
-			value=x$value,
 			crossbreak=x$crossbreak,
+			question=x$variable,
+			response=x$value,
 			weight=x$weight,
 			stringsAsFactors=FALSE
 	)

@@ -1,39 +1,38 @@
-#' Plot data in horizontal bar chart format
+#' Plot data in bar chart format
 #'
 #' @param f A data frame with coded answers, provided by a code_* function
 #' @param surveyor Surveyor object
 #' @seealso plot_bar, plot_bar_stacked, plot_net_score, plot_point, plot_text 
 #' @export
 plot_bar <- function(f, surveyor){
-	ggplot(f, aes(x=variable, y=value, fill=factor(crossbreak))) +
+	if (is.null(f$question)){
+		# Plot single question
+		p <- ggplot(f, aes(x=response, y=value, fill=factor(crossbreak))) +
+				theme_grey(surveyor$defaults$default_theme_size) +
+				geom_bar(stat="identity") + coord_flip() + quiet +
+				scale_y_continuous(formatter="percent") +
+				facet_grid(~crossbreak)
+		return(p)
+	}
+	if (is.null(f$response)){
+		# Plot array of single values per question
+		p <- ggplot(f, aes(x=question, y=value, fill=factor(crossbreak))) +
+				theme_grey(surveyor$defaults$default_theme_size) +
+				geom_bar(stat="identity") + coord_flip() + quiet +
+				scale_y_continuous(formatter="percent") +
+				facet_grid(~crossbreak)
+		return(p)
+	}
+	# Plot array question as stacked bar
+	p <- ggplot(f, aes(x=question, y=value, fill=response)) +
 			theme_grey(surveyor$defaults$default_theme_size) +
-			geom_bar(stat="identity") + coord_flip() + quiet +
-			facet_grid(~crossbreak) +
-			scale_y_continuous(formatter="percent")
+			geom_bar(stat="identity") + coord_flip() + 
+			scale_y_continuous(formatter="percent") + 
+			facet_grid(~crossbreak) 
+	return(p)
 }
 
-#plot_bar <- function(f, surveyor){
-#	ggplot(f, aes(x=variable, weight=weight, fill=factor(crossbreak))) +
-#			theme_grey(surveyor$defaults$default_theme_size) +
-#			geom_bar(aes(group=1)) + coord_flip() + quiet +
-#			facet_grid(~crossbreak)
-#}
-
-
-
-#' Plot data in horizontal stacked bar chart format
-#'
-#' @param f A data frame with coded answers, provided by a code_* function
-#' @param surveyor Surveyor object
-#' @seealso plot_bar, plot_bar_stacked, plot_net_score, plot_point, plot_text 
-#' @export
-plot_bar_stacked <- function(f, surveyor){
-	ggplot(f, aes(x=1, y=value, fill=factor(variable))) +
-			theme_grey(surveyor$defaults$default_theme_size) +
-			geom_bar(stat="identity", position="stack") + coord_flip() + quiet +
-			scale_y_continuous(formatter="percent") +
-			facet_grid(~crossbreak)
-}
+###############################################################################
 
 #' Plot data in bubble chart format
 #'
@@ -42,23 +41,32 @@ plot_bar_stacked <- function(f, surveyor){
 #' @seealso plot_bar, plot_bar_stacked, plot_net_score, plot_point, plot_text 
 #' @export
 plot_point <- function(f, surveyor){
-	ggplot(f, aes(x=variable, y=value, size=value, colour=factor(crossbreak), fill=factor(crossbreak))) +
+	if (is.null(f$question)){
+		# Plot single question
+		p <- ggplot(f, aes(x=" ", y=response, size=value, 
+								colour=factor(crossbreak), fill=factor(crossbreak))) +
 			theme_grey(surveyor$defaults$default_theme_size) +
 			geom_point(stat="sum") + coord_flip() + quiet +
 			facet_grid(~crossbreak) +
 			opts(
 					panel.grid.minor = theme_blank()
 			)
+		return(p)
+	}
+	# Plot array question as stacked bar
+	p <- ggplot(f, aes(x=question, y=response, size=value, 
+							colour=factor(crossbreak), fill=factor(crossbreak))) +
+			theme_grey(surveyor$defaults$default_theme_size) +
+			geom_point(stat="sum") + coord_flip() + quiet +
+			facet_grid(~crossbreak) +
+			opts(
+					panel.grid.minor = theme_blank()
+			)
+	return(p)
 }
-#plot_point <- function(f, surveyor){
-#	ggplot(f, aes(x=variable, y=value, weight=weight, colour=factor(crossbreak), fill=factor(crossbreak))) +
-#			theme_grey(surveyor$defaults$default_theme_size) +
-#			geom_point(stat="sum") + coord_flip() + quiet +
-#			facet_grid(~crossbreak) +
-#			opts(
-#					panel.grid.minor = theme_blank()
-#			)
-#}
+
+###############################################################################
+
 
 #' Plot data as text
 #'
@@ -73,6 +81,8 @@ plot_text <- function(f, surveyor){
 			sep="\n"
 	)
 }
+
+###############################################################################
 
 
 # TODO: Fix plot_net_score to deal with weighting

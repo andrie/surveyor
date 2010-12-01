@@ -30,20 +30,63 @@ all_null <- function(x){
 #' Takes the result of a code_function, e.g. code_single(), and calculates
 #' summary values, for direct plotting by a plot_function, e.g. plot_bar()
 #' 
-#' @param f A data frame with four columns: variable, value, crossbreak, weight 
+#' @param x A data frame with four columns: crossbreak, question, response, weight 
 #' @return A data frame with three columns: crossbreak, variable, value
 #' @export
-stats_bin <- function(f){
-	ft <- f
-	crossbreakweight <- ddply(ft, .(crossbreak), summarise, weight=sum(weight))
+stats_bin <- function(x){
+	if(is.null(x)){
+		return(NULL)
+	}
+	crossbreakweight <- ddply(x, .(crossbreak), summarise, weight=sum(weight))
 	row.names(crossbreakweight) <- crossbreakweight$crossbreak
-	ft$weight <- ft$weight / crossbreakweight[ft$crossbreak, ]$weight
+	x$weight <- x$weight / crossbreakweight[x$crossbreak, ]$weight
+
 	
-	ddply(ft, .(crossbreak, variable), 
-			summarise, 
-			value=sum(weight)
-	)
+	if (length(unique(x$question))==1){
+		# code single
+		ddply(x, .(crossbreak, response), 
+				summarise, 
+				value=sum(weight)
+		)
+	} else {
+		# code array
+		ddply(x, .(crossbreak, question, response), 
+				summarise, 
+				value=sum(weight)
+		)
+	}
+}
+
+#' Calculates summary statistics for ranking type questions
+#' 
+#' Takes the result of a code_function, e.g. code_single(), and calculates
+#' summary values, for direct plotting by a plot_function, e.g. plot_bar()
+#' 
+#' @param x A data frame with four columns: crossbreak, question, response, weight 
+#' @return A data frame with three columns: crossbreak, variable, value
+#' @export
+stats_rank <- function(x){
+	if(is.null(x)){
+		return(NULL)
+	}
+	crossbreakweight <- ddply(x, .(crossbreak), summarise, weight=sum(weight))
+	row.names(crossbreakweight) <- crossbreakweight$crossbreak
+	x$weight <- x$weight / crossbreakweight[x$crossbreak, ]$weight
 	
+	
+	if (length(unique(x$question))==1){
+		# code single
+		ddply(x, .(crossbreak, response), 
+				summarise, 
+				value=sum(weight)
+		)
+	} else {
+		# code array
+		ddply(x, .(crossbreak, question, response), 
+				summarise, 
+				value=sum(weight)
+		)
+	}
 }
 
 #################################################################################
@@ -73,26 +116,22 @@ net_score <- function(x){
 #'
 #' Code survey data in net score form
 #' 
-#' @param f Output from a code_function()
+#' @param x A data frame with four columns: crossbreak, question, response, weight 
 #' @return data frame
-#' @seealso \code{\link{code_single}}, \code{\link{code_rank}}
+#' @seealso \code{\link{stats_bin}}
 #' @export
-stats_net_score <- function(f){
-	
-#	segment_net_score <- function(x){
-#		# make data.frame with subset net scores
-#		# first drop crossbreak column
-#		x <- x[, which(names(x)!="crossbreak")]
-#		x <- ldply(x, net_score)
-#		
-#		x$variable <- r[as.character(x$.id)]
-#		x <- rename(x, c(V1="value"))
-#		
-#		x$variable <- wordwrap(x$variable, 50)
-#		x$weight <- rep(1, nrow(x))
-#		x
-#	}
-	
-	ddply(x, .(crossbreak, variable), value=net_score(value))
+stats_net_score <- function(x){
+	if (length(unique(x$question))==1){
+		# code single
+		ddply(x, .(crossbreak, response), 
+				summarise,
+				value=net_score(response))
+	} else {
+		# code array
+#		ddply(x, .(crossbreak, question, response), 
+		ddply(x, .(crossbreak, question), 
+				summarise,
+				value=net_score(response))
+	}
 }
 

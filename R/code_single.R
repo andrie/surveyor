@@ -7,7 +7,6 @@
 #' @seealso Coding functions:
 #' \code{\link{code_single}}, 
 #' \code{\link{code_array}},
-#' \code{\link{code_rank}},
 #' \code{\link{code_text}}
 #' Summarising functions:
 #' \code{\link{stats_bin}}, 
@@ -20,12 +19,24 @@
 code_single <- function(
 		surveyor,
 		q_id
-	){
+){
+	if(is.numeric(surveyor$q_data[, q_id])){
+		response <- surveyor$q_data[, q_id]
+	} else {
+		response <- str_wrap(as.character(surveyor$q_data[, q_id]), 30)
+	}	
+	response[response=="NA"] <- NA
+	
+	if (all(is.na(response))){
+		return(NULL)
+	}		
+		
 	data.frame(
-			variable = str_wrap(as.character(surveyor$q_data[, q_id]), 30),
-			value = rep("1", nrow(surveyor$q_data)),
 			crossbreak = surveyor$crossbreak,
-			weight = surveyor$weight
+			question = rep("1", nrow(surveyor$q_data)),
+			response = response,
+			weight = surveyor$weight,
+			stringsAsFactors = FALSE
 	)
 }
 

@@ -172,7 +172,11 @@ plot_q <- function(
 	}	
 		
 	if (!surveyor$defaults$output_to_latex){
-		print(g)
+		if (nothing_to_plot){
+			message("Nothing to plot")
+		} else {
+			print(g)
+		}
 	} else {
 		cat(printQlatex(get_q_text(surveyor, q_id)),
 				file = surveyor$defaults$output_filename, append=TRUE)
@@ -201,7 +205,41 @@ plot_q <- function(
 }
 
 
+# Defines the question class
+# 
+# Author: Andrie
+###############################################################################
 
+
+
+# Class question
+
+# Attributes
+# - q_id
+# - q_text
+# - data
+# - coding (e.g. single, array, multiple, text)
+# - analysis, e.g. bin, rank, net_score, maxdiff, etc.
+# - plot
+
+# Methods
+# - print text
+# - reshape
+# - summarize
+# - print data
+# - crosstab
+# - print plot
+
+#question <- function(){
+#	structure(
+#		list(
+#				surveyor,
+#				q_id,
+#				q_text,
+#				q_data
+#				),
+#				class="question")
+#	}
 
 
 
