@@ -92,33 +92,14 @@ is.surveyor <- function(x){
 ################################################################################
 
 
- ## #' Creates function and static variable used to number charts in report
- ## #' 
- ## #' Must be initialiased, e.g. ggsprint <- save_print_function
- ## #' 
- ## #' @param plot A ggplot2 plot object
- ## #' @param counter An integer, used as an index for the saved name of the plot
- ## #' @param size The print size in inches, e.g. c(4,3)
- ## #' @param dpi The print quality in dots per inch
- ## #' @param path The file path where the graphs will be saved
-# save_print <- function(plot, counter, size=c(4, 3), dpi=600, path) {
-#   filename <- paste("fig", counter, ".eps", sep="")
-# message(paste("Now saving ", filename, sep=""))
-#   ggsave(
-#       plot, 
-#       filename=filename, 
-#       width=size[1], 
-#       height=size[2],
-#       dpi=dpi, 
-#       path=path)
-# }
-	
 #' Creates a counter 
 #' 
 #' Must be initialiased, e.g. surveyor_counter <- new_counter()
-#' @export 
-new_counter <- function() {
-	i <- 0
+#' 
+#' @param start The starting value of the counter, defaults to 1
+new_counter <- function(start=1) {
+	i <- start - 1
+#	i <- i - 1
 	function() {
 		# do something useful, then ...
 		i <<- i + 1
@@ -139,7 +120,6 @@ new_counter <- function() {
 #' 
 #' @param surveyor Surveyor object
 #' @param q_id Question id
-#' @param counter An integer that defines the figure number to save to
 #' @param code_function A reference to a function that processes the question data
 #' @param stats_function A reference to a function that summarizes the coded data
 #' @param plot_function A reference to a function that plots the summarized data
@@ -150,12 +130,14 @@ new_counter <- function() {
 plot_q <- function(
 		surveyor,
 		q_id,
-		counter, 
+#		counter, 
 		code_function = plot_single,
 		stats_function = stats_bin,
 		plot_function = plot_bar,
 		plot_size = surveyor$defaults$default_plot_size,
 		...){
+	
+	counter <- eval(surveyor$defaults$counter(), envir=parent.frame())
 	
 	if(!(is.surveyor(surveyor))){
 		stop("You must pass a valid surveyor object to plot_q")

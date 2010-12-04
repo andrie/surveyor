@@ -20,7 +20,6 @@ filter_nocomment <- function(x, remove="^(No|no|NO|Nope|None|none|n.a.|NA|n/a).?
 #' @seealso Coding functions:
 #' \code{\link{code_single}}, 
 #' \code{\link{code_array}},
-#' \code{\link{code_text}}
 #' Summarising functions:
 #' \code{\link{stats_bin}}, 
 #' \code{\link{stats_net_score}}

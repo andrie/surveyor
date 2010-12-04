@@ -113,8 +113,14 @@ str_common_unique <- function(x){
 	str_wrap <- function(x, len=30)
 {
 	str_wrapfunction <- function(x, len) (paste(strwrap(x,width=len),collapse="\n"))
-	str <- laply(x, str_wrapfunction, len)
-	as.character(str)
+	if (is.factor(x)){
+		str <- laply(as.character(levels(x)), str_wrapfunction, len)
+		levels(x) <- str
+		x
+	} else {
+		str <- laply(x, str_wrapfunction, len)
+		as.character(str)
+	}
 }
 
 

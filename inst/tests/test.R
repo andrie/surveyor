@@ -171,7 +171,7 @@ q_data <- data.frame(
 q_text <- c("Question 1", "Question 4: red", "Question 4: blue", "Question 4: green", "crossbreak", "weight")
 names(q_text) <- c("Q1", "Q4_1", "Q4_3", "Q4_2", "crossbreak", "weight")
 
-names_vvcw <- c("variable", "value", "crossbreak", "weight")
+names_cqrw <- c("crossbreak", "question", "response", "weight")
 
 # ---
 
@@ -279,7 +279,7 @@ plotcode <- stats_bin(code)
 test_that("code_single works", {
 			
 			expect_that(code, is_a("data.frame"))
-			expect_that(names(code), equals(names_vvcw))
+			expect_that(names(code), equals(names_cqrw))
 			expect_that(nrow(code), equals(4))
 			
 		})
@@ -287,7 +287,6 @@ test_that("code_single works", {
 test_that("plot functions work with code_single", {
 			
 			expect_that(plot_bar(plotcode), is_a("ggplot"))
-			expect_that(plot_bar_stacked(plotcode), is_a("ggplot"))
 			expect_that(plot_point(plotcode), is_a("ggplot"))
 			
 		})
@@ -302,7 +301,7 @@ plotcode <- stats_bin(code)
 test_that("code_array works", {
 			
 			expect_that(code, is_a("data.frame"))
-			expect_that(names(code), equals(names_vvcw))
+			expect_that(names(code), equals(names_cqrw))
 			expect_that(nrow(code), equals(12))
 			
 		})
@@ -310,7 +309,6 @@ test_that("code_array works", {
 test_that("plot functions work with code_array", {
 			
 			expect_that(plot_bar(plotcode), is_a("ggplot"))
-			expect_that(plot_bar_stacked(plotcode), is_a("ggplot"))
 			expect_that(plot_point(plotcode), is_a("ggplot"))
 			
 		})
@@ -322,10 +320,10 @@ context("Test plumbing of plot_q")
 
 test_that("plot_q works", {
 			
-			expect_that(plot_q(s, "Q1", s_count(), code_single, stats_bin, plot_bar), shows_message("Q1"))
-			expect_that(plot_q(s, "Q1", s_count(), code_single, stats_bin, plot_bar), is_a("NULL"))
+			expect_that(plot_q(s, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
+			expect_that(plot_q(s, "Q1", code_single, stats_bin, plot_bar), is_a("NULL"))
 			
-			expect_that(plot_q(s, "Q4", s_count(), code_array, stats_bin, plot_point), is_a("NULL"))
+			expect_that(plot_q(s, "Q4", code_array, stats_bin, plot_point), is_a("NULL"))
 			
 		})
 
@@ -341,8 +339,8 @@ if (file.exists(file.path(latex_path, sinkfile))){
 
 test_that("plot_q works", {
 			
-			plot_q(t, "Q1", t_count(), code_single, stats_bin, plot_bar)
-			plot_q(t, "Q4", t_count(), code_array, stats_bin, plot_bar_stacked)
+			plot_q(t, "Q1", code_single, stats_bin, plot_bar)
+			plot_q(t, "Q4", code_array, stats_bin, plot_bar)
 			expect_that(file.exists(sinkfile), equals(TRUE))
 			expect_that(file.exists(file.path(graph_path, "fig1.eps")), equals(TRUE))
 			expect_that(file.exists(file.path(graph_path, "fig2.eps")), equals(TRUE))

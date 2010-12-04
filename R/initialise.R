@@ -8,6 +8,7 @@
 #' @param path_graphics Path where graphics files will be saved
 #' @param output_to_latex TRUE or FALSE, determines if latex commands is output
 #' @param output_filename Filename where latex output will be saved
+#' @param counter_start The starting number for a counter used to store graphs, defaults to 1
 #' @param default_theme_size Text size in points, passed to ggplot
 #' @param default_plot_size Plot size in inches, e.g. c(4, 3)
 #' @param default_colour_area Default RGB colour for areas in graphs (e.g. bars)
@@ -23,6 +24,7 @@ surveyor_defaults <- function(
 		path_graphics = path_latex,
 		output_to_latex = FALSE,
 		output_filename = file.path(path_latex, "surveyor.tex"),
+		counter_start = 1,
 		default_theme_size = 12,
 		default_plot_size = c(5,3),
 		default_colour_area = rgb(127,201,127, 255, maxColorValue=255),
@@ -60,7 +62,8 @@ list(
 		default_plot_size    = default_plot_size,
 		default_colour_area  = default_colour_area,
 		default_colour_point = default_colour_point,
-		dpi                  = dpi
+		dpi                  = dpi,
+		counter              = new_counter(counter_start)	
 	)
 }
 	
