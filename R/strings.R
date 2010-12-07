@@ -137,3 +137,17 @@ str_reverse <- function(x) {
 	)
 }
 
+
+#' Appends a percentage sign to numeric vector
+#' 
+#' Turns a numeric vector into a character vector
+#'
+#' @param x Numeric vector
+paste_percent <- function(x){
+	attrx <- attributes(x)
+	p <- paste(round(x*100, digits=1), "%", sep="")
+	p[p=="NA%"] <- NA
+	attributes(p) <- attrx
+	p
+}
+

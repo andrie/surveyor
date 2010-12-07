@@ -2,76 +2,127 @@
 ###  print crossbreak functions                                              ###
 ################################################################################
 
-# TODO: fix printCB
-# TODO: Fix printCB documentatioj
+
+
 
 #' Prints crossbreak information in latex format
 #'
-#' Description
+#' Prints crossbreak information in latex format
 #' 
-#' @param x What is x?
-#' @param q_text What is q_text?
-printCB <- function(x, q_text=x){
-#	require(xtable)
-#  x <- cb("L")
-	if (is.na(match("variable", names(x)))){
-		v <- tapply(x$weight, list(x$x, x$crossbreak), sum, na.rm=TRUE)
+#' @param g A data frame with coded answers, provided by a stats_* function
+#' @seealso Coding functions:
+#' \code{\link{code_single}}, 
+#' \code{\link{code_array}},
+#' \code{\link{code_text}}
+#' Summarising functions:
+#' \code{\link{stats_bin}}, 
+#' \code{\link{stats_net_score}}
+#' Plot functions: 
+#' \code{\link{plot_bar}}, 
+#' \code{\link{plot_point}} 
+#' @return data frame
+#' @export
+print_cb_stats <- function(g){
+	
+	if(is.null(g)){
+		return(NULL)
+	}
+	
+	if (!is.null(g$question) && !is.null(g$response)){
+		v <- tapply(g$value, list(g$response, g$question, g$crossbreak), sum, na.rm=TRUE)
+		dimtotal1 <- c(1,2)
+		dimtotal2 <- c(2,1)
+	} else {	
+		if (is.null(g$question)){
+			v <- tapply(g$value, list(g$response, g$crossbreak), sum, na.rm=TRUE)
+			dimtotal1 <- 1
+			dimtotal2 <- 2
+		} else {
+			v <- tapply(g$value, list(g$question, g$crossbreak), sum, na.rm=TRUE)
+			dimtotal1 <- 1
+			dimtotal2 <- 2
+		}
+	}
+	
+	v <- paste_percent(v)
+
+	ret <- paste(
+			"\\vspace{1 pc}",
+			"\nWeighted totals\n\n",
+			capture_table(v), 
+			
+			sep="", 
+			collapse="\n")
+
+	ret
+}
+
+#' Prints crossbreak information in latex format
+#'
+#' Prints crossbreak information in latex format
+#' 
+#' @param f A data frame with coded answers, provided by a code_* function
+#' @seealso Coding functions:
+#' \code{\link{code_single}}, 
+#' \code{\link{code_array}},
+#' \code{\link{code_text}}
+#' Summarising functions:
+#' \code{\link{stats_bin}}, 
+#' \code{\link{stats_net_score}}
+#' Plot functions: 
+#' \code{\link{plot_bar}}, 
+#' \code{\link{plot_point}} 
+#' @return data frame
+#' @export
+print_cb_code <- function(f){
+	
+	if(is.null(f)){
+		return(NULL)
+	}
+	
+	if (is.null(f$question)){
+		v <- tapply(f$value, list(f$response, f$crossbreak), sum, na.rm=TRUE)
 		dimtotal1 <- 1
 		dimtotal2 <- 2
 	} else {
-		v <- tapply(x$weight, list(x$variable, x$value, x$crossbreak), sum, na.rm=TRUE)
+		v <- tapply(f$value, list(f$response, f$question, f$crossbreak), sum, na.rm=TRUE)
 		dimtotal1 <- c(1,2)
 		dimtotal2 <- c(2,1)
 	}
 	
-	vp1 <- prop.table(v, dimtotal1, na.rm=TRUE)
-	attrp <- attributes(vp1)
-	p1 <- paste(round(vp1*100, digits=1), "%", sep="")
-	attributes(p1) <- attrp
+	vp1 <- prop.table(v, dimtotal2, na.rm=TRUE)
+	p1 <- vp1
+	#p1 <- paste_percent(vp1)
 	
-	vp2 <- prop.table(v, dimtotal2, na.rm=TRUE)
-	attrp <- attributes(vp2)
-	p2 <- paste(round(vp2*100, digits=1), "%", sep="")
-	attributes(p2) <- attrp
+	vp2 <- prop.table(v, dimtotal1, na.rm=TRUE)
+	p2 <- vp2
+	#p2 <- paste_percent(vp2)
 	
 	v <- round(v, 1)
-	align <- paste(c("l", rep("r", dim(v)[2])), collapse="")
 	
-	cat("\\clearpage")
-	printQlatex(get_q_text(q_text))
+#	align <- paste(c("l", rep("r", dim(v)[2])), collapse="")
 	
-#  cat("\n\n")
-	cat("\\vspace{1 pc}\n")
-	cat("\nWeighted totals\n\n")
-	caption <- "Weighted totals"
+	tmpv <- capture_table(v)
+	tmp1 <- capture_table(p1)
+	tmp2 <- capture_table(p2)
 	
-	print(xtable(as.table(v),
-					table.placement="!h",
-					align=align,
-					digits=1),
-			caption.placement="top",
-			floating=FALSE)
-	cat("\\vspace{2 pc}\n")
+	ret <- paste(
+			"\\vspace{1 pc}",
+			"\nWeighted totals\n\n",
+			tmpv, 
+			
+			"\\vspace{2 pc}\n",
+			"\nPercentage of Row\n\n",
+			as.character(tmp1), 
+			
+			"\\vspace{2 pc}\n",
+			"\nPercentage of Column\n\n",
+			as.character(tmp2), 
+			
+			sep="", 
+			collapse="\n")
 	
-	cat("\nPercentage of Row\n\n")
-	caption <- "Percentage of Row"
-	print(xtable(as.table(p1),
-					align=align,
-					digits=1,
-					table.placement="!h"),
-			caption.placement="top",
-			floating=FALSE)
-	cat("\\vspace{2 pc}\n")
-	
-	cat("\nPercentage of Column\n\n")
-	caption <- "Percentage of Column"
-	print(xtable(as.table(p2),
-					align=align,
-					digits=1,
-					table.placement="!h"),
-			caption.placement="top",
-			floating=FALSE)
-	cat("\\vspace{2 pc}\n")
-	
+#	ret	<- tmpv
+	ret
 }
 

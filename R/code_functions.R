@@ -87,7 +87,7 @@ code_array <- function(
 	x$weight <- surveyor$weight
 	
 	# Scale to 100%
-	x$weight <- x$weight / sum(x$weight)
+	#x$weight <- x$weight / sum(x$weight)
 	
 	x <- as.data.frame(x, stringsAsFactors=TRUE)
 	x$crossbreak <- surveyor$crossbreak
@@ -104,5 +104,43 @@ code_array <- function(
 	)
 }
 
+#' Code survey data in single or array question form
+#'
+#' Code survey data in array question form (i.e. with subquestions)
+#' 
+#' @param surveyor Surveyor object
+#' @param q_id Question id
+#' @param ... Other parameters passed on to downstream code_* functions
+#' @return data frame
+#' @seealso Coding functions:
+#' 		\code{\link{code_single}}, 
+#' 		\code{\link{code_array}},
+#' 		\code{\link{code_text}}
+#' 		Summarising functions:
+#' 		\code{\link{stats_bin}}, 
+#' 		\code{\link{stats_net_score}}
+#' 		Plot functions: 
+#' 		\code{\link{plot_bar}}, 
+#' 		\code{\link{plot_point}} 
+#' @export
+code_guess <- function(
+		surveyor,
+		q_id,
+		...
+){
+	# Melt multicoded question in data.frame, and code question text to variable
+	
+	q_data <- surveyor$q_data
+	q_text <- surveyor$q_text
+	
+	# Test if question is of type single (i.e. q_id exists in names(q_data)
+	
+	
+	if (any(names(q_text)==q_id)){
+		return(code_single(surveyor, q_id))
+	} else {
+		return(code_array(surveyor, q_id, ...))
+	}
+}
 
 

@@ -1,7 +1,7 @@
 \name{plot_q}
 \alias{plot_q}
 \title{Codes and plots a survey question...}
-\usage{plot_q(surveyor, q_id, code_function=plot_single,
+\usage{plot_q(surveyor, q_id, code_function=code_guess,
     stats_function=stats_bin, plot_function=plot_bar,
     plot_size=surveyor$defaults$default_plot_size, ...)}
 \description{Codes and plots a survey question}

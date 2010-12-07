@@ -130,8 +130,7 @@ new_counter <- function(start=1) {
 plot_q <- function(
 		surveyor,
 		q_id,
-#		counter, 
-		code_function = plot_single,
+		code_function = code_guess,
 		stats_function = stats_bin,
 		plot_function = plot_bar,
 		plot_size = surveyor$defaults$default_plot_size,
@@ -148,8 +147,8 @@ plot_q <- function(
 	if (is.null(f)){
 		nothing_to_plot <- TRUE
 	} else {
-		s <- stats_function(f)
-		g <- plot_function(s, surveyor)
+		g <- stats_function(f)
+		h <- plot_function(g, surveyor)
 		nothing_to_plot <- FALSE
 	}	
 		
@@ -157,22 +156,24 @@ plot_q <- function(
 		if (nothing_to_plot){
 			message("Nothing to plot")
 		} else {
-			print(g)
+			print(h)
 		}
 	} else {
+		# Print question description
 		cat(printQlatex(get_q_text(surveyor, q_id)),
 				file = surveyor$defaults$output_filename, append=TRUE)
 		if (nothing_to_plot){
 			cat("\nNo data\n\n",
 					file = surveyor$defaults$output_filename, append=TRUE)
 			} else {
+				# Print plot
 				if (identical(code_function, code_array)){
 					plot_size[2] <- plot_size[2]*1.5
 				}
 				filename <- paste("fig", counter, ".eps", sep="")
 				message(paste("Now saving ", filename, sep=""))
 				ggsave(
-						g, 
+						h, 
 						filename = filename, 
 						width    = plot_size[1], 
 						height   = plot_size[2],
@@ -181,6 +182,10 @@ plot_q <- function(
 				)
 				cat("\\PlaceGraph{graphics/", filename, "}\n", sep="",
 						file = surveyor$defaults$output_filename, append=TRUE)
+				# Print crosstab report
+				cat(print_cb_stats(g),
+						file = surveyor$defaults$output_filename, append=TRUE)
+		
 			}
 		}
 	return(invisible())

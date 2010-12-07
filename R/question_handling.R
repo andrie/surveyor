@@ -49,6 +49,10 @@ get_q_text_unique <- function(q_data, q_id, q_text){
 	Q <- get_q_subquestions(q_data, q_id)
 	Q <- q_text[Q]
 	
+#	if(length(Q)==1){
+#		return(Q)
+#	}
+	
 	tmp <- str_reverse(str_common_unique(as.character(Q))$unique)
 	Qu  <- str_reverse(str_common_unique(tmp)$unique)
 	Qu
