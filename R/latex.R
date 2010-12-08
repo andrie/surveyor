@@ -19,6 +19,26 @@ printQlatex <- function(x){
 #'
 #' @param x A character vector
 latex_sideways <- function(x){
+	sanitize <- function(str) {
+		result <- str
+		result <- gsub("\\\\", "SANITIZE.BACKSLASH", result)
+		result <- gsub("$", "\\$", result, fixed = TRUE)
+		result <- gsub(">", "$>$", result, fixed = TRUE)
+		result <- gsub("<", "$<$", result, fixed = TRUE)
+		result <- gsub("|", "$|$", result, fixed = TRUE)
+		result <- gsub("{", "\\{", result, fixed = TRUE)
+		result <- gsub("}", "\\}", result, fixed = TRUE)
+		result <- gsub("%", "\\%", result, fixed = TRUE)
+		result <- gsub("&", "\\&", result, fixed = TRUE)
+		result <- gsub("_", "\\_", result, fixed = TRUE)
+		result <- gsub("#", "\\#", result, fixed = TRUE)
+		result <- gsub("^", "\\verb|^|", result, fixed = TRUE)
+		result <- gsub("~", "\\~{}", result, fixed = TRUE)
+		result <- gsub("SANITIZE.BACKSLASH", "$\\backslash$", 
+				result, fixed = TRUE)
+		return(result)
+	}
+	x <- sanitize(x)
 	paste(
 			"\\begin{sideways}",
 			x,
@@ -30,17 +50,19 @@ latex_sideways <- function(x){
 #' Captures the print output of a Latex xtable
 #'
 #' @param x A table object
-capture_table <- function(x){
+#' @param caption Caption for table
+latex_table <- function(x, caption){
 	align <- paste(c("l", rep("r", dim(x)[2])), collapse="")
 	x <- as.table(x)
 	paste(capture.output(
-					print(xtable(x,
-									floating=false,
-									table.placement="!h",
+					print(xtable(
+									x,
+									caption=caption,
 									align=align,
-									digits=1),
-							caption.placement="top",
+									digits=1,
+									table.placement="!h"),
 							floating=FALSE,
+							caption.placement="bottom",
 							sanitize.colnames.function=function(str){latex_sideways(str)})
 			), collapse="\n")		
 }

@@ -29,7 +29,7 @@ print_cb_stats <- function(g){
 	}
 	
 	if (!is.null(g$question) && !is.null(g$response)){
-		v <- tapply(g$value, list(g$response, g$question, g$crossbreak), sum, na.rm=TRUE)
+		v <- tapply(g$value, list(g$question, g$response, g$crossbreak), sum, na.rm=TRUE)
 		dimtotal1 <- c(1,2)
 		dimtotal2 <- c(2,1)
 	} else {	
@@ -47,9 +47,9 @@ print_cb_stats <- function(g){
 	v <- paste_percent(v)
 
 	ret <- paste(
-			"\\vspace{1 pc}",
-			"\nWeighted totals\n\n",
-			capture_table(v), 
+#			"\\paragraph{Weighted totals}\\\\\n",
+#			"\\nopagebreak\n",
+			latex_table(v, "Weighted totals"),
 			
 			sep="", 
 			collapse="\n")
@@ -102,21 +102,21 @@ print_cb_code <- function(f){
 	
 #	align <- paste(c("l", rep("r", dim(v)[2])), collapse="")
 	
-	tmpv <- capture_table(v)
-	tmp1 <- capture_table(p1)
-	tmp2 <- capture_table(p2)
+	tmpv <- latex_table(v)
+	tmp1 <- latex_table(p1)
+	tmp2 <- latex_table(p2)
 	
 	ret <- paste(
-			"\\vspace{1 pc}",
-			"\nWeighted totals\n\n",
+#			"\\vspace{1 pc}",
+			"\\\\Weighted totals\\nopagebreak",
 			tmpv, 
 			
-			"\\vspace{2 pc}\n",
-			"\nPercentage of Row\n\n",
+#			"\\vspace{2 pc}\n",
+			"\\\\Percentage of Row\\nopagebreak",
 			as.character(tmp1), 
 			
-			"\\vspace{2 pc}\n",
-			"\nPercentage of Column\n\n",
+#			"\\vspace{2 pc}\n",
+			"\\\\Percentage of Column\\nopagebreak",
 			as.character(tmp2), 
 			
 			sep="", 

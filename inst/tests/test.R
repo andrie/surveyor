@@ -1,4 +1,4 @@
-# TODO: Add comment
+# Test functionality using testthat library
 # 
 # Author: Andrie
 ###############################################################################
@@ -337,7 +337,7 @@ if (file.exists(file.path(latex_path, sinkfile))){
 }
 
 
-test_that("plot_q works", {
+test_that("plot_q works in Latex", {
 			
 			plot_q(t, "Q1", code_single, stats_bin, plot_bar)
 			plot_q(t, "Q4", code_array, stats_bin, plot_bar)

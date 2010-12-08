@@ -2,7 +2,7 @@
 ###  Question handling functions                                             ###
 ################################################################################
 
-
+# TODO: Pass pattern to question handling functions using surveyor defaults
 
 #' Identifies subquestions of a given question in a data.frame
 #' 

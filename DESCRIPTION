@@ -11,9 +11,9 @@ Depends: R (>= 2.11.0), Hmisc, ggplot2
 Suggests:
 Imports: xtable, plyr, ggplot2, reshape2
 License: GPL (>=2)
-LazyLoad: false
+LazyLoad: true
 LazyData: true
-Collate: 'code_functions.R' 'code_multi.R' 'code_text.R' 'help.R'
-    'initialise.R' 'latex.R' 'plot_functions.R' 'plumbing.R'
-    'print_crossbreak.R' 'question_handling.R' 'redefine.R'
-    'stats_functions.R' 'strings.R'
+Collate: '1_code_functions.R' '2_stats_functions.R'
+    '3_plot_functions.R' '4_table_functions.R' 'code_multi.R' 'help.R'
+    'latex.R' 'question_handling.R' 'redefine.R' 'strings.R'
+    'surveyor.R'
