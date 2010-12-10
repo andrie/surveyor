@@ -4,7 +4,8 @@
 #' 
 #' @param surveyor Surveyor object
 #' @param q_id Question id
-#' @seealso Coding functions:
+#' @seealso 
+#' Coding functions:
 #' \code{\link{code_single}}, 
 #' \code{\link{code_array}},
 #' \code{\link{code_text}}

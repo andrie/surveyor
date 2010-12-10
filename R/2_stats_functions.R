@@ -75,6 +75,8 @@ stats_bin <- function(x){
 			ylabel="Fraction of respondents")
 }
 
+# TODO: Fix stats_rank
+
 #' Calculates summary statistics for ranking type questions
 #' 
 #' Takes the result of a code_function, e.g. code_single(), and calculates
@@ -133,6 +135,8 @@ net_score <- function(x){
 	netScore
 }
 
+# TODO: Fix stats_net_score to deal with 
+
 #' Code survey data as net score
 #'
 #' Code survey data in net score form
@@ -142,7 +146,7 @@ net_score <- function(x){
 #' @seealso \code{\link{stats_bin}}
 #' @export
 stats_net_score <- function(x){
-	if (length(unique(x$question))==1){
+	if (length(unique(x$question))==0){
 		# code single
 		df <- ddply(x, .(crossbreak, response), 
 				summarise,
