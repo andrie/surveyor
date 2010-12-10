@@ -3,14 +3,18 @@
 
 #' Blank axis titles and no legend
 #' 
-quiet <- opts(legend.position="none",
+quiet <- opts(
+		legend.position="none",
 		axis.title.x = theme_blank(),
-		axis.title.y = theme_blank())
+		axis.title.y = theme_blank()
+)
 
 #' Blank axis titles
 #' 
-quiet_axes <- opts(axis.title.x = theme_blank(),
-		axis.title.y = theme_blank())
+quiet_axes <- opts(
+		axis.title.x = theme_blank(),
+		axis.title.y = theme_blank()
+)
 
 
 #' Define minimal theme
@@ -37,77 +41,89 @@ theme_minimal <- opts(
 
 #' Plot data in bar chart format
 #'
-#' @param f A data frame with coded answers, provided by a code_* function
+#' @param s A surveyor_stats object
 #' @param surveyor Surveyor object
-#' @seealso plot_bar, plot_bar_stacked, plot_net_score, plot_point, plot_text 
+#' @seealso 
+#' Coding functions:
+#' \code{\link{code_single}}, 
+#' \code{\link{code_array}},
+#' \code{\link{code_text}}
+#' Summarising functions:
+#' \code{\link{stats_bin}}, 
+#' \code{\link{stats_net_score}}
+#' Plot functions: 
+#' \code{\link{plot_bar}}, 
+#' \code{\link{plot_point}} 
 #' @export
-plot_bar <- function(f, surveyor){
+plot_bar <- function(s, surveyor){
+	f <- s$data
 	if (is.null(f$question)){
 		# Plot single question
-		p <- ggplot(f, aes(x=response, y=value, fill=factor(crossbreak))) +
-				theme_grey(surveyor$defaults$default_theme_size) +
-				geom_bar(stat="identity") + 
-				coord_flip() + 
-				quiet +
-				scale_y_continuous(formatter="percent") +
-				facet_grid(~crossbreak)
-		return(p)
-	}
-	if (is.null(f$response)){
+		p <- ggplot(f, aes(x=response, y=value, fill=factor(crossbreak)))
+	} else {
+		if (is.null(f$response)) {
 		# Plot array of single values per question
-		p <- ggplot(f, aes(x=question, y=value, fill=factor(crossbreak))) +
-				theme_grey(surveyor$defaults$default_theme_size) +
-				geom_bar(stat="identity") + 
-				coord_flip() + 
-				quiet +
-				scale_y_continuous(formatter="percent") +
-				facet_grid(~crossbreak)
-		return(p)
+			p <- ggplot(f, aes(x=question, y=value, fill=factor(crossbreak)))
+		} else {
+			# Plot array question as stacked bar
+			p <- ggplot(f, aes(x=question, y=value, fill=response))
+		}
 	}
-	# Plot array question as stacked bar
-	p <- ggplot(f, aes(x=question, y=value, fill=response)) +
+	p <- p + 
 			theme_grey(surveyor$defaults$default_theme_size) +
 			geom_bar(stat="identity") + 
 			coord_flip() + 
-			quiet_axes +
-			scale_y_continuous(formatter="percent") + 
-			facet_grid(~crossbreak) 
-	return(p)
+			scale_y_continuous(s$ylabel, formatter="percent") +
+			facet_grid(~crossbreak) + 
+			opts(
+				legend.position="none",
+				axis.title.y = theme_blank()
+			)
+	p
 }
 
 ###############################################################################
 
 #' Plot data in bubble chart format
 #'
-#' @param f A data frame with coded answers, provided by a code_* function
+#' @param s A surveyor_stats object
 #' @param surveyor Surveyor object
-#' @seealso plot_bar, plot_bar_stacked, plot_net_score, plot_point, plot_text 
+#' @seealso 
+#' Coding functions:
+#' \code{\link{code_single}}, 
+#' \code{\link{code_array}},
+#' \code{\link{code_text}}
+#' Summarising functions:
+#' \code{\link{stats_bin}}, 
+#' \code{\link{stats_net_score}}
+#' Plot functions: 
+#' \code{\link{plot_bar}}, 
+#' \code{\link{plot_point}} 
 #' @export
-plot_point <- function(f, surveyor){
+plot_point <- function(s, surveyor){
+	f <- s$data
 	if (is.null(f$question)){
 		# Plot single question
 		p <- ggplot(f, aes(x=" ", y=response, size=value, 
-								colour=factor(crossbreak), fill=factor(crossbreak))) +
+								colour=factor(crossbreak), fill=factor(crossbreak)))
+	} else {
+	# Plot array question 
+	p <- ggplot(f, aes(x=question, y=response, size=value, 
+							colour=factor(crossbreak), fill=factor(crossbreak)))
+		}
+	p <- p + 
 			theme_grey(surveyor$defaults$default_theme_size) +
-			geom_point(stat="sum") + coord_flip() + quiet +
+			geom_point(stat="sum") + 
+			coord_flip() + 
+			quiet +
+			ylab(s$ylabel) +
 			facet_grid(~crossbreak) +
 			opts(
 					panel.grid.minor = theme_blank(), 
-					axis.text.x = theme_text(angle=90, hjust=1)
+					axis.text.x = theme_text(size=surveyor$defaults$default_theme_size, angle=90, hjust=1)
 			)
-		return(p)
-	}
-	# Plot array question 
-	p <- ggplot(f, aes(x=question, y=response, size=value, 
-							colour=factor(crossbreak), fill=factor(crossbreak))) +
-			theme_grey(surveyor$defaults$default_theme_size) +
-			geom_point(stat="sum") + coord_flip() + quiet +
-			facet_grid(~crossbreak) +
-			opts(
-					panel.grid.minor = theme_blank(),
-					axis.text.x = theme_text(angle=90, hjust=1)
-	)
-	return(p)
+	
+	p
 }
 
 ###############################################################################

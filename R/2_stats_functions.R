@@ -1,8 +1,21 @@
-# TODO: Fix weighting in stats_bin
-
 ###############################################################################
 # Step 2 in the triad of code, summarize and plot
 ###############################################################################
+
+#' Creates surveyor_stats object, used as input to plot 
+#' 
+#' @param data A data frame 
+#' @param ylabel Character string to print as plot y label
+#' @return A surveyor_stats object
+surveyor_stats <- function(
+		data,
+		ylabel = "Fraction of respondents"){
+	ss <- list(
+			data=data, 
+			ylabel=ylabel)
+	class(ss) <- "surveyor_stats"
+	ss
+}
 
 #' Tests for all NA values 
 #' 
@@ -39,24 +52,27 @@ stats_bin <- function(x){
 	if(is.null(x)){
 		return(NULL)
 	}
-	crossbreakweight <- ddply(x, .(crossbreak), summarise, weight=sum(weight))
-	row.names(crossbreakweight) <- crossbreakweight$crossbreak
-	x$weight <- x$weight / crossbreakweight[x$crossbreak, ]$weight
-
+	cbweight <- ddply(x, .(crossbreak, question), summarise, weight=sum(weight))
+	row.names(cbweight) <- paste(cbweight$crossbreak, cbweight$question, sep="_")
+	x$weight <- x$weight / cbweight[paste(x$crossbreak, x$question, sep="_"), ]$weight
+	
 	
 	if (length(unique(x$question))==1){
 		# code single
-		ddply(x, .(crossbreak, response), 
+		df <- ddply(x, .(crossbreak, response), 
 				summarise, 
 				value=sum(weight)
 		)
 	} else {
 		# code array
-		ddply(x, .(crossbreak, question, response), 
+		df <- ddply(x, .(crossbreak, question, response), 
 				summarise, 
 				value=sum(weight)
 		)
 	}
+	surveyor_stats(
+			df,
+			ylabel="Fraction of respondents")
 }
 
 #' Calculates summary statistics for ranking type questions
@@ -78,17 +94,20 @@ stats_rank <- function(x){
 	
 	if (length(unique(x$question))==1){
 		# code single
-		ddply(x, .(crossbreak, response), 
+		df <- ddply(x, .(crossbreak, response), 
 				summarise, 
 				value=sum(weight)
 		)
 	} else {
 		# code array
-		ddply(x, .(crossbreak, question, response), 
+		df <- ddply(x, .(crossbreak, question, response), 
 				summarise, 
 				value=sum(weight)
 		)
 	}
+	surveyor_stats(
+			df,
+			ylabel="Rank (1 is high)")
 }
 
 #################################################################################
@@ -125,15 +144,18 @@ net_score <- function(x){
 stats_net_score <- function(x){
 	if (length(unique(x$question))==1){
 		# code single
-		ddply(x, .(crossbreak, response), 
+		df <- ddply(x, .(crossbreak, response), 
 				summarise,
 				value=net_score(response))
 	} else {
 		# code array
 #		ddply(x, .(crossbreak, question, response), 
-		ddply(x, .(crossbreak, question), 
+		df <- ddply(x, .(crossbreak, question), 
 				summarise,
 				value=net_score(response))
 	}
+	surveyor_stats(
+			df,
+			ylabel="Net score")
 }
 

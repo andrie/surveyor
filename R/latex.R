@@ -52,7 +52,8 @@ latex_sideways <- function(x){
 #' @param x A table object
 #' @param caption Caption for table
 latex_table <- function(x, caption){
-	align <- paste(c("l", rep("r", dim(x)[2])), collapse="")
+#	align <- paste(c("l", rep("r", dim(x)[2])), collapse="")
+	align <- paste(c("p{5cm}", rep("r", dim(x)[2])), collapse="")
 	x <- as.table(x)
 	paste(capture.output(
 					print(xtable(

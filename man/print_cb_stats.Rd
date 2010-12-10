@@ -15,4 +15,4 @@ Plot functions:
 \code{\link{plot_bar}}, 
 \code{\link{plot_point}}}
 \value{data frame}
-\arguments{\item{g}{A data frame with coded answers, provided by a stats_* function}}
+\arguments{\item{g}{A surveyor_stats object}}

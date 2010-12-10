@@ -30,7 +30,7 @@ code_multi <- function(
 	q_text <- surveyor$q_text
 	
 	r <- get_q_text_unique(q_data, q_id, q_text)
-	names(r) <- get_q_subquestions(q_data, q_id)
+	names(r) <- get_q_subquestions(q_data, q_id, surveyor)
 	
 	if (remove_other==TRUE) r <- r[-length(r)]
 	

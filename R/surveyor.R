@@ -55,8 +55,13 @@ surveyor <- function(
 #' @param path_graphics Path where graphics files will be saved
 #' @param output_to_latex TRUE or FALSE, determines if latex commands is output
 #' @param output_filename Filename where latex output will be saved
-#' @param counter_start The starting number for a counter used to store graphs, defaults to 1
+#' @param counter_start The starting number for a counter used to store graphs, 
+#' defaults to 1
 #' @param default_theme_size Text size in points, passed to ggplot
+#' @param question_pattern A text pattern passed to grep() to distinguish 
+#' between single and array questions
+#' @param subquestion_append Indicates whether subquestion text is appended to question text
+#' @param subquestion_prepend Indicates whether subquestion text is prepended to question text
 #' @param default_plot_size Plot size in inches, e.g. c(4, 3)
 #' @param default_colour_area Default RGB colour for areas in graphs (e.g. bars)
 #' @param default_colour_point Default RGB colour for points in graphs (e.g. points)
@@ -72,7 +77,10 @@ surveyor_defaults <- function(
 		output_to_latex = FALSE,
 		output_filename = file.path(path_latex, "surveyor.tex"),
 		counter_start = 1,
-		default_theme_size = 12,
+		default_theme_size = 9,
+		question_pattern = "_[[:digit:]]*$",
+		subquestion_append = TRUE,
+		subquestion_prepend = !subquestion_append,
 		default_plot_size = c(5,3),
 		default_colour_area = rgb(127,201,127, 255, maxColorValue=255),
 		default_colour_point = rgb(27, 158, 119, 255, maxColorValue=255),
@@ -106,6 +114,9 @@ surveyor_defaults <- function(
 			output_to_latex      = output_to_latex,
 			output_filename      = output_filename,
 			default_theme_size   = default_theme_size,
+			question_pattern     = question_pattern,
+			subquestion_append   = subquestion_append,
+			subquestion_prepend  = subquestion_prepend,
 			default_plot_size    = default_plot_size,
 			default_colour_area  = default_colour_area,
 			default_colour_point = default_colour_point,
@@ -240,7 +251,7 @@ plot_q <- function(
 					h, 
 					plot_size)
 		}
-	return(invisible())
+	return(invisible(NULL))
 }
 
 #' Writes result to surveyor sink file
@@ -268,18 +279,13 @@ cat_surveyor <- function(x, surveyor){
 #' @param plot_size the plot size in inches
 print_surveyor_question <- function(surveyor, q_id, counter, f, g, h, plot_size){
 	# Print question description
-	cat_surveyor(printQlatex(get_q_text(surveyor, q_id)), surveyor)
-#	cat(printQlatex(get_q_text(surveyor, q_id)),
-#			file = surveyor$defaults$output_filename, append=TRUE)
+	qtext <- printQlatex(paste(q_id, get_q_text(surveyor, q_id)))
+	cat_surveyor(qtext, surveyor) 
+					
 	if (is.null(f)){
 		cat_surveyor("\nNo data\n\n", surveyor)
-#		cat("\nNo data\n\n",
-#				file = surveyor$defaults$output_filename, append=TRUE)
 	} else {
 		# Print plot
-#		if (identical(code_function, code_array)){
-#			plot_size[2] <- plot_size[2]*1.5
-#		}
 		filename <- paste("fig", counter, ".eps", sep="")
 		message(paste("Now saving ", filename, sep=""))
 		ggsave(
@@ -290,14 +296,11 @@ print_surveyor_question <- function(surveyor, q_id, counter, f, g, h, plot_size)
 				dpi      = surveyor$defaults$dpi, 
 				path     = surveyor$defaults$path_graphics
 		)
+		cat_surveyor("\n\\begin{samepage}\n", surveyor)
 		cat_surveyor(paste("\\PlaceGraph{graphics/", filename, "}\n", sep=""), surveyor)
-#		cat("\\PlaceGraph{graphics/", filename, "}\n", sep="",
-#				file = surveyor$defaults$output_filename, append=TRUE)
 		# Print crosstab report
 		cat_surveyor(print_cb_stats(g), surveyor)
-#		cat(print_cb_stats(g),
-#				file = surveyor$defaults$output_filename, append=TRUE)
-		
+		cat_surveyor("\n\\end{samepage}\n", surveyor)
 	}
 }
 
@@ -342,8 +345,7 @@ print_surveyor_question <- function(surveyor, q_id, counter, f, g, h, plot_size)
 
 # TODO: Once pattern is passed to question handling, write a function to guess question ids 
 
-# FIX: Find a way of forcing graph and table to be on the same page
-# FIX: http://afj-phd.blogspot.com/2007/09/supressing-page-breaks-in-latex.html
+
 
 
 

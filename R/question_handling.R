@@ -7,16 +7,23 @@
 #' Identifies subquestions of a given question in a data.frame
 #' 
 #' Given a question id, e.g. Q4, finds all subquestions, e.g. Q4_1, Q4_2, etc. 
+#' The pattern can be set by modifying question_pattern in the surveyor defaults
 #'
 #' @param q_data q_data frame with survey q_data
 #' @param q_id The question id, e.g. Q4
+#' @param surveyor surveyor object, used to set default question pattern
 ## #' @examples
 ## #' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
 ## #' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
 ## #' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
 ## #' surveyor:::get_q_subquestions(q_data, "Q4") 					
-get_q_subquestions <- function(q_data, q_id){
-	find <- grep(paste(q_id, "_[[:digit:]]*$", sep=""), names(q_data))
+get_q_subquestions <- function(q_data, q_id, surveyor=NULL){
+	if (is.null(surveyor)){
+		pattern <- "_[[:digit:]]*$"
+	} else {
+		pattern <- surveyor$defaults$question_pattern  #Defaults to "_[[:digit:]]*$"
+	}	
+	find <- grep(paste(q_id, pattern, sep=""), names(q_data))
 	if (identical(find, integer(0))){
 		return(NULL)
 	} else {
@@ -39,24 +46,45 @@ get_q_subquestions <- function(q_data, q_id){
 #' @param q_id string containing the question id, e.g. Q4. This has to
 #' 		match a name in q_data
 #' @param q_text Named character vector containing the question text
+#' @param surveyor surveyor object, used to set default question pattern
 #' @seealso get_q_text, get_q_text_common
 ## #' @examples
 ## #' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
 ## #' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
 ## #' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
 ## #' surveyor:::get_q_text_unique(q_data, "Q4", q_text) 					
-get_q_text_unique <- function(q_data, q_id, q_text){
-	Q <- get_q_subquestions(q_data, q_id)
+get_q_text_unique <- function(q_data, q_id, q_text, surveyor=NULL){
+	if (is.null(surveyor)){
+		append  <- TRUE
+		prepend <- FALSE
+	} else {
+		append  <- surveyor$defaults$subquestion_append
+		prepend <- surveyor$defaults$subquestion_prepend
+	}
+	
+	Q <- get_q_subquestions(q_data, q_id, surveyor)
 	Q <- q_text[Q]
-	
-#	if(length(Q)==1){
-#		return(Q)
-#	}
-	
+
 	tmp <- str_reverse(str_common_unique(as.character(Q))$unique)
 	Qu  <- str_reverse(str_common_unique(tmp)$unique)
+#	Qu <- sub("^[0-9]+\\. ", "", Qu)
+	
+#	if (append){
+#		tmp <- str_reverse(str_common_unique(as.character(Q))$unique)
+#		Qu <- tmp
+#	}
+#	
+#	if (prepend){
+#		tmp <- str_common_unique(as.character(Q))$unique
+#		Qu <- tmp
+#	}
+#
+#	if (append && prepend){
+#		tmp <- str_reverse(str_common_unique(as.character(Q))$unique)
+#		Qu  <- str_reverse(str_common_unique(tmp)$unique)
+#		#	sub("^[0-9]+\\. ", "", Qu)
+#	}
 	Qu
-#	sub("^[0-9]+\\. ", "", Qu)
 }
 
 #' Returns common elements of question text
@@ -67,22 +95,48 @@ get_q_text_unique <- function(q_data, q_id, q_text){
 #' @param q_data q_data frame with survey q_data
 #' @param q_id The question id, e.g. Q4
 #' @param q_text Named character vector containing the question text
+#' @param surveyor surveyor object, used to set default question pattern
 #' @seealso get_q_text, get_q_text_unique
 ## #' @examples
 ## #' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
 ## #' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
 ## #' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
 ## #' surveyor:::get_q_text_common(q_data, "Q4", q_text) 					
-get_q_text_common <- function(q_data, q_id, q_text){
-	Q <- get_q_subquestions(q_data, q_id)
+get_q_text_common <- function(q_data, q_id, q_text, surveyor=NULL){
+	if (is.null(surveyor)){
+		append  <- TRUE
+		prepend <- FALSE
+	} else {
+		append  <- surveyor$defaults$subquestion_append
+		prepend <- surveyor$defaults$subquestion_prepend
+	}
+
+	Q <- get_q_subquestions(q_data, q_id, surveyor)
 	Q <- q_text[Q]
 	
-	tmpleft <- str_common_unique(as.character(Q))$common
-	tmpright <- str_reverse(str_common_unique(as.character(str_reverse(Q)))$common)
+	tmpleft <- ""
+	tmpright <- ""
+	
+	if (append){
+		tmpleft <- str_common_unique(as.character(Q))$common
+	}
+	
+	if (prepend){
+		tmpright <- str_reverse(str_common_unique(as.character(str_reverse(Q)))$common)
+	}
+
+	if (append && prepend){
+		tmpleft <- str_common_unique(as.character(Q))$common
+		tmpright <- str_reverse(str_common_unique(as.character(str_reverse(Q)))$common)
+	}
+	
 	Qu <- paste(tmpleft, tmpright, sep="")
-	tmp <- gsub("^[0-9]+\\. ", "", Qu)   # Remove leading question number
-	gsub("^[[[:print:]]*] *", "", tmp)
+#	tmp <- gsub("^[0-9]+\\. ", "", Qu)   # Remove leading question number
+#	gsub("^[[[:print:]]*] *", "", tmp)
 }
+
+
+
 
 #' Returns question text
 #' 

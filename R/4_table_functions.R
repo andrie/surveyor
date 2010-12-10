@@ -9,7 +9,7 @@
 #'
 #' Prints crossbreak information in latex format
 #' 
-#' @param g A data frame with coded answers, provided by a stats_* function
+#' @param g A surveyor_stats object
 #' @seealso Coding functions:
 #' \code{\link{code_single}}, 
 #' \code{\link{code_array}},
@@ -23,6 +23,8 @@
 #' @return data frame
 #' @export
 print_cb_stats <- function(g){
+	
+	g <- g$data
 	
 	if(is.null(g)){
 		return(NULL)
