@@ -41,7 +41,7 @@ remove_dk <- function(x, dk="Don't Know"){
 #' @param dk Character vector, containing search terms, e.g. c("Don't know", "Don't Know")
 #' @return A data frame
 #' @export
-remove_all_dk <- function(x, dk=c("Don't Know", "Don't know","Dont know" , "DK", "NA")){
+remove_all_dk <- function(x, dk=c("I don't know", "Don't Know", "Don't know","Dont know" , "DK", "NA")){
 	newx <- llply(x, remove_dk, dk)
 	n1 <- sum(as.numeric(llply(x, has_dk, dk)))
 	n2 <- sum(as.numeric(llply(newx, has_dk, dk)))

@@ -6,7 +6,7 @@
 #' 
 #' @param q_data data frame with survey data
 #' @param q_text The question id, e.g. Q4
-#' @param crossbreak Vector with crossbreak data
+#' @param cbreak Vector with cbreak data
 #' @param weight Numeric vector with weighting data
 #' @param defaults Surveyor defaults
 #' @export
@@ -14,7 +14,7 @@
 #' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
 #' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
 #' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
-#' s <- surveyor(q_data, q_text, crossbreak=c("aa", "bb"), weight=c(1,1)) 					
+#' s <- surveyor(q_data, q_text, cbreak=c("aa", "bb"), weight=c(1,1)) 					
 surveyor <- function(
 		q_data, 
 		q_text, 
@@ -25,9 +25,21 @@ surveyor <- function(
 	if (!identical(names(q_data), names(q_text))){
 		stop("Surveyor object: The names of q_data and q_text must match")
 	}
-	if (length(crossbreak) != nrow(q_data)){
-		stop("Surveyor object: Crossbreak must match q_data in length")
+	
+	if (is.list(crossbreak)) {
+		if (any(laply(crossbreak, length) != nrow(sd))) {
+			stop ("Surveyor object: each element in crossbreak list must match q_data in length")
+		} else {
+			cbreak <- unlist(crossbreak[1])
+		}
+	} else {
+		if (length(crossbreak) != nrow(q_data)){
+			stop("Surveyor object: crossbreak must match q_data in length")
+		} else {
+			cbreak <- crossbreak
+		}
 	}
+
 	if (length(weight) != nrow(q_data)){
 		stop("Surveyor object: Weight must match q_data in length")
 	}
@@ -36,13 +48,14 @@ surveyor <- function(
 	}
 	structure(
 			list(
-					q_data=q_data, 
-					q_text=q_text,
-					crossbreak=crossbreak,
-					weight=weight,
-					defaults=defaults
+					q_data     = q_data, 
+					q_text     = q_text,
+					cbreak     = cbreak,
+					crossbreak = crossbreak,
+					weight     = weight,
+					defaults   = defaults
 			), 
-			class="surveyor"
+			class = "surveyor"
 	)
 }
 
@@ -145,7 +158,7 @@ print.surveyor <- function(surveyor){
 #' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
 #' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
 #' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
-#' s <- surveyor(q_data, q_text, crossbreak=c("aa", "bb"), weight=c(1,1))
+#' s <- surveyor(q_data, q_text, cbreak=c("aa", "bb"), weight=c(1,1))
 #' is.surveyor(s) # TRUE
 #' is.surveyor("String") #FALSE 					
 is.surveyor <- function(x){
@@ -153,7 +166,7 @@ is.surveyor <- function(x){
 		if (all(
 				!is.null(x$q_data),
 				!is.null(x$q_text),
-				!is.null(x$crossbreak),
+				!is.null(x$cbreak),
 				!is.null(x$weight),
 				!is.null(x$defaults)
 		)){
@@ -219,30 +232,35 @@ plot_q <- function(
 		plot_size = surveyor$defaults$default_plot_size,
 		...){
 	
-	counter <- eval(surveyor$defaults$counter(), envir=parent.frame())
+	###  plot_q internal functions
 	
-	if(!(is.surveyor(surveyor))){
-		stop("You must pass a valid surveyor object to plot_q")
-	}
-	
-	message(q_id)
-	f <- code_function(surveyor, q_id, ...)
-	if (is.null(f)){
-		nothing_to_plot <- TRUE
-	} else {
-		g <- stats_function(f)
-		h <- plot_function(g, surveyor)
-		nothing_to_plot <- FALSE
-	}	
+	plot_q_internal <- function(){
 		
-	if (!surveyor$defaults$output_to_latex){
-		if (nothing_to_plot){
-			message("Nothing to plot")
-		} else {
-			print(h)
+		counter <- eval(surveyor$defaults$counter(), envir=parent.frame(n=2))
+		
+		if(!(is.surveyor(surveyor))){
+			stop("You must pass a valid surveyor object to plot_q")
 		}
-	} else {
-			print_surveyor_question(
+		
+		f <- code_function(surveyor, q_id, ...)
+		if (is.null(f)){
+			nothing_to_plot <- TRUE
+		} else {
+			g <- stats_function(f)
+			g2 <- g
+			g2$data <- subset(g2$data, subset=!is.na(value)) # Remove NA values from g
+			h <- plot_function(g2, surveyor)
+			nothing_to_plot <- FALSE
+		}	
+		
+		if (!surveyor$defaults$output_to_latex){
+			if (nothing_to_plot){
+				message("Nothing to plot")
+			} else {
+				print(h)
+			}
+		} else {
+			cat_string <- print_surveyor_question(
 					surveyor,
 					q_id,
 					counter,
@@ -250,9 +268,33 @@ plot_q <- function(
 					g,
 					h, 
 					plot_size)
+			cat_surveyor(cat_string, surveyor)
 		}
-	return(invisible(NULL))
+		
+	}
+	
+	###  plot_q main function
+	
+	message(q_id)
+	if (surveyor$defaults$output_to_latex){
+		qtext <- printQlatex(paste(q_id, get_q_text(surveyor, q_id)))
+		cat_surveyor(qtext, surveyor)
+	}
+		
+	if (is.list(surveyor$crossbreak)) {
+		for (i in 1:length(surveyor$crossbreak)) {
+			surveyor$cbreak <- unlist(surveyor$crossbreak[i])
+			plot_q_internal()
+		}		
+	} else {
+		plot_q_internal()
+					
+	}
+
 }
+
+###############################################################################
+
 
 #' Writes result to surveyor sink file
 #' 
@@ -277,13 +319,13 @@ cat_surveyor <- function(x, surveyor){
 #' @param g Results from stats_* function
 #' @param h Results from plot_* function
 #' @param plot_size the plot size in inches
+#' @internal
 print_surveyor_question <- function(surveyor, q_id, counter, f, g, h, plot_size){
 	# Print question description
-	qtext <- printQlatex(paste(q_id, get_q_text(surveyor, q_id)))
-	cat_surveyor(qtext, surveyor) 
+#	cat_surveyor(qtext, surveyor) 
 					
 	if (is.null(f)){
-		cat_surveyor("\nNo data\n\n", surveyor)
+		cat_string <- "\nNo data\n\n"
 	} else {
 		# Print plot
 		filename <- paste("fig", counter, ".eps", sep="")
@@ -296,12 +338,68 @@ print_surveyor_question <- function(surveyor, q_id, counter, f, g, h, plot_size)
 				dpi      = surveyor$defaults$dpi, 
 				path     = surveyor$defaults$path_graphics
 		)
-		cat_surveyor("\n\\begin{samepage}\n", surveyor)
-		cat_surveyor(paste("\\PlaceGraph{graphics/", filename, "}\n", sep=""), surveyor)
-		# Print crosstab report
-		cat_surveyor(print_cb_stats(g), surveyor)
-		cat_surveyor("\n\\end{samepage}\n", surveyor)
+
+		cat_string <- paste(
+				"\n\\begin{samepage}\n",
+				paste("\\PlaceGraph{graphics/", filename, "}\n", sep=""),
+				print_cb_stats(g),
+				"\n\\end{samepage}\n",
+				"\\smallskip\n"
+						)
 	}
+	
+	return(cat_string)
+}
+
+theme_surveyor <- function (base_size = 12, base_family = "") 
+{
+	structure(
+			list(
+					axis.line = theme_blank(), 
+					axis.text.x = theme_text(
+							family = base_family, 
+							size = base_size * 0.8, 
+							lineheight = 0.9, 
+							colour = "grey20", #"grey50", 
+							vjust = 1), 
+					axis.text.y = theme_text(
+							family = base_family, 
+							size = base_size * 0.8, 
+							lineheight = 0.9, 
+							colour = "grey20", #"grey50",
+							hjust = 1), 
+					axis.ticks = theme_segment(colour = "grey50"), 
+					axis.title.x = theme_text(family = base_family, size = base_size, vjust = 0.5), 
+					axis.title.y = theme_text(family = base_family, 
+							size = base_size, angle = 90, vjust = 0.5), 
+					axis.ticks.length = unit(0.15, "cm"), 
+					axis.ticks.margin = unit(0.1, "cm"), legend.background = theme_rect(colour = "white"), 
+					legend.key = theme_rect(fill = "grey95", colour = "white"), 
+					legend.key.size = unit(1.2, "lines"), legend.key.height = NA, 
+					legend.key.width = NA, 
+					legend.text = theme_text(family = base_family, size = base_size * 0.8), 
+					legend.text.align = NA, 
+					legend.title = theme_text(family = base_family, size = base_size * 
+									0.8, face = "bold", hjust = 0), 
+					legend.title.align = NA, 
+					legend.position = "right", 
+					legend.direction = "vertical", 
+					legend.box = NA, 
+					panel.background = theme_rect(fill = "grey90", 
+							colour = NA), 
+					panel.border = theme_blank(), panel.grid.major = theme_line(colour = "white"), 
+					panel.grid.minor = theme_line(colour = "grey95", size = 0.25), 
+					panel.margin = unit(0.25, "lines"), 
+					strip.background = theme_rect(fill = "grey80", 
+							colour = NA), 
+					strip.text.x = theme_text(family = base_family, size = base_size * 0.8), 
+					strip.text.y = theme_text(family = base_family, size = base_size * 0.8, angle = -90), 
+					plot.background = theme_rect(colour = NA, fill = "white"), 
+					plot.title = theme_text(family = base_family, size = base_size * 1.2), 
+					plot.margin = unit(c(1, 1, 0.5, 0.5), "lines")
+			), 
+			class = "options"
+	)
 }
 
 ################################################################################

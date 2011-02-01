@@ -1,12 +1,12 @@
-#' Code survey data in array question form
+#' Code survey data in single question form
 #'
-#' Code survey data in array question form (i.e. with subquestions)
+#' Code survey data in single question form (i.e. without subquestions)
 #' 
 #' @param surveyor Surveyor object
 #' @param q_id Question id
 #' @seealso 
 #' Coding functions:
-#' \code{\link{code_single}}, 
+#' \code{\link{code_guess}}, 
 #' \code{\link{code_array}},
 #' \code{\link{code_text}}
 #' Summarising functions:
@@ -33,13 +33,15 @@ code_single <- function(
 		return(NULL)
 	}		
 		
-	data.frame(
-			crossbreak = surveyor$crossbreak,
+	x1 <- data.frame(
+			cbreak = surveyor$cbreak,
 			question = rep("1", nrow(surveyor$q_data)),
 			response = response,
 			weight = surveyor$weight,
 			stringsAsFactors = FALSE
 	)
+	x1[!is.na(x1$response), ]
+	
 }
 
 ################################################################################
@@ -53,8 +55,8 @@ code_single <- function(
 #' @param remove_other If true, will remove last column
 #' @return data frame
 #' @seealso Coding functions:
-#' 		\code{\link{code_single}}, 
-#' 		\code{\link{code_array}},
+#' 		\code{\link{code_guess}}, 
+#' 		\code{\link{code_single}},
 #' 		\code{\link{code_text}}
 #' 		Summarising functions:
 #' 		\code{\link{stats_bin}}, 
@@ -93,18 +95,19 @@ code_array <- function(
 	#x$weight <- x$weight / sum(x$weight)
 	
 	x <- as.data.frame(x, stringsAsFactors=TRUE)
-	x$crossbreak <- surveyor$crossbreak
-	x <- melt(x, id.vars=c("crossbreak", "weight"), na.rm=TRUE)
+	x$cbreak <- surveyor$cbreak
+	x <- melt(x, id.vars=c("cbreak", "weight"), na.rm=TRUE)
 	
 	x$variable <- r[as.character(x$variable)]
 	x$variable <- str_wrap(x$variable, 50)
-	data.frame(
-			crossbreak=x$crossbreak,
+	x1 <- data.frame(
+			cbreak=x$cbreak,
 			question=x$variable,
 			response=x$value,
 			weight=x$weight,
 			stringsAsFactors=FALSE
 	)
+	x1[!is.na(x1$response), ]
 }
 
 ################################################################################
@@ -135,13 +138,13 @@ code_guess <- function(
 ){
 	# Melt multicoded question in data.frame, and code question text to variable
 	
-	q_data <- surveyor$q_data
-	q_text <- surveyor$q_text
+#	q_data <- surveyor$q_data
+#	q_text <- surveyor$q_text
 	
 	# Test if question is of type single (i.e. q_id exists in names(q_data)
 	
 	
-	if (any(names(q_text)==q_id)){
+	if (any(names(surveyor$q_text)==q_id)){
 		return(code_single(surveyor, q_id))
 	} else {
 		return(code_array(surveyor, q_id, ...))

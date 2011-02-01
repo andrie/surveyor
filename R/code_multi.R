@@ -43,11 +43,11 @@ code_multi <- function(
 	x$weight <- x$weight / sum(x$weight)
 	
 	x <- as.data.frame(x, stringsAsFactors=TRUE)
-	x$crossbreak <- surveyor$crossbreak
+	x$cbreak <- surveyor$cbreak
 #	if (weight==FALSE){
-#		x <- melt(x, id.vars=c("crossbreak",), na.rm=TRUE)
+#		x <- melt(x, id.vars=c("cbreak",), na.rm=TRUE)
 #	} else {
-	x <- melt(x, id.vars=c("crossbreak", "weight"), na.rm=TRUE)
+	x <- melt(x, id.vars=c("cbreak", "weight"), na.rm=TRUE)
 #	}
 
 	#x <- subset(x, value!=max(value)) ### This handles remove_other
@@ -57,7 +57,7 @@ code_multi <- function(
 	data.frame(
 			variable=x$variable,
 			value=x$value,
-			crossbreak=x$crossbreak,
+			cbreak=x$cbreak,
 			weight=x$weight,
 			stringsAsFactors=FALSE
 	)

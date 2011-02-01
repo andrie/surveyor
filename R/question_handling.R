@@ -23,7 +23,7 @@ get_q_subquestions <- function(q_data, q_id, surveyor=NULL){
 	} else {
 		pattern <- surveyor$defaults$question_pattern  #Defaults to "_[[:digit:]]*$"
 	}	
-	find <- grep(paste(q_id, pattern, sep=""), names(q_data))
+	find <- grep(paste(q_id, pattern, sep="", collapse=""), names(q_data))
 	if (identical(find, integer(0))){
 		return(NULL)
 	} else {
@@ -162,7 +162,7 @@ get_q_text <- function(surveyor, q_id){
 	} else {
 		w <- which(names(q_data)==paste(q_id, "_1", sep=""))
 		if (length(w)==1){
-			ret <- get_q_text_common (q_data, q_id, q_text)
+			ret <- get_q_text_common (q_data, q_id, q_text, surveyor)
 		} else {
 			ret <- q_id
 		}

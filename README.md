@@ -1,3 +1,3 @@
-# surveyor
+# Morar
 
-This is a set of tools for analysing, reporting and plotting surveys in R
+This package contains functions to import and analyse data in Morar Consulting's data format

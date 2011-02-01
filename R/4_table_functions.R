@@ -1,13 +1,13 @@
 ################################################################################
-###  print crossbreak functions                                              ###
+###  print cbreak functions                                              ###
 ################################################################################
 
 
 
 
-#' Prints crossbreak information in latex format
+#' Prints cbreak information in latex format
 #'
-#' Prints crossbreak information in latex format
+#' Prints cbreak information in latex format
 #' 
 #' @param g A surveyor_stats object
 #' @seealso Coding functions:
@@ -31,16 +31,16 @@ print_cb_stats <- function(g){
 	}
 	
 	if (!is.null(g$question) && !is.null(g$response)){
-		v <- tapply(g$value, list(g$question, g$response, g$crossbreak), sum, na.rm=TRUE)
+		v <- tapply(g$value, list(g$question, g$response, g$cbreak), sum, na.rm=TRUE)
 		dimtotal1 <- c(1,2)
 		dimtotal2 <- c(2,1)
 	} else {	
 		if (is.null(g$question)){
-			v <- tapply(g$value, list(g$response, g$crossbreak), sum, na.rm=TRUE)
+			v <- tapply(g$value, list(g$response, g$cbreak), sum, na.rm=TRUE)
 			dimtotal1 <- 1
 			dimtotal2 <- 2
 		} else {
-			v <- tapply(g$value, list(g$question, g$crossbreak), sum, na.rm=TRUE)
+			v <- tapply(g$value, list(g$question, g$cbreak), sum, na.rm=TRUE)
 			dimtotal1 <- 1
 			dimtotal2 <- 2
 		}
@@ -59,9 +59,9 @@ print_cb_stats <- function(g){
 	ret
 }
 
-#' Prints crossbreak information in latex format
+#' Prints cbreak information in latex format
 #'
-#' Prints crossbreak information in latex format
+#' Prints cbreak information in latex format
 #' 
 #' @param f A data frame with coded answers, provided by a code_* function
 #' @seealso Coding functions:
@@ -83,11 +83,11 @@ print_cb_code <- function(f){
 	}
 	
 	if (is.null(f$question)){
-		v <- tapply(f$value, list(f$response, f$crossbreak), sum, na.rm=TRUE)
+		v <- tapply(f$value, list(f$response, f$cbreak), sum, na.rm=TRUE)
 		dimtotal1 <- 1
 		dimtotal2 <- 2
 	} else {
-		v <- tapply(f$value, list(f$response, f$question, f$crossbreak), sum, na.rm=TRUE)
+		v <- tapply(f$value, list(f$response, f$question, f$cbreak), sum, na.rm=TRUE)
 		dimtotal1 <- c(1,2)
 		dimtotal2 <- c(2,1)
 	}

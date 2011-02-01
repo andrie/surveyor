@@ -17,6 +17,19 @@ surveyor_stats <- function(
 	ss
 }
 
+#' Sorts df in descending order 
+#' 
+#' @param df A data frame containing at least two columns: response and value 
+#' @return A data frame
+#' @internal
+reorder_response <- function(df){
+	resp_levels  <- df[order(df$value, decreasing=TRUE), ]$response
+	df$response <- factor(df$response, levels=resp_levels, ordered=TRUE)
+	df
+}
+
+
+
 #' Tests for all NA values 
 #' 
 #' @param x A list, data frame or vector 
@@ -45,27 +58,37 @@ all_null <- function(x){
 #' Takes the result of a code_function, e.g. code_single(), and calculates
 #' summary values, for direct plotting by a plot_function, e.g. plot_bar()
 #' 
-#' @param x A data frame with four columns: crossbreak, question, response, weight 
-#' @return A data frame with three columns: crossbreak, variable, value
+#' The results are sorted in descending order of value, and "response" is
+#' coerced into an ordered factor (unless "response" is already an ordered 
+#' factor).
+#' 
+#' @param x A data frame with four columns: cbreak, question, response, weight 
+#' @return A data frame with three columns: cbreak, variable, value
 #' @export
 stats_bin <- function(x){
 	if(is.null(x)){
 		return(NULL)
 	}
-	cbweight <- ddply(x, .(crossbreak, question), summarise, weight=sum(weight))
-	row.names(cbweight) <- paste(cbweight$crossbreak, cbweight$question, sep="_")
-	x$weight <- x$weight / cbweight[paste(x$crossbreak, x$question, sep="_"), ]$weight
+	cbweight <- ddply(x, .(cbreak, question), summarise, weight=sum(weight))
+	row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
+	x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
 	
 	
 	if (length(unique(x$question))==1){
 		# code single
-		df <- ddply(x, .(crossbreak, response), 
+		df <- ddply(x, .(cbreak, response), 
 				summarise, 
 				value=sum(weight)
 		)
+		if (is.ordered(x$response)){
+			df$response <- factor(df$response, levels=levels(x$response), ordered=TRUE)
+		} else {
+			df <- reorder_response(df)
+		}
+		
 	} else {
 		# code array
-		df <- ddply(x, .(crossbreak, question, response), 
+		df <- ddply(x, .(cbreak, question, response), 
 				summarise, 
 				value=sum(weight)
 		)
@@ -75,41 +98,57 @@ stats_bin <- function(x){
 			ylabel="Fraction of respondents")
 }
 
-# TODO: Fix stats_rank
 
 #' Calculates summary statistics for ranking type questions
 #' 
 #' Takes the result of a code_function, e.g. code_single(), and calculates
 #' summary values, for direct plotting by a plot_function, e.g. plot_bar()
 #' 
-#' @param x A data frame with four columns: crossbreak, question, response, weight 
-#' @return A data frame with three columns: crossbreak, variable, value
+#' @param x A data frame with four columns: cbreak, question, response, weight 
+#' @param top_n Numeric, indicates how the ranking is summarised
+#' @return A data frame with three columns: cbreak, variable, value
 #' @export
-stats_rank <- function(x){
+stats_rank <- function(x, top_n=3){
 	if(is.null(x)){
 		return(NULL)
 	}
-	crossbreakweight <- ddply(x, .(crossbreak), summarise, weight=sum(weight))
-	row.names(crossbreakweight) <- crossbreakweight$crossbreak
-	x$weight <- x$weight / crossbreakweight[x$crossbreak, ]$weight
+	cbreakweight <- ddply(x, .(cbreak), summarise, weight=sum(weight))
+	row.names(cbreakweight) <- cbreakweight$cbreak
+	x$weight <- x$weight / cbreakweight[x$cbreak, ]$weight
 	
 	
 	if (length(unique(x$question))==1){
 		# code single
-		df <- ddply(x, .(crossbreak, response), 
+		df <- ddply(x, .(cbreak, response), 
 				summarise, 
 				value=sum(weight)
 		)
+		
 	} else {
 		# code array
-		df <- ddply(x, .(crossbreak, question, response), 
+		df <- ddply(x, .(cbreak, question, response), 
 				summarise, 
 				value=sum(weight)
 		)
 	}
+	
+	h1 <- df[df$question<=3, ]
+
+	h2 <- ddply(h1, .(cbreak, response), summarize, value=sum(value))
+	h2 <- reorder_response(h2)
+	
+#	if (is.ordered(x$response)){
+#		h2$response <- factor(h2$response, levels=levels(x$response), ordered=TRUE)
+#	} else {
+#		resp_levels  <- df[order(h2$value, decreasing=TRUE), ]$response
+#		h2$response <- factor(h2$response, levels=resp_levels, ordered=TRUE)
+#	}
+	
+	
 	surveyor_stats(
-			df,
-			ylabel="Rank (1 is high)")
+			h2,
+			ylabel=paste("Percentage of responses in top", top_n)
+	)
 }
 
 #################################################################################
@@ -141,25 +180,27 @@ net_score <- function(x){
 #'
 #' Code survey data in net score form
 #' 
-#' @param x A data frame with four columns: crossbreak, question, response, weight 
+#' @param x A data frame with four columns: cbreak, question, response, weight 
 #' @return data frame
 #' @seealso \code{\link{stats_bin}}
 #' @export
 stats_net_score <- function(x){
 	if (length(unique(x$question))==0){
 		# code single
-		df <- ddply(x, .(crossbreak, response), 
+		df <- ddply(x, .(cbreak, response), 
 				summarise,
 				value=net_score(response))
 	} else {
 		# code array
-#		ddply(x, .(crossbreak, question, response), 
-		df <- ddply(x, .(crossbreak, question), 
+#		ddply(x, .(cbreak, question, response), 
+		df <- ddply(x, .(cbreak, question), 
 				summarise,
 				value=net_score(response))
+		quest_levels  <- df[order(df$value, decreasing=TRUE), ]$question
+		df$question <- factor(df$question, levels=quest_levels, ordered=TRUE)
 	}
 	surveyor_stats(
 			df,
-			ylabel="Net score")
+			ylabel="Net satisfaction score")
 }
 

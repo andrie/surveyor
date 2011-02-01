@@ -14,6 +14,7 @@
 #' 
 #' @param x Character vector
 #' @return list of common and unique strings 
+#' @export 
 ## #' @examples
 ## #' q_string <- c("Q_1", "Q_2", "Q_3") 
 ## #' str_common_unique(q_string)$common

@@ -7,7 +7,7 @@ Description: This is a set of tools to analyse, report and plot survey
 URL:
 Maintainer: Andrie de Vries <apdevries@gmail.com>
 Author: Andrie de Vries <apdevries@gmail.com>
-Depends: R (>= 2.11.0), Hmisc, ggplot2
+Depends: R (>= 2.11.0), Hmisc, ggplot2, xtable
 Suggests:
 Imports: xtable, plyr, ggplot2, reshape2
 License: GPL (>=2)

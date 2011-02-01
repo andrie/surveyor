@@ -9,7 +9,7 @@ printQlatex <- function(x){
 #  cat("\\section{", x, "}\n\n", sep="")
 	inn <- "&"
 	out <- "\\&"
-	latexTranslate(
+	Hmisc::latexTranslate(
 					paste("\n\\section{", x, "}\n\n", sep=""), 
 					inn=inn, 
 					out=out)

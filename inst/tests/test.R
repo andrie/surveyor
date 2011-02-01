@@ -166,12 +166,17 @@ q_data <- data.frame(
 		Q4_3=c(3, 4, 4, 3), 
 		Q4_2=c(5, 5, 6, 6), 
 		crossbreak=c("A", "A", "B", "B"), 
+		crossbreak2=c("D", "E", "D", "E"),
 		weight=c(0.9, 1.1, 0.8, 1.2)
 )
-q_text <- c("Question 1", "Question 4: red", "Question 4: blue", "Question 4: green", "crossbreak", "weight")
-names(q_text) <- c("Q1", "Q4_1", "Q4_3", "Q4_2", "crossbreak", "weight")
+q_text <- c("Question 1", 
+		"Question 4: red", "Question 4: blue", "Question 4: green", 
+		"crossbreak",
+		"crossbreak2",
+		"weight")
+names(q_text) <- names(q_data)
 
-names_cqrw <- c("crossbreak", "question", "response", "weight")
+names_cqrw <- c("cbreak", "question", "response", "weight")
 
 # ---
 
@@ -196,7 +201,7 @@ s_defaults <- surveyor_defaults(
 )
 
 s <- surveyor(q_data, q_text, q_data$crossbreak, q_data$weight, s_defaults)
-s_count <- new_counter()
+#s_count <- new_counter()
 
 t_defaults <- surveyor_defaults(
 		path_latex    = latex_path,
@@ -206,33 +211,14 @@ t_defaults <- surveyor_defaults(
 )
 
 t <- surveyor(q_data, q_text, q_data$crossbreak, q_data$weight, t_defaults)
-t_count <- new_counter()
+#t_count <- new_counter()
+
+s2 <- surveyor(q_data, q_text, list(q_data$crossbreak, q_data$crossbreak2), q_data$weight, s_defaults)
+#s2_count <- new_counter()
+
 
 
 ###############################################################################
-###############################################################################
-###############################################################################
-
-#q_data <- data.frame(
-#		Q1   = c("Yes", "No", "Yes", "Yes"),
-#		Q2_1 = c(1, 2, 1, 2), 
-#		Q2_2 = c(3, 4, 4, 3), 
-#		Q2_3 = c(5, 5, 6, 6), 
-#		Q4_1 = c(1, 2, 1, 2), 
-#		Q4_3 = c(3, 4, 4, 3), 
-#		Q4_2 = c(5, 5, 6, 6), 
-#		crossbreak = c("A", "A", "B", "B"), 
-#		weight     = c(0.9, 1.1, 0.8, 1.2)
-#)
-#q_text <- c(
-#		"Question 1", 
-#		"Question 2", "Question 2", "Question 2",
-#		"Question 4: red", "Question 4: blue", "Question 4: green",
-#		"crossbreak",
-#		"weight")
-#
-#names(q_text) <- names(q_data)
-
 
 context("Question handling")
 
@@ -248,6 +234,7 @@ test_that("Question handling functions work", {
 			expect_that(get_q_text(s, "Q4"), equals("Question 4: "))
 			
 		})
+
 
 ###############################################################################
 
@@ -317,7 +304,6 @@ test_that("plot functions work with code_array", {
 
 context("Test plumbing of plot_q")
 
-
 test_that("plot_q works", {
 			
 			expect_that(plot_q(s, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
@@ -328,6 +314,19 @@ test_that("plot_q works", {
 		})
 
 ###############################################################################
+
+context("Test that multiple crossbreaks work")
+
+
+test_that("plot_q works with multiple crossbreaks", {
+			
+			expect_that(plot_q(s2, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
+			
+		})
+
+###############################################################################
+
+
 
 context("Test output to Latex")
 
