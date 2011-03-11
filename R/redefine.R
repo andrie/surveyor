@@ -10,10 +10,11 @@
 #' @param x an array
 #' @param margin index number (1 for rows, etc.)
 #' @param na.rm logical. Should missing values be removed? Passed to sum()
-## #' @examples 
-## #' m <- matrix(1:4,2)
-## #' surveyor:::margin.table(m, 1)
-## #' surveyor:::margin.table(m, 2)
+#' @export 
+#' @examples 
+#' m <- matrix(1:4,2)
+#' margin.table(m, 1)
+#' margin.table(m, 2)
 margin.table <- function (x, margin = NULL, na.rm=TRUE)
 {
 	if (!is.array(x))
@@ -36,10 +37,11 @@ margin.table <- function (x, margin = NULL, na.rm=TRUE)
 #' @param x an array
 #' @param margin index number (1 for rows, etc.)
 #' @param na.rm logical. Should missing values be removed? Passed to sum()
-## #' @examples 
-## #' m <- matrix(1:4,2)
-## #' surveyor:::prop.table(m,1)
-## #' surveyor:::prop.table(m,2)
+#' @export 
+#' @examples 
+#' m <- matrix(1:4,2)
+#' prop.table(m,1)
+#' prop.table(m,2)
 prop.table <- function (x, margin = NULL, na.rm=TRUE)
 # Redefines prop.table to deal with na.rm
 {
@@ -56,7 +58,9 @@ prop.table <- function (x, margin = NULL, na.rm=TRUE)
 #' @param mtext Matrix
 #' @param sep Separator text
 #' @param collapse Collapse text
-# author Jens Oehlschlägel-Akiyoshi
+#' @export 
+#' @author Jens Oehlschlagel-Akiyoshi
+#' @
 paste.matrix <- function(mtext, sep=" ", collapse=NULL){
 	if (is.null(collapse))
 		apply(mtext, 1, paste, collapse=sep)

@@ -5,9 +5,9 @@
 \description{Finds the common and unique elements in a character vector}
 \details{Function takes a character string as input and find the common and
 unique elements.  Assumes that the common element is at start of string}
-\value{list of common and unique strings 
-#'}
+\value{list of common and unique strings}
+\keyword{string}
 \arguments{\item{x}{Character vector}}
-\examples{#' q_string <- c("Q_1", "Q_2", "Q_3") 
-#' str_common_unique(q_string)$common
-#' str_common_unique(q_string)$unique}
+\examples{q_string <- c("Q_1", "Q_2", "Q_3") 
+str_common_unique(q_string)$common
+str_common_unique(q_string)$unique}

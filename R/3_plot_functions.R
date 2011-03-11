@@ -3,6 +3,7 @@
 
 #' Blank axis titles and no legend
 #' 
+#' @keywords internal
 quiet <- opts(
 		legend.position="none",
 		axis.title.x = theme_blank(),
@@ -11,6 +12,7 @@ quiet <- opts(
 
 #' Blank axis titles
 #' 
+#' @keywords internal
 quiet_axes <- opts(
 		axis.title.x = theme_blank(),
 		axis.title.y = theme_blank()
@@ -19,6 +21,7 @@ quiet_axes <- opts(
 
 #' Define minimal theme
 #' 
+#' @keywords internal
 theme_minimal <- opts(
 		axis.title.x = theme_blank(),
 		axis.title.y = theme_blank(),
@@ -45,29 +48,29 @@ theme_minimal <- opts(
 #' @param s A surveyor_stats object
 #' @param surveyor Surveyor object
 #' @seealso 
-#' Coding functions:
-#' \code{\link{code_single}}, 
-#' \code{\link{code_array}},
-#' \code{\link{code_text}}
-#' Summarising functions:
-#' \code{\link{stats_bin}}, 
-#' \code{\link{stats_net_score}}
 #' Plot functions: 
-#' \code{\link{plot_bar}}, 
-#' \code{\link{plot_point}} 
+#' \itemize{
+#' \item \code{\link{plot_bar}} 
+#' \item \code{\link{plot_point}} 
+#' \item \code{\link{plot_text}} 
+#' \item \code{\link{plot_net_score}} 
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords plot
 #' @export
 plot_bar <- function(s, surveyor){
 	f <- s$data
 	if (is.null(f$question)){
 		# Plot single question
-		p <- ggplot(f, aes(x=response, y=value, fill=factor(cbreak)))
+		p <- ggplot(f, aes_string(x="response", y="value", fill="factor(cbreak)"))
 	} else {
 		if (is.null(f$response)) {
 		# Plot array of single values per question
-			p <- ggplot(f, aes(x=question, y=value, fill=factor(cbreak)))
+			p <- ggplot(f, aes_string(x="question", y="value", fill="factor(cbreak)"))
 		} else {
 			# Plot array question as stacked bar
-			p <- ggplot(f, aes(x=question, y=value, fill=response))
+			p <- ggplot(f, aes_string(x="question", y="value", fill="factor(response)"))
 		}
 	}
 	p <- p + 
@@ -76,13 +79,26 @@ plot_bar <- function(s, surveyor){
 			coord_flip() + 
 			scale_y_continuous(
 					s$ylabel, 
-					formatter="percent") +
+					formatter=s$formatter) +
 			facet_grid(~cbreak) + 
 			opts(
 				legend.position="none",
 				axis.title.y = theme_blank()
 			)
+	
+	if (is.null(f$question)){
+		# Plot single question
+		if(length(unique(f$response)) > 8){p <- p + scale_fill_hue()}
+	} else {
+			# Plot array of single values per question
+			# Plot array question as stacked bar
+			if(length(unique(f$question)) > 8){p <- p + scale_fill_hue()}
+	}	
 	p
+}
+
+plot_bar_sum <- function(s, surveyor){
+	plot_bar(s, surveyor, formatter=format)
 }
 
 ###############################################################################
@@ -92,18 +108,23 @@ plot_bar <- function(s, surveyor){
 #' @param s A surveyor_stats object
 #' @param surveyor Surveyor object
 #' @seealso 
-#' Coding functions:
-#' \code{\link{code_single}}, 
-#' \code{\link{code_array}},
-#' \code{\link{code_text}}
-#' Summarising functions:
-#' \code{\link{stats_bin}}, 
-#' \code{\link{stats_net_score}}
 #' Plot functions: 
-#' \code{\link{plot_bar}}, 
-#' \code{\link{plot_point}} 
+#' \itemize{
+#' \item \code{\link{plot_bar}} 
+#' \item \code{\link{plot_point}} 
+#' \item \code{\link{plot_text}} 
+#' \item \code{\link{plot_net_score}} 
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords plot
 #' @export
 plot_point <- function(s, surveyor){
+	question <- NULL; rm(question) # Dummy to trick R CMD check
+	response <- NULL; rm(response) # Dummy to trick R CMD check
+	value <- NULL; rm(value) # Dummy to trick R CMD check
+	cbreak <- NULL; rm(cbreak) # Dummy to trick R CMD check
+
 	f <- s$data
 	if (is.null(f$question)){
 		# Plot single question
@@ -141,6 +162,17 @@ plot_point <- function(s, surveyor){
 #'
 #' @param f A data frame with coded answers, provided by a code_* function
 #' @param surveyor Surveyor object
+#' @seealso
+#' Plot functions: 
+#' \itemize{
+#' \item \code{\link{plot_bar}} 
+#' \item \code{\link{plot_point}} 
+#' \item \code{\link{plot_text}} 
+#' \item \code{\link{plot_net_score}} 
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords plot
 #' @export
 plot_text <- function(f, surveyor){
 		paste(
@@ -157,10 +189,20 @@ plot_text <- function(f, surveyor){
 # TODO: Fix plot_net_score to deal with weighting
 #' Plot data in net score format (bar chart, but percentage axis)
 #'
-#' @param f A data frame with coded answers, provided by a code_* function
+#' @param s A data frame with coded answers, provided by a code_* function
 #' @param surveyor Surveyor object
-#' @seealso plot_bar, plot_bar_stacked, plot_net_score, plot_point, plot_text 
 #' @export
+#' @seealso
+#' Plot functions: 
+#' \itemize{
+#' \item \code{\link{plot_bar}} 
+#' \item \code{\link{plot_point}} 
+#' \item \code{\link{plot_text}} 
+#' \item \code{\link{plot_net_score}} 
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords plot
 plot_net_score <- function(s, surveyor){
 	f <- s$data
 	f$hjust <- 0
@@ -170,16 +212,16 @@ plot_net_score <- function(s, surveyor){
 	if (min(f$value) <= -0.5) f[f$value < -0.5, ]$hjust <- -0.1  
 	
 	
-	p <- ggplot(f, aes(x=question, y=value)) +
+	p <- ggplot(f, aes_string(x="question", y="value")) +
 			theme_surveyor(surveyor$defaults$default_theme_size) +
 			geom_bar(
-					aes(fill=factor(cbreak)),
+					aes_string(fill="factor(cbreak)"),
 					stat="identity", 
 					position="identity", 
 					width=0.8) +
 			geom_text(
-					aes(label=round(value*100, 0),
-							hjust=hjust),
+					aes_string(label="round(value*100, 0)",
+							hjust="hjust"),
 					size=3) +
 			coord_flip(ylim=c(-1,1)) +
 			opts(

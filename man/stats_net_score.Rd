@@ -5,5 +5,13 @@
 \description{Code survey data as net score}
 \details{Code survey data in net score form}
 \value{data frame}
-\seealso{\code{\link{stats_bin}}}
-\arguments{\item{x}{A data frame with four columns: crossbreak, question, response, weight}}
+\seealso{Stats functions:
+\itemize{
+\item \code{\link{stats_bin}} 
+\item \code{\link{stats_rank}} 
+\item \code{\link{stats_net_score}}
+}
+
+For an overview of the surveyor package \code{\link{surveyor}}}
+\keyword{stats}
+\arguments{\item{x}{A data frame with four columns: cbreak, question, response, weight}}

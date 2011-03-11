@@ -1,8 +1,9 @@
 \name{print_surveyor_question}
 \alias{print_surveyor_question}
-\title{Prints surveyor object output...}
+\title{Prints surveyor object output.}
 \usage{print_surveyor_question(surveyor, q_id, counter, f, g, h, plot_size)}
-\description{Prints surveyor object output}
+\description{Prints surveyor object output.}
+\keyword{internal}
 \arguments{\item{surveyor}{A surveyor object}
 \item{q_id}{The question id}
 \item{counter}{The file number}

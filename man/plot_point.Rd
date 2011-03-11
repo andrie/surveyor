@@ -3,15 +3,15 @@
 \title{Plot data in bubble chart format...}
 \usage{plot_point(s, surveyor)}
 \description{Plot data in bubble chart format}
-\seealso{Coding functions:
-\code{\link{code_single}}, 
-\code{\link{code_array}},
-\code{\link{code_text}}
-Summarising functions:
-\code{\link{stats_bin}}, 
-\code{\link{stats_net_score}}
-Plot functions: 
-\code{\link{plot_bar}}, 
-\code{\link{plot_point}}}
+\seealso{Plot functions: 
+\itemize{
+\item \code{\link{plot_bar}} 
+\item \code{\link{plot_point}} 
+\item \code{\link{plot_text}} 
+\item \code{\link{plot_net_score}} 
+}
+
+For an overview of the surveyor package \code{\link{surveyor}}}
+\keyword{plot}
 \arguments{\item{s}{A surveyor_stats object}
 \item{surveyor}{Surveyor object}}

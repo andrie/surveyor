@@ -7,7 +7,7 @@
 \description{Codes and plots a survey question}
 \details{This is the top level function that determines how a question is processed,
 coded, printed and plotted.}
-\seealso{surveyor}
+\seealso{\code{\link{as.surveyor}}}
 \arguments{\item{surveyor}{Surveyor object}
 \item{q_id}{Question id}
 \item{code_function}{A reference to a function that processes the question data}

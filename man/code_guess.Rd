@@ -4,17 +4,15 @@
 \usage{code_guess(surveyor, q_id, ...)}
 \description{Code survey data in single or array question form}
 \details{Code survey data in array question form (i.e. with subquestions)}
+\seealso{Other coding functions: 
+\code{\link{code_single}},  
+\code{\link{code_array}}, 
+\code{\link{code_text}}, 
+\code{\link{code_guess}}
+
+For an overview of the surveyor package \code{\link{surveyor}}}
 \value{data frame}
-\seealso{Coding functions:
-\code{\link{code_single}}, 
-\code{\link{code_array}},
-\code{\link{code_text}}
-Summarising functions:
-\code{\link{stats_bin}}, 
-\code{\link{stats_net_score}}
-Plot functions: 
-\code{\link{plot_bar}}, 
-\code{\link{plot_point}}}
+\keyword{code}
 \arguments{\item{surveyor}{Surveyor object}
 \item{q_id}{Question id}
 \item{...}{Other parameters passed on to downstream code_* functions}}

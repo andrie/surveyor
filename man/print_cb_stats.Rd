@@ -1,9 +1,9 @@
 \name{print_cb_stats}
 \alias{print_cb_stats}
-\title{Prints crossbreak information in latex format...}
+\title{Prints cbreak information in latex format...}
 \usage{print_cb_stats(g)}
-\description{Prints crossbreak information in latex format}
-\details{Prints crossbreak information in latex format}
+\description{Prints cbreak information in latex format}
+\details{Prints cbreak information in latex format}
 \seealso{Coding functions:
 \code{\link{code_single}}, 
 \code{\link{code_array}},
@@ -15,4 +15,5 @@ Plot functions:
 \code{\link{plot_bar}}, 
 \code{\link{plot_point}}}
 \value{data frame}
+\keyword{internal}
 \arguments{\item{g}{A surveyor_stats object}}

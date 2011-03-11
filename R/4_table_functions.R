@@ -21,9 +21,10 @@
 #' \code{\link{plot_bar}}, 
 #' \code{\link{plot_point}} 
 #' @return data frame
-#' @export
+#' @keywords internal
 print_cb_stats <- function(g){
 	
+	g_orig <- g
 	g <- g$data
 	
 	if(is.null(g)){
@@ -46,7 +47,7 @@ print_cb_stats <- function(g){
 		}
 	}
 	
-	v <- paste_percent(v)
+	if(g_orig$formatter=="percent") v <- paste_percent(v)
 
 	ret <- paste(
 #			"\\paragraph{Weighted totals}\\\\\n",
@@ -75,7 +76,7 @@ print_cb_stats <- function(g){
 #' \code{\link{plot_bar}}, 
 #' \code{\link{plot_point}} 
 #' @return data frame
-#' @export
+#' @keywords internal
 print_cb_code <- function(f){
 	
 	if(is.null(f)){

@@ -7,12 +7,18 @@
 #' @param data A data frame 
 #' @param ylabel Character string to print as plot y label
 #' @return A surveyor_stats object
+#' @keywords internal
 surveyor_stats <- function(
 		data,
-		ylabel = "Fraction of respondents"){
+		ylabel = "Fraction of respondents",
+		formatter="percent",
+		nquestion=length(unique(data$question))
+){
 	ss <- list(
 			data=data, 
-			ylabel=ylabel)
+			ylabel=ylabel,
+			formatter=formatter,
+			nquestion=nquestion)
 	class(ss) <- "surveyor_stats"
 	ss
 }
@@ -21,7 +27,7 @@ surveyor_stats <- function(
 #' 
 #' @param df A data frame containing at least two columns: response and value 
 #' @return A data frame
-#' @internal
+#' @keywords internal
 reorder_response <- function(df){
 	resp_levels  <- df[order(df$value, decreasing=TRUE), ]$response
 	df$response <- factor(df$response, levels=resp_levels, ordered=TRUE)
@@ -34,6 +40,7 @@ reorder_response <- function(df){
 #' 
 #' @param x A list, data frame or vector 
 #' @return TRUE if all values are NA, FALSE otherwise
+#' @keywords internal
 all_na <- function(x){
 	if (is.list(x) || is.data.frame(x)){
 		return(all(as.logical(llply(x, function(y) all(is.na(y))))))
@@ -45,6 +52,7 @@ all_na <- function(x){
 #' 
 #' @param x A list, data frame or vector 
 #' @return TRUE if all values are NULL, FALSE otherwise
+#' @keywords internal
 all_null <- function(x){
 	if (is.list(x) || is.data.frame(x)){
 		return(all(as.logical(llply(x, function(y) all(is.null(y))))))
@@ -64,19 +72,30 @@ all_null <- function(x){
 #' 
 #' @param x A data frame with four columns: cbreak, question, response, weight 
 #' @return A data frame with three columns: cbreak, variable, value
+#' @seealso
+#' Stats functions:
+#' \itemize{
+#' \item \code{\link{stats_bin}} 
+#' \item \code{\link{stats_rank}} 
+#' \item \code{\link{stats_net_score}}
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords stats
 #' @export
 stats_bin <- function(x){
 	if(is.null(x)){
 		return(NULL)
 	}
-	cbweight <- ddply(x, .(cbreak, question), summarise, weight=sum(weight))
+	weight <- NULL; rm(weight) # Dummy to trick R CMD check
+	cbweight <- ddply(x, c("cbreak", "question"), summarise, weight=sum(weight))
 	row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
 	x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
 	
 	
 	if (length(unique(x$question))==1){
 		# code single
-		df <- ddply(x, .(cbreak, response), 
+		df <- ddply(x, c("cbreak", "response"), 
 				summarise, 
 				value=sum(weight)
 		)
@@ -88,7 +107,7 @@ stats_bin <- function(x){
 		
 	} else {
 		# code array
-		df <- ddply(x, .(cbreak, question, response), 
+		df <- ddply(x, c("cbreak", "question", "response"), 
 				summarise, 
 				value=sum(weight)
 		)
@@ -96,6 +115,54 @@ stats_bin <- function(x){
 	surveyor_stats(
 			df,
 			ylabel="Fraction of respondents")
+}
+
+
+#' Calculates numeric sum
+#'
+#' Add description 
+#' 
+#' @param x A data frame with four columns: cbreak, question, response, weight 
+#' @return A data frame with three columns: cbreak, variable, value
+#' @seealso
+#' Stats functions:
+#' \itemize{
+#' \item \code{\link{stats_bin}} 
+#' \item \code{\link{stats_rank}} 
+#' \item \code{\link{stats_net_score}}
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords stats
+#' @export
+stats_sum <- function(x){
+	if(is.null(x)){
+		return(NULL)
+	}
+	weight <- NULL; rm(weight) # Dummy to trick R CMD check
+	cbweight <- ddply(x, c("cbreak", "question"), summarise, weight=sum(weight))
+	row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
+	x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
+	
+	
+	if (length(unique(x$question))==1){
+		# code single
+		df <- ddply(x, c("cbreak"), 
+				summarise, 
+				value=sum(weight*response, na.rm=TRUE)
+		)
+		
+	} else {
+		# code array
+		df <- ddply(x, c("cbreak", "question"), 
+				summarise, 
+				value=sum(weight*response, na.rm=TRUE)
+		)
+	}
+	surveyor_stats(
+			df,
+			ylabel="Value",
+			formatter="format")
 }
 
 
@@ -107,26 +174,38 @@ stats_bin <- function(x){
 #' @param x A data frame with four columns: cbreak, question, response, weight 
 #' @param top_n Numeric, indicates how the ranking is summarised
 #' @return A data frame with three columns: cbreak, variable, value
+#' @seealso
+#' Stats functions:
+#' \itemize{
+#' \item \code{\link{stats_bin}} 
+#' \item \code{\link{stats_rank}} 
+#' \item \code{\link{stats_net_score}}
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords stats
 #' @export
 stats_rank <- function(x, top_n=3){
+	weight <- NULL; rm(weight) # Dummy to trick R CMD check
+	value <- NULL; rm(value) # Dummy to trick R CMD check
 	if(is.null(x)){
 		return(NULL)
 	}
-	cbreakweight <- ddply(x, .(cbreak), summarise, weight=sum(weight))
+	cbreakweight <- ddply(x, "cbreak", summarise, weight=sum(weight))
 	row.names(cbreakweight) <- cbreakweight$cbreak
 	x$weight <- x$weight / cbreakweight[x$cbreak, ]$weight
 	
 	
 	if (length(unique(x$question))==1){
 		# code single
-		df <- ddply(x, .(cbreak, response), 
+		df <- ddply(x, c("cbreak", "response"), 
 				summarise, 
 				value=sum(weight)
 		)
 		
 	} else {
 		# code array
-		df <- ddply(x, .(cbreak, question, response), 
+		df <- ddply(x, c("cbreak", "question", "response"), 
 				summarise, 
 				value=sum(weight)
 		)
@@ -134,7 +213,7 @@ stats_rank <- function(x, top_n=3){
 	
 	h1 <- df[df$question<=3, ]
 
-	h2 <- ddply(h1, .(cbreak, response), summarize, value=sum(value))
+	h2 <- ddply(h1, c("cbreak", "response"), summarize, value=sum(value))
 	h2 <- reorder_response(h2)
 	
 #	if (is.ordered(x$response)){
@@ -161,6 +240,7 @@ stats_rank <- function(x, top_n=3){
 #' It then calculates a net percentage score
 #' 
 #' @param x An ordered factor
+#' @export 
 net_score <- function(x){
 	
 	x <- x[!is.na(x)]
@@ -182,18 +262,28 @@ net_score <- function(x){
 #' 
 #' @param x A data frame with four columns: cbreak, question, response, weight 
 #' @return data frame
-#' @seealso \code{\link{stats_bin}}
+#' @seealso
+#' Stats functions:
+#' \itemize{
+#' \item \code{\link{stats_bin}} 
+#' \item \code{\link{stats_rank}} 
+#' \item \code{\link{stats_net_score}}
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords stats
 #' @export
 stats_net_score <- function(x){
+	response <- NULL; rm(response) # Dummy to trick R CMD check
 	if (length(unique(x$question))==0){
 		# code single
-		df <- ddply(x, .(cbreak, response), 
+		df <- ddply(x, c("cbreak", "response"), 
 				summarise,
 				value=net_score(response))
 	} else {
 		# code array
 #		ddply(x, .(cbreak, question, response), 
-		df <- ddply(x, .(cbreak, question), 
+		df <- ddply(x, c("cbreak", "question"), 
 				summarise,
 				value=net_score(response))
 		quest_levels  <- df[order(df$value, decreasing=TRUE), ]$question
@@ -201,6 +291,6 @@ stats_net_score <- function(x){
 	}
 	surveyor_stats(
 			df,
-			ylabel="Net satisfaction score")
+			ylabel="Net score")
 }
 

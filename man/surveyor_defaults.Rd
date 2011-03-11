@@ -1,6 +1,6 @@
 \name{surveyor_defaults}
 \alias{surveyor_defaults}
-\title{Initialises surveyor object defaults...}
+\title{Initialises surveyor object defaults.}
 \usage{surveyor_defaults(path_latex=Sys.getenv()["TEMP"],
     path_graphics=path_latex, output_to_latex=FALSE,
     output_filename=file.path(path_latex, "surveyor.tex"),
@@ -10,8 +10,8 @@
     default_colour_area=rgb(127, 201, 127, 255, maxColorValue = 255),
     default_colour_point=rgb(27, 158, 119, 255, maxColorValue = 255),
     dpi=600)}
-\description{Initialises surveyor object defaults}
-\seealso{surveyor}
+\description{Initialises surveyor object defaults.}
+\seealso{\code{\link{as.surveyor}}}
 \arguments{\item{path_latex}{Path where latex will be saved}
 \item{path_graphics}{Path where graphics files will be saved}
 \item{output_to_latex}{TRUE or FALSE, determines if latex commands is output}

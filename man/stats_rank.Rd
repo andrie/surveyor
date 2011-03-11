@@ -1,9 +1,19 @@
 \name{stats_rank}
 \alias{stats_rank}
 \title{Calculates summary statistics for ranking type questions...}
-\usage{stats_rank(x)}
+\usage{stats_rank(x, top_n=3)}
 \description{Calculates summary statistics for ranking type questions}
 \details{Takes the result of a code_function, e.g. code_single(), and calculates
 summary values, for direct plotting by a plot_function, e.g. plot_bar()}
-\value{A data frame with three columns: crossbreak, variable, value}
-\arguments{\item{x}{A data frame with four columns: crossbreak, question, response, weight}}
+\value{A data frame with three columns: cbreak, variable, value}
+\seealso{Stats functions:
+\itemize{
+\item \code{\link{stats_bin}} 
+\item \code{\link{stats_rank}} 
+\item \code{\link{stats_net_score}}
+}
+
+For an overview of the surveyor package \code{\link{surveyor}}}
+\keyword{stats}
+\arguments{\item{x}{A data frame with four columns: cbreak, question, response, weight}
+\item{top_n}{Numeric, indicates how the ranking is summarised}}

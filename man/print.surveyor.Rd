@@ -1,6 +1,8 @@
 \name{print.surveyor}
+\title{Prints surveyor object.}
+\usage{print(x, ...)}
+\description{Prints surveyor object.}
+\alias{print}
 \alias{print.surveyor}
-\title{Prints surveyor object...}
-\usage{print.surveyor(surveyor)}
-\description{Prints surveyor object}
-\arguments{\item{surveyor}{surveyor object}}
+\arguments{\item{x}{surveyor object}
+\item{...}{ignored}}

@@ -2,21 +2,22 @@
 ###  Question handling functions                                             ###
 ################################################################################
 
-# TODO: Pass pattern to question handling functions using surveyor defaults
+#### TODO: Pass pattern to question handling functions using surveyor defaults
 
-#' Identifies subquestions of a given question in a data.frame
+#' Identifies subquestions of a given question in a data frame.
 #' 
 #' Given a question id, e.g. Q4, finds all subquestions, e.g. Q4_1, Q4_2, etc. 
 #' The pattern can be set by modifying question_pattern in the surveyor defaults
 #'
-#' @param q_data q_data frame with survey q_data
+#' @param q_data data frame with survey data
 #' @param q_id The question id, e.g. Q4
-#' @param surveyor surveyor object, used to set default question pattern
-## #' @examples
-## #' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
-## #' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
-## #' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
-## #' surveyor:::get_q_subquestions(q_data, "Q4") 					
+#' @param surveyor surveyor object used to set default question pattern
+#' @export
+#' @examples
+#' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
+#' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
+#' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
+#' get_q_subquestions(q_data, "Q4") 					
 get_q_subquestions <- function(q_data, q_id, surveyor=NULL){
 	if (is.null(surveyor)){
 		pattern <- "_[[:digit:]]*$"
@@ -30,29 +31,28 @@ get_q_subquestions <- function(q_data, q_id, surveyor=NULL){
 		tmp <- names(q_data)[find]
 		s <- sort(which(names(q_data) %in% tmp))
 		
-		
-#		return(paste(q_id, Q - min(Q) + 1, sep="_"))
 		return(names(q_data)[s])
 	}	
 }
 
 
-#' Returns unique elements of question text
+#' Returns unique elements of question text.
 #' 
 #' Given a question id, e.g. Q4, finds all subquestions, e.g. Q4_1, Q4_2, etc, 
 #' and returns the question text that is unique to each 
 #'
 #' @param q_data data frame with survey data
 #' @param q_id string containing the question id, e.g. Q4. This has to
-#' 		match a name in q_data
+#' match a name in q_data
 #' @param q_text Named character vector containing the question text
 #' @param surveyor surveyor object, used to set default question pattern
-#' @seealso get_q_text, get_q_text_common
-## #' @examples
-## #' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
-## #' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
-## #' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
-## #' surveyor:::get_q_text_unique(q_data, "Q4", q_text) 					
+#' @seealso \code{\link{get_q_text}}, \code{\link{get_q_text_common}}
+#' @export
+#' @examples
+#' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
+#' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
+#' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
+#' get_q_text_unique(q_data, "Q4", q_text) 					
 get_q_text_unique <- function(q_data, q_id, q_text, surveyor=NULL){
 	if (is.null(surveyor)){
 		append  <- TRUE
@@ -97,11 +97,12 @@ get_q_text_unique <- function(q_data, q_id, q_text, surveyor=NULL){
 #' @param q_text Named character vector containing the question text
 #' @param surveyor surveyor object, used to set default question pattern
 #' @seealso get_q_text, get_q_text_unique
-## #' @examples
-## #' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
-## #' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
-## #' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
-## #' surveyor:::get_q_text_common(q_data, "Q4", q_text) 					
+#' @export
+#' @examples
+#' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
+#' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
+#' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
+#' get_q_text_common(q_data, "Q4", q_text) 					
 get_q_text_common <- function(q_data, q_id, q_text, surveyor=NULL){
 	if (is.null(surveyor)){
 		append  <- TRUE
@@ -145,12 +146,13 @@ get_q_text_common <- function(q_data, q_id, q_text, surveyor=NULL){
 #' @param surveyor A surveyor object
 #' @param q_id The question id, e.g. Q4
 #' @seealso get_q_text_common, get_q_text_unique
-## #' @examples
-## #' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
-## #' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
-## #' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
-## #' surveyor:::get_q_text(q_data, "Q1", q_text)
-## #'' surveyor:::get_q_text(q_data, "Q4", q_text)
+#' @export 
+#' @examples
+#' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
+#' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
+#' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
+#' get_q_text(q_data, "Q1")
+#' get_q_text(q_data, "Q4")
 get_q_text <- function(surveyor, q_id){
 	
 	q_data <- surveyor$q_data

@@ -200,7 +200,7 @@ s_defaults <- surveyor_defaults(
 		output_to_latex = FALSE
 )
 
-s <- surveyor(q_data, q_text, q_data$crossbreak, q_data$weight, s_defaults)
+s <- as.surveyor(q_data, q_text, q_data$crossbreak, q_data$weight, s_defaults)
 #s_count <- new_counter()
 
 t_defaults <- surveyor_defaults(
@@ -210,10 +210,10 @@ t_defaults <- surveyor_defaults(
 		output_filename = sinkfile
 )
 
-t <- surveyor(q_data, q_text, q_data$crossbreak, q_data$weight, t_defaults)
+t <- as.surveyor(q_data, q_text, q_data$crossbreak, q_data$weight, t_defaults)
 #t_count <- new_counter()
 
-s2 <- surveyor(q_data, q_text, list(q_data$crossbreak, q_data$crossbreak2), q_data$weight, s_defaults)
+s2 <- as.surveyor(q_data, q_text, list(q_data$crossbreak, q_data$crossbreak2), q_data$weight, s_defaults)
 #s2_count <- new_counter()
 
 
@@ -250,7 +250,7 @@ test_that("Surveyor objects are defined properly", {
 			expect_that(s$weight, equals(q_data$weight))
 			expect_that(is.surveyor(s), equals(TRUE))
 			expect_that(is.surveyor(q_data), equals(FALSE))
-			expect_that(surveyor(q_data, q_text[-1]), throws_error())
+			expect_that(as.surveyor(q_data, q_text[-1]), throws_error())
 			expect_that(surveyor_defaults(path_latex=file.path("random")), throws_error())
 			expect_that(surveyor_defaults(path_graph=file.path("random")), throws_error())
 			
@@ -273,8 +273,8 @@ test_that("code_single works", {
 
 test_that("plot functions work with code_single", {
 			
-			expect_that(plot_bar(plotcode), is_a("ggplot"))
-			expect_that(plot_point(plotcode), is_a("ggplot"))
+			expect_that(plot_bar(plotcode, s), is_a("ggplot"))
+			expect_that(plot_point(plotcode, s), is_a("ggplot"))
 			
 		})
 
