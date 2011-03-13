@@ -61,6 +61,12 @@ theme_minimal <- opts(
 #' @export
 plot_bar <- function(s, surveyor){
 	f <- s$data
+
+	# Test for yes/no responses
+	if(is.factor(f$response) & all(levels(f$response) %in% c("Yes", "No"))){
+		f <- f[f$response == levels(f$response)[which(levels(f$response) == "Yes")], ]
+	}
+		
 	if (is.null(f$question)){
 		# Plot single question
 		p <- ggplot(f, aes_string(x="response", y="value", fill="factor(cbreak)"))
@@ -97,9 +103,89 @@ plot_bar <- function(s, surveyor){
 	p
 }
 
+#' Plot data in bar chart format without modifying format.
+#' 
+#' The standard plot_bar() function will plot the data in a stacked bar chart format and apply percentage formatting.  plot_bar_sum() applies no formatting.
+#'
+#' @param s A surveyor_stats object
+#' @param surveyor Surveyor object
+#' @seealso 
+#' Plot functions: 
+#' \itemize{
+#' \item \code{\link{plot_bar}} 
+#' \item \code{\link{plot_point}} 
+#' \item \code{\link{plot_text}} 
+#' \item \code{\link{plot_net_score}} 
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords plot
+#' @export
 plot_bar_sum <- function(s, surveyor){
 	plot_bar(s, surveyor, formatter=format)
 }
+
+###############################################################################
+
+
+#' Plot data in bar chart format, where the data consists of yes/no options.
+#' 
+#' This will produce a bar chart, but only "Yes" values will be plotted, i.e. the "No" values will be invisible.
+#'
+#' @param s A surveyor_stats object
+#' @param surveyor Surveyor object
+#' @seealso 
+#' Plot functions: 
+#' \itemize{
+#' \item \code{\link{plot_bar}} 
+#' \item \code{\link{plot_point}} 
+#' \item \code{\link{plot_text}} 
+#' \item \code{\link{plot_net_score}} 
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords plot
+#' @export
+plot_yesno <- function(s, surveyor){
+	f <- s$data
+	level_yes <- levels(f$response)[2]
+	f <- f[f$response==level_yes, ] ### Filters only the second level
+	if (is.null(f$question)){
+		# Plot single question
+		p <- ggplot(f, aes_string(x="response", y="value", fill="factor(cbreak)"))
+	} else {
+		if (is.null(f$response)) {
+			# Plot array of single values per question
+			p <- ggplot(f, aes_string(x="question", y="value", fill="factor(cbreak)"))
+		} else {
+			# Plot array question as stacked bar
+			p <- ggplot(f, aes_string(x="question", y="value", fill="factor(response)"))
+		}
+	}
+	p <- p + 
+			theme_surveyor(surveyor$defaults$default_theme_size) +
+			geom_bar(stat="identity") + 
+			coord_flip() + 
+			scale_y_continuous(
+					s$ylabel, 
+					formatter=s$formatter) +
+			facet_grid(~cbreak) + 
+			opts(
+					legend.position="none",
+					axis.title.y = theme_blank()
+			)
+	
+	if (is.null(f$question)){
+		# Plot single question
+		if(length(unique(f$response)) > 8){p <- p + scale_fill_hue()}
+	} else {
+		# Plot array of single values per question
+		# Plot array question as stacked bar
+		if(length(unique(f$question)) > 8){p <- p + scale_fill_hue()}
+	}	
+	p
+}
+
 
 ###############################################################################
 
