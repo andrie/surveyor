@@ -302,14 +302,14 @@ test_that("plot functions work with code_array", {
 
 ###############################################################################
 
-context("Test plumbing of plot_q")
+context("Test plumbing of surveyor_plot")
 
-test_that("plot_q works", {
+test_that("surveyor_plot works", {
 			
-			expect_that(plot_q(s, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
-			expect_that(plot_q(s, "Q1", code_single, stats_bin, plot_bar), is_a("NULL"))
+			expect_that(surveyor_plot(s, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
+			expect_that(surveyor_plot(s, "Q1", code_single, stats_bin, plot_bar), is_a("NULL"))
 			
-			expect_that(plot_q(s, "Q4", code_array, stats_bin, plot_point), is_a("NULL"))
+			expect_that(surveyor_plot(s, "Q4", code_array, stats_bin, plot_point), is_a("NULL"))
 			
 		})
 
@@ -318,9 +318,9 @@ test_that("plot_q works", {
 context("Test that multiple crossbreaks work")
 
 
-test_that("plot_q works with multiple crossbreaks", {
+test_that("surveyor_plot works with multiple crossbreaks", {
 			
-			expect_that(plot_q(s2, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
+			expect_that(surveyor_plot(s2, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
 			
 		})
 
@@ -336,10 +336,10 @@ if (file.exists(file.path(latex_path, sinkfile))){
 }
 
 
-test_that("plot_q works in Latex", {
+test_that("surveyor_plot works in Latex", {
 			
-			plot_q(t, "Q1", code_single, stats_bin, plot_bar)
-			plot_q(t, "Q4", code_array, stats_bin, plot_bar)
+			surveyor_plot(t, "Q1", code_single, stats_bin, plot_bar)
+			surveyor_plot(t, "Q4", code_array, stats_bin, plot_bar)
 			expect_that(file.exists(sinkfile), equals(TRUE))
 			expect_that(file.exists(file.path(graph_path, "fig1.eps")), equals(TRUE))
 			expect_that(file.exists(file.path(graph_path, "fig2.eps")), equals(TRUE))

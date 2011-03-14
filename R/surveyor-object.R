@@ -231,7 +231,7 @@ new_counter <- function(start=1) {
 #' @param ... Other parameters passed to code_function
 #' @export
 #' @seealso \code{\link{as.surveyor}}
-plot_q <- function(
+surveyor_plot <- function(
 		surveyor,
 		q_id,
 		code_function = code_guess,
@@ -268,7 +268,7 @@ plot_q <- function(
 				print(h)
 			}
 		} else {
-			cat_string <- print_surveyor_question(
+			cat_string <- surveyor_print_question(
 					surveyor,
 					q_id,
 					counter,
@@ -276,7 +276,7 @@ plot_q <- function(
 					g,
 					h, 
 					plot_size)
-			cat_surveyor(cat_string, surveyor)
+			surveyor_write(surveyor, cat_string)
 		}
 		
 	}
@@ -286,10 +286,7 @@ plot_q <- function(
 	message(q_id)
 	if (surveyor$defaults$output_to_latex){
 		qtext <- latex_question(paste(q_id, get_q_text(surveyor, q_id)))
-#		qtext <- paste(
-#				qtext,
-#				"\\nopagebreak[4]")
-		cat_surveyor(qtext, surveyor)
+		surveyor_write(surveyor, qtext)
 	}
 		
 	if (is.list(surveyor$crossbreak)) {
@@ -304,15 +301,21 @@ plot_q <- function(
 
 }
 
+surveyor_heading <- function(surveyor, x, level="chapter"){
+	text <- paste("\\", level, "{", x, "}", sep="")
+	surveyor_write(surveyor, text)
+}
 ###############################################################################
 
 
 #' Writes result to surveyor sink file.
 #' 
-#' @param x A character vector
+#' Appends text to surveyor sink file.
+#' 
 #' @param surveyor A surveyor object
+#' @param x A character vector
 #' @keywords internal
-cat_surveyor <- function(x, surveyor){
+surveyor_write <- function(surveyor, x){
 	cat(x,
 			file=surveyor$defaults$output_filename,
 			sep="",
@@ -322,7 +325,7 @@ cat_surveyor <- function(x, surveyor){
 
 ################################################################################
 
-#' Prints surveyor object output. 
+#' Prints surveyor question. 
 #' 
 #' @param surveyor A surveyor object
 #' @param q_id The question id
@@ -332,9 +335,9 @@ cat_surveyor <- function(x, surveyor){
 #' @param h Results from plot_* function
 #' @param plot_size the plot size in inches
 #' @keywords internal
-print_surveyor_question <- function(surveyor, q_id, counter, f, g, h, plot_size){
+surveyor_print_question <- function(surveyor, q_id, counter, f, g, h, plot_size){
 	# Print question description
-#	cat_surveyor(qtext, surveyor) 
+#	surveyor_write(surveyor, qtext) 
 					
 	if (is.null(f)){
 		cat_string <- "\nNo data\n\n"
@@ -351,7 +354,7 @@ print_surveyor_question <- function(surveyor, q_id, counter, f, g, h, plot_size)
 				min(3, max(1, g$nquestion / 7)),
 				1
 		)
-		#message(paste("In print_surveyor_question, height_multiplier = ", height_multiplier))
+		#message(paste("In surveyor_print_question, height_multiplier = ", height_multiplier))
 		ggsave(
 				h, 
 				filename = filename, 

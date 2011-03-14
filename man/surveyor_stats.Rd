@@ -2,7 +2,7 @@
 \alias{surveyor_stats}
 \title{Creates surveyor_stats object, used as input to plot...}
 \usage{surveyor_stats(data, ylabel="Fraction of respondents",
-    formatter="percent")}
+    formatter="percent", nquestion=length(unique(data$question)))}
 \description{Creates surveyor_stats object, used as input to plot}
 \value{A surveyor_stats object}
 \keyword{internal}
