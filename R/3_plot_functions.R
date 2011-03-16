@@ -79,6 +79,7 @@ plot_bar <- function(s, surveyor){
 			p <- ggplot(f, aes_string(x="question", y="value", fill="factor(response)"))
 		}
 	}
+	
 	p <- p + 
 			theme_surveyor(surveyor$defaults$default_theme_size) +
 			geom_bar(stat="identity") + 
@@ -90,7 +91,9 @@ plot_bar <- function(s, surveyor){
 			opts(
 				legend.position="none",
 				axis.title.y = theme_blank()
-			)
+			) +
+			labs(fill="Response")
+	
 	
 	if (is.null(f$question)){
 		# Plot single question
@@ -99,7 +102,8 @@ plot_bar <- function(s, surveyor){
 			# Plot array of single values per question
 			# Plot array question as stacked bar
 			if(length(unique(f$question)) > 8){p <- p + scale_fill_hue()}
-	}	
+			p <- p + opts(legend.position="right")
+		}	
 	p
 }
 

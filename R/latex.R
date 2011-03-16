@@ -69,19 +69,19 @@ latexTranslate <- function (object, inn = NULL, out = NULL, pb = FALSE, greek = 
 }
 
 
-#' Prints a string to Latex, dealing with special characters
-#'
-#' @param x A string containing question text
-#' @keywords internal
-latex_question <- function(x){
-#  cat("\\section{", x, "}\n\n", sep="")
-	inn <- "&"
-	out <- "\\&"
-	latexTranslate(
-					paste("\n\\section{", x, "}\n\n", sep=""), 
-					inn=inn, 
-					out=out)
-}
+##' Prints a string to Latex, dealing with special characters
+##'
+##' @param x A string containing question text
+##' @keywords internal
+#latex_question <- function(x){
+##  cat("\\section{", x, "}\n\n", sep="")
+#	inn <- "&"
+#	out <- "\\&"
+#	latexTranslate(
+#					paste("\n\\section{", x, "}\n\n", sep=""), 
+#					inn=inn, 
+#					out=out)
+#}
 
 #' Prepares a string to be printed sideways (vertical) in LaTex
 #'

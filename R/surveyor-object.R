@@ -285,8 +285,11 @@ surveyor_plot <- function(
 	
 	message(q_id)
 	if (surveyor$defaults$output_to_latex){
-		qtext <- latex_question(paste(q_id, get_q_text(surveyor, q_id)))
-		surveyor_write(surveyor, qtext)
+		surveyor_heading(
+				surveyor, 
+				paste(q_id, get_q_text(surveyor, q_id)), 
+				headinglevel= "section",
+				pagebreak=FALSE)
 	}
 		
 	if (is.list(surveyor$crossbreak)) {
@@ -301,8 +304,18 @@ surveyor_plot <- function(
 
 }
 
-surveyor_heading <- function(surveyor, x, level="chapter"){
-	text <- paste("\\", level, "{", x, "}", sep="")
+#' Creates latex heading.
+#' 
+#' Creates latex heading
+#' 
+#' @param surveyor A surveyor object
+#' @param x A character vector
+#' @param level Character vector corresponding to latex heading, e.g. Chapter, Section, etc.
+#' @param pagebreak Forces a page break if TRUE
+#' @keywords internal
+surveyor_heading <- function(surveyor, x, headinglevel="chapter", pagebreak=FALSE){
+	text <- paste("\n\\", headinglevel, "{", latexTranslate(x), "}", sep="")
+	if(pagebreak) text <- paste(text, "\n\\pagebreak[4]\n")
 	surveyor_write(surveyor, text)
 }
 ###############################################################################
@@ -343,7 +356,7 @@ surveyor_print_question <- function(surveyor, q_id, counter, f, g, h, plot_size)
 		cat_string <- "\nNo data\n\n"
 	} else {
 		# Print plot
-		filename <- paste("fig", counter, ".eps", sep="")
+		filename <- paste("fig", sprintf("%04d", counter), ".eps", sep="")
 		message(paste("Now saving ", filename, sep=""))
 
 		# Adjust vertical size of plot depending on number of questions
@@ -374,9 +387,9 @@ surveyor_print_question <- function(surveyor, q_id, counter, f, g, h, plot_size)
 				sep=""
 		)
 		
-		if(height_multiplier * plot_size[2] >= 20){
-			cat_string <- paste(cat_string, "\n\\newpage", sep="")
-		}
+#		if(height_multiplier * plot_size[2] >= 20){
+#			cat_string <- paste(cat_string, "\n\\newpage", sep="")
+#		}
 						
 	}
 	

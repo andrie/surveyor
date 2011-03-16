@@ -276,68 +276,68 @@ code_text <- function(
 #
 
 
-#' Code survey data in array question form
-#'
-#' Code survey data in array question form (i.e. with subquestions)
-#' 
-#' @param surveyor Surveyor object
-#' @param q_id Question id
-#' @param remove_other If true, will remove last column
-#' @seealso
-#' Other coding functions: 
-#' \code{\link{code_single}},  
-#' \code{\link{code_array}}, 
-#' \code{\link{code_text}}, 
-#' \code{\link{code_guess}}
-#' 
-#' For an overview of the surveyor package \code{\link{surveyor}}
-#' 
-#' @return data frame
-#' @keywords code
-#' @export
-code_array_fast <- function(
-		surveyor,
-		q_id,
-		remove_other=FALSE
-){
-	# Melt multicoded question in data.frame, and code question text to variable
-	
-	q_data <- surveyor$q_data
-	q_text <- surveyor$q_text
-	
-	r <- get_q_text_unique(q_data, q_id, q_text)
-	names(r) <- get_q_subquestions(q_data, q_id, surveyor)
-	
-	if (remove_other==TRUE) r <- r[-length(r)]
-	
-	x <- as.list(q_data[names(r)])
-	x[x=="NA"] <- NA
-	
-	if (all_na(x)){
-		return(NULL)
-	}
-	
-	#x <- llply(x, as.numeric)  ### This is the line that handles multi-code
-	
-	x$weight <- surveyor$weight
-	
-	# Scale to 100%
-	#x$weight <- x$weight / sum(x$weight)
-	
-	x <- as.data.frame(x, stringsAsFactors=TRUE)
-	x$cbreak <- surveyor$cbreak
-	x <- melt(x, id.vars=c("cbreak", "weight"), na.rm=TRUE)
-	
-	x$variable <- r[as.character(x$variable)]
-	#x$variable <- str_wrap(x$variable, 50)
-	x1 <- data.frame(
-			cbreak=x$cbreak,
-			question=x$variable,
-			response=x$value,
-			weight=x$weight,
-			stringsAsFactors=FALSE
-	)
-	x1[!is.na(x1$response), ]
-}
-
+##' Code survey data in array question form
+##'
+##' Code survey data in array question form (i.e. with subquestions)
+##' 
+##' @param surveyor Surveyor object
+##' @param q_id Question id
+##' @param remove_other If true, will remove last column
+##' @seealso
+##' Other coding functions: 
+##' \code{\link{code_single}},  
+##' \code{\link{code_array}}, 
+##' \code{\link{code_text}}, 
+##' \code{\link{code_guess}}
+##' 
+##' For an overview of the surveyor package \code{\link{surveyor}}
+##' 
+##' @return data frame
+##' @keywords code
+##' @export
+#code_array_fast <- function(
+#		surveyor,
+#		q_id,
+#		remove_other=FALSE
+#){
+#	# Melt multicoded question in data.frame, and code question text to variable
+#	
+#	q_data <- surveyor$q_data
+#	q_text <- surveyor$q_text
+#	
+#	r <- get_q_text_unique(q_data, q_id, q_text)
+#	names(r) <- get_q_subquestions(q_data, q_id, surveyor)
+#	
+#	if (remove_other==TRUE) r <- r[-length(r)]
+#	
+#	x <- as.list(q_data[names(r)])
+#	x[x=="NA"] <- NA
+#	
+#	if (all_na(x)){
+#		return(NULL)
+#	}
+#	
+#	#x <- llply(x, as.numeric)  ### This is the line that handles multi-code
+#	
+#	x$weight <- surveyor$weight
+#	
+#	# Scale to 100%
+#	#x$weight <- x$weight / sum(x$weight)
+#	
+#	x <- as.data.frame(x, stringsAsFactors=TRUE)
+#	x$cbreak <- surveyor$cbreak
+#	x <- melt(x, id.vars=c("cbreak", "weight"), na.rm=TRUE)
+#	
+#	x$variable <- r[as.character(x$variable)]
+#	#x$variable <- str_wrap(x$variable, 50)
+#	x1 <- data.frame(
+#			cbreak=x$cbreak,
+#			question=x$variable,
+#			response=x$value,
+#			weight=x$weight,
+#			stringsAsFactors=FALSE
+#	)
+#	x1[!is.na(x1$response), ]
+#}
+#
 
