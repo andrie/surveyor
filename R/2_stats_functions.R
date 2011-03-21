@@ -179,6 +179,15 @@ stats_bin <- function(x, ylabel="Respondents", stats="stats_bin", convert_to_per
 				value=sum(weight)
 		)
 	}
+	
+	# Test for yes/no responses
+	if(is.factor(df$response) && all(levels(df$response) %in% c("Yes", "No"))){
+		df <- df[df$response == levels(df$response)[which(levels(df$response) == "Yes")], ]
+	}
+	if(is.logical(df$response)){
+		df <- df[df$response == TRUE, ]
+	}
+	
 	surveyor_stats(
 			df,
 			ylabel=ylabel,

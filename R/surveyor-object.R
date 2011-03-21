@@ -333,10 +333,9 @@ surveyor_heading <- function(surveyor, x, headinglevel="chapter", pagebreak=FALS
 #' @keywords internal
 surveyor_write <- function(surveyor, x){
 	if(surveyor$defaults$output_to_latex){
-		cat(x,
-				file=surveyor$defaults$output_filename,
-				sep="",
-				append=TRUE)
+		sfile <- file(surveyor$defaults$output_filename, "a")  ### Open file in append mode
+		cat(x, file=sfile, sep="", append=TRUE)
+		close(sfile)
 	} else {
 		message(x)
 	}
