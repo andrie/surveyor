@@ -12,15 +12,19 @@ surveyor_stats <- function(
 		data,
 		ylabel = "Fraction of respondents",
 		formatter="percent",
-		nquestion=length(unique(data$question))
+		nquestion=length(unique(data$question)),
+		stats=""
 ){
-	ss <- list(
-			data=data, 
-			ylabel=ylabel,
-			formatter=formatter,
-			nquestion=nquestion)
-	class(ss) <- "surveyor_stats"
-	ss
+	structure(
+			list(
+				data=data, 
+				ylabel=ylabel,
+				formatter=formatter,
+				nquestion=nquestion,
+				stats=stats
+			),
+			class = "surveyor_stats"
+	)
 }
 
 #' Sorts df in descending order 
@@ -60,15 +64,34 @@ all_null <- function(x){
 	return(all(is.null(x)))
 }
 
+#' Guesses whether a question should be coded as net score
+#' 
+#' Evaluates the first and last factor levels of x and tests whether these levels contain words in match_words
+#' 
+#' @param x A factor of character strings
+#' @param match_words A character vector of words to match 
+#' @return A data frame with three columns: cbreak, variable, value
+#' @keywords internal
+identify_net_score <- function(
+		x, 
+		match_words = c(
+				"satisfied", "dissatisfied",
+				"agree", "disagree",
+				"important", "unimportant",
+				"likely", "unlikely"
+				)
+		){
+	l <- levels(x)[c(1, nlevels(x))]
+	w <- gsub("[[:punct:]]", "", l)
+	w <- tolower(w)
+	w <- strsplit(w, " ")
+	all(laply(w, function(wx)any(wx %in% tolower(match_words))))
+}
 
-#' Calculates summary statistics
+
+#' Inspects data and guesses what type of analysis to do.
 #' 
-#' Takes the result of a code_function, e.g. code_single(), and calculates
-#' summary values, for direct plotting by a plot_function, e.g. plot_bar()
-#' 
-#' The results are sorted in descending order of value, and "response" is
-#' coerced into an ordered factor (unless "response" is already an ordered 
-#' factor).
+#' If data is categorical stats_bin, if data is metric then stats_sum
 #' 
 #' @param x A data frame with four columns: cbreak, question, response, weight 
 #' @return A data frame with three columns: cbreak, variable, value
@@ -83,14 +106,58 @@ all_null <- function(x){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @export
-stats_bin <- function(x){
+stats_guess <- function(x){
+	if(is.null(x)){
+		return(NULL)
+	}
+	
+	if(is.factor(x$response)){
+		if(identify_net_score(x$response)){
+			stats_net_score(x)
+		} else {	
+			stats_bin_percent(x)
+		}
+	} else {
+		if(is.numeric(x$response)){
+			stats_sum(x)
+		} else {
+			stats_bin_percent(x)
+		}	
+	}
+}
+
+
+
+#' Calculates summary statistics
+#' 
+#' Takes the result of a code_function, e.g. code_single(), and calculates summary values, for direct plotting by a plot_function, e.g. plot_bar()
+#' 
+#' The results are sorted in descending order of value, and "response" is coerced into an ordered factor (unless "response" is already an ordered factor).
+#' 
+#' @param x A data frame with four columns: cbreak, question, response, weight 
+#' @return A data frame with three columns: cbreak, variable, value
+#' @seealso
+#' Stats functions:
+#' \itemize{
+#' \item \code{\link{stats_bin}} 
+#' \item \code{\link{stats_rank}} 
+#' \item \code{\link{stats_net_score}}
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords stats
+#' @export
+stats_bin <- function(x, ylabel="Respondents", stats="stats_bin", convert_to_percent=FALSE){
 	if(is.null(x)){
 		return(NULL)
 	}
 	weight <- NULL; rm(weight) # Dummy to trick R CMD check
 	cbweight <- ddply(x, c("cbreak", "question"), summarise, weight=sum(weight))
 	row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
-	x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
+	
+	if(convert_to_percent){
+		x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
+	}
 	
 	
 	if (length(unique(x$question))==1){
@@ -114,7 +181,36 @@ stats_bin <- function(x){
 	}
 	surveyor_stats(
 			df,
-			ylabel="Fraction of respondents")
+			ylabel=ylabel,
+			stats=stats,
+			formatter=ifelse(convert_to_percent, "percent", "format"))
+}
+
+#' Calculates summary statistics
+#' 
+#' Wrapper around \code{\link{stats_bin}}, binning statistics and calculating percentage
+#' 
+#' The results are sorted in descending order of value, and "response" is coerced into an ordered factor (unless "response" is already an ordered factor).
+#' 
+#' @param x A data frame with four columns: cbreak, question, response, weight 
+#' @return A data frame with three columns: cbreak, variable, value
+#' @seealso
+#' Stats functions:
+#' \itemize{
+#' \item \code{\link{stats_bin}} 
+#' \item \code{\link{stats_rank}} 
+#' \item \code{\link{stats_net_score}}
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords stats
+#' @export
+stats_bin_percent <- function(x){
+	stats_bin(
+			x,
+			ylabel="Fraction of respondents",
+			stats="stats_bin_percent",
+			convert_to_percent=TRUE)
 }
 
 
@@ -162,7 +258,8 @@ stats_sum <- function(x){
 	surveyor_stats(
 			df,
 			ylabel="Value",
-			formatter="format")
+			formatter="format",
+			stats="stats_sum")
 }
 
 
@@ -226,7 +323,8 @@ stats_rank <- function(x, top_n=3){
 	
 	surveyor_stats(
 			h2,
-			ylabel=paste("Percentage of responses in top", top_n)
+			ylabel=paste("Percentage of responses in top", top_n),
+			stats="stats_rank"
 	)
 }
 
@@ -291,6 +389,7 @@ stats_net_score <- function(x){
 	}
 	surveyor_stats(
 			df,
-			ylabel="Net score")
+			ylabel="Net score",
+			stats=stats_net_score)
 }
 

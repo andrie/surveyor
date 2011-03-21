@@ -78,6 +78,7 @@ as.surveyor <- function(
 #' between single and array questions
 #' @param subquestion_append Indicates whether subquestion text is appended to question text
 #' @param subquestion_prepend Indicates whether subquestion text is prepended to question text
+#' @param fastgraphics Uses lattice graphics if true, otherwise ggplot 
 #' @param default_plot_size Plot size in inches, e.g. c(4, 3)
 #' @param default_colour_area Default RGB colour for areas in graphs (e.g. bars)
 #' @param default_colour_point Default RGB colour for points in graphs (e.g. points)
@@ -97,6 +98,7 @@ surveyor_defaults <- function(
 		question_pattern = "_[[:digit:]]*$",
 		subquestion_append = TRUE,
 		subquestion_prepend = !subquestion_append,
+		fastgraphics = FALSE,
 		default_plot_size = c(5,3),
 		default_colour_area = rgb(127,201,127, 255, maxColorValue=255),
 		default_colour_point = rgb(27, 158, 119, 255, maxColorValue=255),
@@ -132,6 +134,7 @@ surveyor_defaults <- function(
 			question_pattern     = question_pattern,
 			subquestion_append   = subquestion_append,
 			subquestion_prepend  = subquestion_prepend,
+			fastgraphics         = fastgraphics,
 			default_plot_size    = default_plot_size,
 			default_colour_area  = default_colour_area,
 			default_colour_point = default_colour_point,
@@ -235,7 +238,7 @@ surveyor_plot <- function(
 		surveyor,
 		q_id,
 		code_function = code_guess,
-		stats_function = stats_bin,
+		stats_function = stats_guess,
 		plot_function = plot_bar,
 		plot_size = surveyor$defaults$default_plot_size,
 		...){
@@ -318,8 +321,8 @@ surveyor_heading <- function(surveyor, x, headinglevel="chapter", pagebreak=FALS
 	if(pagebreak) text <- paste(text, "\n\\pagebreak[4]\n")
 	surveyor_write(surveyor, text)
 }
-###############################################################################
 
+###############################################################################
 
 #' Writes result to surveyor sink file.
 #' 
@@ -329,13 +332,50 @@ surveyor_heading <- function(surveyor, x, headinglevel="chapter", pagebreak=FALS
 #' @param x A character vector
 #' @keywords internal
 surveyor_write <- function(surveyor, x){
-	cat(x,
-			file=surveyor$defaults$output_filename,
-			sep="",
-			append=TRUE)
+	if(surveyor$defaults$output_to_latex){
+		cat(x,
+				file=surveyor$defaults$output_filename,
+				sep="",
+				append=TRUE)
+	} else {
+		message(x)
+	}
 	return(invisible)
 }
 
+###############################################################################
+
+#' Saves surveyor plot to pdf.
+#' 
+#' Saves surveyor plot to pdf.  Uses either ggsave() or pdf(), depending on the class of plot
+#' 
+#' @param surveyor A surveyor object
+#' @param h A surveyor plot object
+#' @param width Width in inches
+#' @param heigh Heigh in inches
+#' @param filename Filename without path
+#' @keywords internal
+surveyor_save_plot <- function(surveyor, h, width, height, filename){
+	if(class(h)=="ggplot"){
+		ggsave(
+				h, 
+				filename = filename, 
+				width    = width, 
+				height   = height,
+				dpi      = surveyor$defaults$dpi, 
+				path     = surveyor$defaults$path_graphics
+		)
+	}	
+	if(class(h)=="trellis"){
+		pdf(
+				file=file.path(surveyor$defaults$path_graphics, filename),
+				width    = width, 
+				height   = height
+		)
+		print(h)
+		dev.off()
+	}	
+}
 ################################################################################
 
 #' Prints surveyor question. 
@@ -356,7 +396,7 @@ surveyor_print_question <- function(surveyor, q_id, counter, f, g, h, plot_size)
 		cat_string <- "\nNo data\n\n"
 	} else {
 		# Print plot
-		filename <- paste("fig", sprintf("%04d", counter), ".eps", sep="")
+		filename <- paste("fig", sprintf("%04d", counter), ".pdf", sep="")
 		message(paste("Now saving ", filename, sep=""))
 
 		# Adjust vertical size of plot depending on number of questions
@@ -368,14 +408,21 @@ surveyor_print_question <- function(surveyor, q_id, counter, f, g, h, plot_size)
 				1
 		)
 		#message(paste("In surveyor_print_question, height_multiplier = ", height_multiplier))
-		ggsave(
+		surveyor_save_plot(
+				surveyor, 
 				h, 
-				filename = filename, 
-				width    = plot_size[1], 
-				height   = plot_size[2] * height_multiplier,
-				dpi      = surveyor$defaults$dpi, 
-				path     = surveyor$defaults$path_graphics
+				width=plot_size[1], 
+				height=plot_size[2] * height_multiplier,
+				filename=filename
 		)
+#		ggsave(
+#				h, 
+#				filename = filename, 
+#				width    = plot_size[1], 
+#				height   = plot_size[2] * height_multiplier,
+#				dpi      = surveyor$defaults$dpi, 
+#				path     = surveyor$defaults$path_graphics
+#		)
 
 		cat_string <- paste(
 #				"\n\\begin{samepage}\n",

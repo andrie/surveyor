@@ -2,7 +2,6 @@
 ###  Question handling functions                                             ###
 ################################################################################
 
-#### TODO: Pass pattern to question handling functions using surveyor defaults
 
 #' Identifies subquestions of a given question in a data frame.
 #' 
@@ -24,12 +23,11 @@ get_q_subquestions <- function(q_data, q_id, surveyor=NULL){
 	} else {
 		pattern <- surveyor$defaults$question_pattern  #Defaults to "_[[:digit:]]*$"
 	}	
-	find <- grep(paste(q_id, pattern, sep="", collapse=""), names(q_data))
+	find <- grep(paste("^", q_id, pattern, sep="", collapse=""), names(q_data))
 	if (identical(find, integer(0))){
 		return(NULL)
 	} else {
-		tmp <- names(q_data)[find]
-		s <- sort(which(names(q_data) %in% tmp))
+		s <- sort(which(names(q_data) %in% names(q_data)[find]))
 		
 		return(names(q_data)[s])
 	}	
@@ -63,28 +61,32 @@ get_q_text_unique <- function(q_data, q_id, q_text, surveyor=NULL){
 	}
 	
 	Q <- get_q_subquestions(q_data, q_id, surveyor)
-	Q <- q_text[Q]
-
-	tmp <- str_reverse(str_common_unique(as.character(Q))$unique)
-	Qu  <- str_reverse(str_common_unique(tmp)$unique)
-#	Qu <- sub("^[0-9]+\\. ", "", Qu)
+	if(is.null(Q)){
+		return(NULL)
+	} else {
+		Q <- q_text[Q]
 	
-#	if (append){
-#		tmp <- str_reverse(str_common_unique(as.character(Q))$unique)
-#		Qu <- tmp
-#	}
-#	
-#	if (prepend){
-#		tmp <- str_common_unique(as.character(Q))$unique
-#		Qu <- tmp
-#	}
-#
-#	if (append && prepend){
-#		tmp <- str_reverse(str_common_unique(as.character(Q))$unique)
-#		Qu  <- str_reverse(str_common_unique(tmp)$unique)
-#		#	sub("^[0-9]+\\. ", "", Qu)
-#	}
-	Qu
+		tmp <- str_reverse(str_common_unique(as.character(Q))$unique)
+		Qu  <- str_reverse(str_common_unique(tmp)$unique)
+	#	Qu <- sub("^[0-9]+\\. ", "", Qu)
+		
+	#	if (append){
+	#		tmp <- str_reverse(str_common_unique(as.character(Q))$unique)
+	#		Qu <- tmp
+	#	}
+	#	
+	#	if (prepend){
+	#		tmp <- str_common_unique(as.character(Q))$unique
+	#		Qu <- tmp
+	#	}
+	#
+	#	if (append && prepend){
+	#		tmp <- str_reverse(str_common_unique(as.character(Q))$unique)
+	#		Qu  <- str_reverse(str_common_unique(tmp)$unique)
+	#		#	sub("^[0-9]+\\. ", "", Qu)
+	#	}
+		Qu
+	}	
 }
 
 #' Returns common elements of question text

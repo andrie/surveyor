@@ -63,20 +63,32 @@ plot_bar <- function(s, surveyor){
 	f <- s$data
 
 	# Test for yes/no responses
-	if(is.factor(f$response) & all(levels(f$response) %in% c("Yes", "No"))){
-		f <- f[f$response == levels(f$response)[which(levels(f$response) == "Yes")], ]
+	if(is.factor(f$response) && all(levels(f$response) %in% c("Yes", "No"))){
+			f <- f[f$response == levels(f$response)[which(levels(f$response) == "Yes")], ]
+	}
+	if(is.logical(f$response)){
+			f <- f[f$response == TRUE, ]
 	}
 		
+	qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
+	f$cbreak <- f$cbreak[drop=TRUE]
 	if (is.null(f$question)){
 		# Plot single question
 		p <- ggplot(f, aes_string(x="response", y="value", fill="factor(cbreak)"))
+		q <- lattice::barchart(response~value|cbreak, f, layout=qlayout,	box.ratio=1.5, origin=0)
+		
 	} else {
 		if (is.null(f$response)) {
 		# Plot array of single values per question
 			p <- ggplot(f, aes_string(x="question", y="value", fill="factor(cbreak)"))
+			q <- lattice::barchart(question~value|cbreak, 
+					f, layout=qlayout,	box.ratio=1.5, origin=0, groups=cbreak, stack=TRUE)
 		} else {
 			# Plot array question as stacked bar
 			p <- ggplot(f, aes_string(x="question", y="value", fill="factor(response)"))
+			q <- lattice::barchart(question~value|cbreak, 
+					f, layout=qlayout,	box.ratio=1.5, origin=0, groups=response, stack=TRUE, 
+					auto.key=list(space="right"))
 		}
 	}
 	
@@ -99,12 +111,16 @@ plot_bar <- function(s, surveyor){
 		# Plot single question
 		if(length(unique(f$response)) > 8){p <- p + scale_fill_hue()}
 	} else {
-			# Plot array of single values per question
-			# Plot array question as stacked bar
-			if(length(unique(f$question)) > 8){p <- p + scale_fill_hue()}
+		# Plot array of single values per question
+		# Plot array question as stacked bar
+		if(length(unique(f$question)) > 8){p <- p + scale_fill_hue()}
+		if (is.null(f$response)) {
+		} else {
 			p <- p + opts(legend.position="right")
 		}	
-	p
+	}
+		
+	ifelse(surveyor$defaults$fastgraphics, return(q), return(p))
 }
 
 #' Plot data in bar chart format without modifying format.
@@ -132,63 +148,6 @@ plot_bar_sum <- function(s, surveyor){
 ###############################################################################
 
 
-#' Plot data in bar chart format, where the data consists of yes/no options.
-#' 
-#' This will produce a bar chart, but only "Yes" values will be plotted, i.e. the "No" values will be invisible.
-#'
-#' @param s A surveyor_stats object
-#' @param surveyor Surveyor object
-#' @seealso 
-#' Plot functions: 
-#' \itemize{
-#' \item \code{\link{plot_bar}} 
-#' \item \code{\link{plot_point}} 
-#' \item \code{\link{plot_text}} 
-#' \item \code{\link{plot_net_score}} 
-#' }
-#' 
-#' For an overview of the surveyor package \code{\link{surveyor}}
-#' @keywords plot
-#' @export
-plot_yesno <- function(s, surveyor){
-	f <- s$data
-	level_yes <- levels(f$response)[2]
-	f <- f[f$response==level_yes, ] ### Filters only the second level
-	if (is.null(f$question)){
-		# Plot single question
-		p <- ggplot(f, aes_string(x="response", y="value", fill="factor(cbreak)"))
-	} else {
-		if (is.null(f$response)) {
-			# Plot array of single values per question
-			p <- ggplot(f, aes_string(x="question", y="value", fill="factor(cbreak)"))
-		} else {
-			# Plot array question as stacked bar
-			p <- ggplot(f, aes_string(x="question", y="value", fill="factor(response)"))
-		}
-	}
-	p <- p + 
-			theme_surveyor(surveyor$defaults$default_theme_size) +
-			geom_bar(stat="identity") + 
-			coord_flip() + 
-			scale_y_continuous(
-					s$ylabel, 
-					formatter=s$formatter) +
-			facet_grid(~cbreak) + 
-			opts(
-					legend.position="none",
-					axis.title.y = theme_blank()
-			)
-	
-	if (is.null(f$question)){
-		# Plot single question
-		if(length(unique(f$response)) > 8){p <- p + scale_fill_hue()}
-	} else {
-		# Plot array of single values per question
-		# Plot array question as stacked bar
-		if(length(unique(f$question)) > 8){p <- p + scale_fill_hue()}
-	}	
-	p
-}
 
 
 ###############################################################################
@@ -296,9 +255,9 @@ plot_text <- function(f, surveyor){
 plot_net_score <- function(s, surveyor){
 	f <- s$data
 	f$hjust <- 0
-	if (max(f$value) >= 0) f[f$value >= 0,   ]$hjust <- -0.1  
-	if (max(f$value) >= 0.5) f[f$value >= 0.5, ]$hjust <- 1.1  
-	if (min(f$value) <= 0) f[f$value < 0,    ]$hjust <- 1.1  
+	if (max(f$value) >= 0)    f[f$value >= 0,   ]$hjust <- -0.1  
+	if (max(f$value) >= 0.5)  f[f$value >= 0.5, ]$hjust <-  1.1  
+	if (min(f$value) <= 0)    f[f$value < 0,    ]$hjust <-  1.1  
 	if (min(f$value) <= -0.5) f[f$value < -0.5, ]$hjust <- -0.1  
 	
 	
@@ -328,7 +287,10 @@ plot_net_score <- function(s, surveyor){
 	if (length(unique(f$cbreak)) > 1){
 		p <- p + opts(axis.text.x = theme_blank())
 	}
+	
+	qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
+	q <- lattice::barchart(question~value|cbreak, f, layout=qlayout, origin=0)
 			
-	p
+	ifelse(surveyor$defaults$fastgraphics, return(q), return(p))
 }
 
