@@ -135,14 +135,6 @@ code_guess <- function(
 		q_id,
 		...
 ){
-	# Melt multicoded question in data.frame, and code question text to variable
-	
-#	q_data <- surveyor$q_data
-#	q_text <- surveyor$q_text
-	
-	# Test if question is of type single (i.e. q_id exists in names(q_data)
-	
-	
 	if (any(names(surveyor$q_text)==q_id)){
 		return(code_single(surveyor, q_id))
 	} else {

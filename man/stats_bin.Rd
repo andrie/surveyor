@@ -1,14 +1,12 @@
 \name{stats_bin}
 \alias{stats_bin}
 \title{Calculates summary statistics...}
-\usage{stats_bin(x)}
+\usage{stats_bin(x, ylabel="Respondents", stats_method="stats_bin",
+    convert_to_percent=FALSE)}
 \description{Calculates summary statistics}
-\details{Takes the result of a code_function, e.g. code_single(), and calculates
-summary values, for direct plotting by a plot_function, e.g. plot_bar()
+\details{Takes the result of a code_function, e.g. code_single(), and calculates summary values, for direct plotting by a plot_function, e.g. plot_bar()
 
-The results are sorted in descending order of value, and "response" is
-coerced into an ordered factor (unless "response" is already an ordered 
-factor).}
+The results are sorted in descending order of value, and "response" is coerced into an ordered factor (unless "response" is already an ordered factor).}
 \value{A data frame with three columns: cbreak, variable, value}
 \seealso{Stats functions:
 \itemize{

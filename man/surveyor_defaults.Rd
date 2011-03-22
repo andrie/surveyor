@@ -6,10 +6,10 @@
     output_filename=file.path(path_latex, "surveyor.tex"),
     counter_start=1, default_theme_size=9,
     question_pattern="_[[:digit:]]*$", subquestion_append=TRUE,
-    subquestion_prepend=!subquestion_append, default_plot_size=c(5, 3),
-    default_colour_area=rgb(127, 201, 127, 255, maxColorValue = 255),
-    default_colour_point=rgb(27, 158, 119, 255, maxColorValue = 255),
-    dpi=600)}
+    subquestion_prepend=!subquestion_append, fastgraphics=FALSE,
+    default_plot_size=c(5, 3), default_colour_area=rgb(127, 201, 127,
+    255, maxColorValue = 255), default_colour_point=rgb(27, 158, 119,
+    255, maxColorValue = 255), dpi=600)}
 \description{Initialises surveyor object defaults.}
 \seealso{\code{\link{as.surveyor}}}
 \arguments{\item{path_latex}{Path where latex will be saved}
@@ -23,6 +23,7 @@ defaults to 1}
 between single and array questions}
 \item{subquestion_append}{Indicates whether subquestion text is appended to question text}
 \item{subquestion_prepend}{Indicates whether subquestion text is prepended to question text}
+\item{fastgraphics}{Uses lattice graphics if true, otherwise ggplot}
 \item{default_plot_size}{Plot size in inches, e.g. c(4, 3)}
 \item{default_colour_area}{Default RGB colour for areas in graphs (e.g. bars)}
 \item{default_colour_point}{Default RGB colour for points in graphs (e.g. points)}

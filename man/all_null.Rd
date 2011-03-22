@@ -3,6 +3,7 @@
 \title{Tests for all NULL values...}
 \usage{all_null(x)}
 \description{Tests for all NULL values}
+\details{Tests for all NULL values}
 \value{TRUE if all values are NULL, FALSE otherwise}
 \keyword{internal}
 \arguments{\item{x}{A list, data frame or vector}}

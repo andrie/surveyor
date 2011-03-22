@@ -2,6 +2,8 @@
 # Step 2 in the triad of code, summarize and plot
 ###############################################################################
 
+#' Finds first significant digit.
+#' 
 #' Finds first significant digit
 #' 
 #' @param x Numeric vector
@@ -20,8 +22,10 @@ first_signif <- function(x){
 	)
 }
 
+#' Rounds to level of first significant digit.
+#'
 #' Rounds to level of first significant digit
-#' 
+#'  
 #' @param x Numeric vector
 #' @param f Rounding function, e.g. round, trunc, floor or ceiling
 #' @keywords internal
@@ -30,10 +34,16 @@ round_first_signif <- function(x, f=round){
 }
 
 
+#' Creates surveyor_stats object, used as input to plot.
+#'  
 #' Creates surveyor_stats object, used as input to plot 
 #' 
 #' @param data A data frame 
 #' @param ylabel Character string to print as plot y label
+#' @param formatter Name of a formatting function
+#' @param nquestion Number of identifiable questions, used for plot sizing downstream
+#' @param scale_breaks Vector that specifies breaks in ggplot
+#' @param stats_method Character description of calling function name - for audit trail
 #' @return A surveyor_stats object
 #' @keywords internal
 surveyor_stats <- function(
@@ -57,6 +67,8 @@ surveyor_stats <- function(
 	)
 }
 
+#' Sorts data.frame in descending order
+#' 
 #' Sorts df in descending order 
 #' 
 #' @param df A data frame containing at least two columns: response and value 
@@ -70,7 +82,9 @@ reorder_response <- function(df){
 
 
 
-#' Tests for all NA values 
+#' Tests for all NA values.
+#'  
+#' Tests for all NA values. 
 #' 
 #' @param x A list, data frame or vector 
 #' @return TRUE if all values are NA, FALSE otherwise
@@ -84,6 +98,8 @@ all_na <- function(x){
 
 #' Tests for all NULL values 
 #' 
+#' Tests for all NULL values 
+#' 
 #' @param x A list, data frame or vector 
 #' @return TRUE if all values are NULL, FALSE otherwise
 #' @keywords internal
@@ -94,23 +110,21 @@ all_null <- function(x){
 	return(all(is.null(x)))
 }
 
-#' Guesses whether a question should be coded as net score
+#' Guesses whether a question should be coded as net score.
 #' 
 #' Evaluates the first and last factor levels of x and tests whether these levels contain words in match_words
 #' 
 #' @param x A factor of character strings
 #' @param match_words A character vector of words to match 
-#' @return A data frame with three columns: cbreak, variable, value
+#' @return A data frame with three columns - cbreak, variable, value
 #' @keywords internal
-identify_net_score <- function(
-		x, 
-		match_words = c(
+identify_net_score <- function(x, match_words = NULL){
+	if(is.null(match_words)) match_words <- c(
 				"satisfied", "dissatisfied",
 				"agree", "disagree",
 				"important", "unimportant",
 				"likely", "unlikely"
-				)
-		){
+		)	
 	l <- levels(x)[c(1, nlevels(x))]
 	w <- gsub("[[:punct:]]", "", l)
 	w <- tolower(w)
