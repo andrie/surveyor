@@ -2,6 +2,34 @@
 # Step 2 in the triad of code, summarize and plot
 ###############################################################################
 
+#' Finds first significant digit
+#' 
+#' @param x Numeric vector
+#' @keywords internal
+first_signif <- function(x){
+	sapply(x, function(xt){
+				if(xt==0){
+					0
+				} else {
+					p <- 10:-10
+					upper <- 10^(p)
+					lower <- 10^(p-1)
+					p[which(abs(xt) >=lower & abs(xt)<upper)]
+				}
+			}
+	)
+}
+
+#' Rounds to level of first significant digit
+#' 
+#' @param x Numeric vector
+#' @param f Rounding function, e.g. round, trunc, floor or ceiling
+#' @keywords internal
+round_first_signif <- function(x, f=round){
+	round_any(x, 10^(first_signif(x)-1), f)
+}
+
+
 #' Creates surveyor_stats object, used as input to plot 
 #' 
 #' @param data A data frame 
@@ -13,7 +41,8 @@ surveyor_stats <- function(
 		ylabel = "Fraction of respondents",
 		formatter="percent",
 		nquestion=length(unique(data$question)),
-		stats=""
+		scale_breaks=NULL,
+		stats_method=""
 ){
 	structure(
 			list(
@@ -21,7 +50,8 @@ surveyor_stats <- function(
 				ylabel=ylabel,
 				formatter=formatter,
 				nquestion=nquestion,
-				stats=stats
+				scale_breaks=scale_breaks,
+				stats_method=stats_method
 			),
 			class = "surveyor_stats"
 	)
@@ -147,7 +177,7 @@ stats_guess <- function(x){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @export
-stats_bin <- function(x, ylabel="Respondents", stats="stats_bin", convert_to_percent=FALSE){
+stats_bin <- function(x, ylabel="Respondents", stats_method="stats_bin", convert_to_percent=FALSE){
 	if(is.null(x)){
 		return(NULL)
 	}
@@ -160,17 +190,24 @@ stats_bin <- function(x, ylabel="Respondents", stats="stats_bin", convert_to_per
 	}
 	
 	
+	if (is.factor(x$response)){
+		if(nlevels(x$response[drop=TRUE])==1) x$response <- as.character(x$response[drop=TRUE])
+	}
+	
 	if (length(unique(x$question))==1){
 		# code single
 		df <- ddply(x, c("cbreak", "response"), 
 				summarise, 
 				value=sum(weight)
 		)
-		if (is.ordered(x$response)){
-			df$response <- factor(df$response, levels=levels(x$response), ordered=TRUE)
-		} else {
-			df <- reorder_response(df)
-		}
+		if (is.factor(x$response)){
+			x$response <- x$response[drop=TRUE]
+			if(is.ordered(x$response)){
+				df$response <- factor(df$response, levels=levels(x$response), ordered=TRUE)
+			} else {
+				df <- reorder_response(df)
+			}
+		}		
 		
 	} else {
 		# code array
@@ -191,7 +228,7 @@ stats_bin <- function(x, ylabel="Respondents", stats="stats_bin", convert_to_per
 	surveyor_stats(
 			df,
 			ylabel=ylabel,
-			stats=stats,
+			stats_method=stats_method,
 			formatter=ifelse(convert_to_percent, "percent", "format"))
 }
 
@@ -218,7 +255,7 @@ stats_bin_percent <- function(x){
 	stats_bin(
 			x,
 			ylabel="Fraction of respondents",
-			stats="stats_bin_percent",
+			stats_method="stats_bin_percent",
 			convert_to_percent=TRUE)
 }
 
@@ -264,11 +301,16 @@ stats_sum <- function(x){
 				value=sum(weight*response, na.rm=TRUE)
 		)
 	}
+	
+	scale_breaks <- c(min(df$value), 0, max(df$value))
+	scale_breaks <- round_first_signif(scale_breaks)
+	
 	surveyor_stats(
 			df,
 			ylabel="Value",
 			formatter="format",
-			stats="stats_sum")
+			stats_method="stats_sum",
+			scale_breaks=scale_breaks)
 }
 
 
@@ -333,7 +375,7 @@ stats_rank <- function(x, top_n=3){
 	surveyor_stats(
 			h2,
 			ylabel=paste("Percentage of responses in top", top_n),
-			stats="stats_rank"
+			stats_method="stats_rank"
 	)
 }
 
@@ -394,11 +436,11 @@ stats_net_score <- function(x){
 				summarise,
 				value=net_score(response))
 		quest_levels  <- df[order(df$value, decreasing=TRUE), ]$question
-		df$question <- factor(df$question, levels=quest_levels, ordered=TRUE)
+		#df$question <- factor(df$question, levels=quest_levels, ordered=TRUE)
 	}
 	surveyor_stats(
 			df,
 			ylabel="Net score",
-			stats=stats_net_score)
+			stats_method="stats_net_score")
 }
 

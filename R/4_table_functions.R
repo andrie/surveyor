@@ -22,7 +22,7 @@
 #' \code{\link{plot_point}} 
 #' @return data frame
 #' @keywords internal
-print_cb_stats <- function(g){
+table_guess <- function(g){
 	
 	g_orig <- g
 	g <- g$data
@@ -31,33 +31,51 @@ print_cb_stats <- function(g){
 		return(NULL)
 	}
 	
-	if (!is.null(g$question) && !is.null(g$response)){
-		v <- tapply(g$value, list(g$question, g$response, g$cbreak), sum, na.rm=TRUE)
-		dimtotal1 <- c(1,2)
-		dimtotal2 <- c(2,1)
-	} else {	
-		if (is.null(g$question)){
-			v <- tapply(g$value, list(g$response, g$cbreak), sum, na.rm=TRUE)
-			dimtotal1 <- 1
-			dimtotal2 <- 2
+	sum_function <- function(x)signif(sum(x, na.rm=TRUE), 3)
+	
+	if (is.null(g$question)){
+		# Plot single question
+		v <- tapply(g$value, list(g$response, g$cbreak[drop=TRUE]), sum_function)
+#		dimtotal1 <- 1
+#		dimtotal2 <- 2
+	} else {
+		if (is.null(g$response)) {
+			v <- tapply(g$value, list(g$question, g$cbreak[drop=TRUE]), sum_function)
+#			dimtotal1 <- 1
+#			dimtotal2 <- 2
 		} else {
-			v <- tapply(g$value, list(g$question, g$cbreak), sum, na.rm=TRUE)
-			dimtotal1 <- 1
-			dimtotal2 <- 2
+			if(nlevels(g$response[drop=TRUE])==1){
+				v <- tapply(g$value, list(g$question, g$cbreak[drop=TRUE]), sum_function)
+			} else {
+				# Plot array question as stacked bar
+				v <- tapply(g$value, list(g$question, g$response[drop=TRUE], g$cbreak[drop=TRUE]), sum_function)
+#				dimtotal1 <- c(1,2)
+#				dimtotal2 <- c(2,1)
+			}
 		}
 	}
 	
+	
+#	if (!is.null(g$question) && !is.null(g$response)){
+#		v <- tapply(g$value, list(g$question, g$response, g$cbreak), sum, na.rm=TRUE)
+#		dimtotal1 <- c(1,2)
+#		dimtotal2 <- c(2,1)
+#	} else {	
+#		if (is.null(g$question)){
+#			v <- tapply(g$value, list(g$response, g$cbreak), sum, na.rm=TRUE)
+#			dimtotal1 <- 1
+#			dimtotal2 <- 2
+#		} else {
+#			v <- tapply(g$value, list(g$question, g$cbreak), sum, na.rm=TRUE)
+#			dimtotal1 <- 1
+#			dimtotal2 <- 2
+#		}
+#	}
+	
 	if(g_orig$formatter=="percent") v <- paste_percent(v)
+	
+	paste(latex_table(v, "Weighted totals"), sep="", collapse="\n")
 
-	ret <- paste(
-#			"\\paragraph{Weighted totals}\\\\\n",
-#			"\\nopagebreak\n",
-			latex_table(v, "Weighted totals"),
-			
-			sep="", 
-			collapse="\n")
-
-	ret
 }
 
 #' Prints cbreak information in latex format

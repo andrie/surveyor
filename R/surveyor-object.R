@@ -426,7 +426,7 @@ surveyor_print_question <- function(surveyor, q_id, counter, f, g, h, plot_size)
 		cat_string <- paste(
 #				"\n\\begin{samepage}\n",
 				paste("  \\PlaceGraph{graphics/", filename, "}\n", sep=""),
-#				print_cb_stats(g),
+				table_guess(g),
 #				"\\end{samepage}\n",
 #				"\\smallskip\n",
 #				"\\\\",

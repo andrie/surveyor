@@ -130,7 +130,7 @@ latex_table <- function(x, caption){
 									x,
 									caption=caption,
 									align=align,
-									digits=1,
+									digits=NULL,
 									table.placement="!h"),
 							floating=FALSE,
 							caption.placement="bottom",

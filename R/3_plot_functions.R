@@ -1,6 +1,8 @@
 # TODO: Fix stacked bar chart - make axes quiet, reduce size of legend
 # TODO: Modify default behaviour to get rid of RColorBrewer warning messages
 
+
+
 #' Blank axis titles and no legend
 #' 
 #' @keywords internal
@@ -102,7 +104,8 @@ plot_bar <- function(s, surveyor){
 				coord_flip() + 
 				scale_y_continuous(
 						s$ylabel, 
-						formatter=s$formatter) +
+						formatter=s$formatter,
+						breaks=s$scale_breaks) +
 				facet_grid(~cbreak) + 
 				opts(
 						legend.position="none",
@@ -117,9 +120,13 @@ plot_bar <- function(s, surveyor){
 		} else {
 			# Plot array of single values per question
 			# Plot array question as stacked bar
+			p <- p + opts(
+					axis.text.x=theme_text(size=surveyor$defaults$default_theme_size*0.5, angle=90,
+							
+					)
+			)
 			if(length(unique(f$question)) > 8){p <- p + scale_fill_hue()}
-			if (is.null(f$response)) {
-			} else {
+			if (!is.null(f$response) & nlevels(f$response[drop=TRUE]==1)){ 
 				p <- p + opts(legend.position="right")
 			}	
 		}
@@ -214,14 +221,14 @@ plot_column <- function(s, surveyor){
 				scale_y_continuous(
 						s$ylabel, 
 						formatter=s$formatter) +
-				facet_grid(question~., scales="free") + 
 				opts(
 						legend.position="none",
 						axis.title.x = theme_blank(),
-						strip.text.y=theme_text(angle=0)
+						strip.text.y=theme_text(angle=0),
+						axis.text.y=theme_blank()
 				) +
 				labs(fill="Response")
-		
+		p <- p + geom_text(aes_string(label="signif(value, 3)"), vjust=0.5, size=2)
 		
 		if (is.null(f$question)){
 			# Plot single question
@@ -229,9 +236,14 @@ plot_column <- function(s, surveyor){
 		} else {
 			# Plot array of single values per question
 			# Plot array question as stacked bar
+			p <- p + facet_grid(question~., scales="free") +
+					opts(
+							strip.text.y = theme_text(size = surveyor$defaults$default_theme_size * 0.8)
+#							axis.text.y = theme_text(size = surveyor$defaults$default_theme_size * 0.5)
+					)
+			p <- p + geom_text(aes_string(label="signif(value, 3)"), vjust=0.5, size=2)
 			if(length(unique(f$question)) > 8){p <- p + scale_fill_hue()}
-			if (is.null(f$response)) {
-			} else {
+			if (!is.null(f$response) & nlevels(f$response[drop=TRUE]==1)){ 
 				p <- p + opts(legend.position="right")
 			}	
 		}
