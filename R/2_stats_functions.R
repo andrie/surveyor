@@ -172,13 +172,16 @@ stats_guess <- function(x){
 
 
 
-#' Calculates summary statistics
+#' Calculates summary statistics.
 #' 
 #' Takes the result of a code_function, e.g. code_single(), and calculates summary values, for direct plotting by a plot_function, e.g. plot_bar()
 #' 
 #' The results are sorted in descending order of value, and "response" is coerced into an ordered factor (unless "response" is already an ordered factor).
 #' 
 #' @param x A data frame with four columns: cbreak, question, response, weight 
+#' @param ylabel The label to print on y-axis of plots; used downstream
+#' @param stats_method A character vector describing name of stats method.  Used for audit trail
+#' @param convert_to_percent If true, will express results as fractions, rather than counts
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
 #' Stats functions:
@@ -296,6 +299,7 @@ stats_sum <- function(x){
 		return(NULL)
 	}
 	weight <- NULL; rm(weight) # Dummy to trick R CMD check
+	response <- NULL; rm(response) # Dummy to trick R CMD check
 	cbweight <- ddply(x, c("cbreak", "question"), summarise, weight=sum(weight))
 	row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
 	x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight

@@ -1,3 +1,3 @@
-# Morar
+# Surveyor
 
-This package contains functions to import and analyse data in Morar Consulting's data format
+This package contains a set of tools to process survey data

@@ -295,8 +295,8 @@ test_that("code_array works", {
 
 test_that("plot functions work with code_array", {
 			
-			expect_that(plot_bar(plotcode), is_a("ggplot"))
-			expect_that(plot_point(plotcode), is_a("ggplot"))
+			expect_that(plot_bar(plotcode, s), is_a("ggplot"))
+			expect_that(plot_point(plotcode, s), is_a("ggplot"))
 			
 		})
 
@@ -341,8 +341,8 @@ test_that("surveyor_plot works in Latex", {
 			surveyor_plot(t, "Q1", code_single, stats_bin, plot_bar)
 			surveyor_plot(t, "Q4", code_array, stats_bin, plot_bar)
 			expect_that(file.exists(sinkfile), equals(TRUE))
-			expect_that(file.exists(file.path(graph_path, "fig1.eps")), equals(TRUE))
-			expect_that(file.exists(file.path(graph_path, "fig2.eps")), equals(TRUE))
+			expect_that(file.exists(file.path(graph_path, "fig0001.pdf")), equals(TRUE))
+			expect_that(file.exists(file.path(graph_path, "fig0002.pdf")), equals(TRUE))
 			
 		})
 

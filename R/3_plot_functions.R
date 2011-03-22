@@ -76,11 +76,11 @@ plot_bar <- function(s, surveyor){
 			if (is.null(f$response)) {
 				# Plot array of single values per question
 				q <- lattice::barchart(question~value|cbreak, 
-						f, layout=qlayout,	box.ratio=1.5, origin=0, groups=cbreak, stack=TRUE)
+						f, layout=qlayout,	box.ratio=1.5, origin=0, groups=f$cbreak, stack=TRUE)
 			} else {
 				# Plot array question as stacked bar
 				q <- lattice::barchart(question~value|cbreak, 
-						f, layout=qlayout,	box.ratio=1.5, origin=0, groups=response, stack=TRUE, 
+						f, layout=qlayout,	box.ratio=1.5, origin=0, groups=f$response, stack=TRUE, 
 						auto.key=list(space="right"))
 			}
 		}
@@ -154,7 +154,7 @@ plot_bar <- function(s, surveyor){
 #' @keywords plot
 #' @export
 plot_bar_sum <- function(s, surveyor){
-	plot_bar(s, surveyor, formatter=format)
+	plot_bar(s, surveyor)
 }
 
 ###############################################################################
@@ -189,11 +189,11 @@ plot_column <- function(s, surveyor){
 			if (is.null(f$response)) {
 				# Plot array of single values per question
 				q <- lattice::barchart(question~value|cbreak, 
-						f, layout=qlayout,	box.ratio=1.5, origin=0, groups=cbreak, stack=TRUE)
+						f, layout=qlayout,	box.ratio=1.5, origin=0, groups=f$cbreak, stack=TRUE)
 			} else {
 				# Plot array question as stacked bar
 				q <- lattice::barchart(question~value|cbreak, 
-						f, layout=qlayout,	box.ratio=1.5, origin=0, groups=response, stack=TRUE, 
+						f, layout=qlayout,	box.ratio=1.5, origin=0, groups=f$response, stack=TRUE, 
 						auto.key=list(space="right"))
 			}
 		}

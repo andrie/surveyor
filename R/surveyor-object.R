@@ -145,18 +145,20 @@ surveyor_defaults <- function(
 
 ################################################################################
 
-#' Prints surveyor object.
-#' 
-#' @name print.surveyor
-#' @aliases print print.surveyor
-#' @usage print(x, ...)
-#' @param x surveyor object
-#' @param ... ignored
-#' @S3method print surveyor
-print.surveyor <- function(x, ...){
-	cat("Surveyor\n\n")
-	print.listof(x)
-}
+##' Prints surveyor object.
+##' 
+##' Prints surveyor object
+##' 
+##' @name print.surveyor
+##' @aliases print print.surveyor
+##' @usage print(x, ...)
+##' @param x surveyor object
+##' @param ... ignored
+##' @method print surveyor
+#print.surveyor <- function(x, ...){
+#	cat("Surveyor\n\n")
+#	print.listof(x)
+#}
 
 ################################################################################
 
