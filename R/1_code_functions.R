@@ -4,6 +4,7 @@
 #' 
 #' @param surveyor Surveyor object
 #' @param q_id Question id
+#' @param ... Not used
 #' @seealso
 #' Other coding functions: 
 #' \code{\link{code_single}},  
@@ -18,7 +19,8 @@
 #' @export
 code_single <- function(
 		surveyor,
-		q_id
+		q_id,
+		...
 ){
 	if(is.numeric(surveyor$q_data[, q_id])){
 		response <- surveyor$q_data[, q_id]
@@ -136,7 +138,7 @@ code_guess <- function(
 		...
 ){
 	if (any(names(surveyor$q_text)==q_id)){
-		return(code_single(surveyor, q_id))
+		return(code_single(surveyor, q_id, ...))
 	} else {
 		return(code_array(surveyor, q_id, ...))
 	}

@@ -1,18 +1,19 @@
 Package: surveyor
-Version: 0.0-08
-Date: 2011-03-22
+Imports:
+Maintainer: Andrie de Vries <apdevries@gmail.com>
+License: GPL (>=2)
 Title: Tools for analysing, reporting and plotting survey data
+LazyData: true
+LazyLoad: true
+Author@R: person("Andrie", "de Vries", email="apdevries@gmail.com")
+Author: Andrie de Vries <apdevries@gmail.com>
 Description: This is a set of tools to analyse, report and plot survey
     data
+Version: 0.0-08
 URL:
-Maintainer: Andrie de Vries <apdevries@gmail.com>
-Author: Andrie de Vries <apdevries@gmail.com>
+Date: 2011-03-22
 Depends: R (>= 2.11.0), Hmisc, ggplot2, xtable, reshape2, plyr, lattice
 Suggests:
-Imports:
-License: GPL (>=2)
-LazyLoad: true
-LazyData: true
 Collate: '1_code_functions.R' '2_stats_functions.R'
     '3_plot_functions.R' '4_table_functions.R' 'latex.R'
     'question_handling.R' 'redefine.R' 'strings.R' 'surveyor-object.R'

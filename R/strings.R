@@ -123,7 +123,7 @@ str_wrap <- function(x, len=30)
 str_reverse <- function(x) {
 	as.character(
 			lapply(x, function(x){
-				paste(rev(substring(x, 1:nchar(x), 1:nchar(x))),collapse="")
+				paste(rev(substring(x, 1:nchar(x), 1:nchar(x))), collapse="")
 			})
 	)
 }
@@ -137,10 +137,8 @@ str_reverse <- function(x) {
 #' @keywords string
 #' @param x Numeric vector
 paste_percent <- function(x){
-	attrx <- attributes(x)
-	p <- paste(round(x*100, digits=1), "%", sep="")
-	p[p=="NA%"] <- NA
-	attributes(p) <- attrx
-	p
+	xt <- sprintf("%.1f%%", x*100)
+	xt[xt=="NA%"] <- ""
+	xt
 }
 

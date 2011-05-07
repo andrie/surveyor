@@ -76,6 +76,7 @@ surveyor_stats <- function(
 #' @keywords internal
 reorder_response <- function(df){
 	resp_levels  <- df[order(df$value, decreasing=TRUE), ]$response
+	resp_levels <- unique(resp_levels)
 	df$response <- factor(df$response, levels=resp_levels, ordered=TRUE)
 	df
 }
@@ -332,6 +333,63 @@ stats_sum <- function(x){
 }
 
 
+#' Calculates numeric sum
+#'
+#' Add description 
+#' 
+#' @param x A data frame with four columns: cbreak, question, response, weight 
+#' @return A data frame with three columns: cbreak, variable, value
+#' @seealso
+#' Stats functions:
+#' \itemize{
+#' \item \code{\link{stats_bin}} 
+#' \item \code{\link{stats_rank}} 
+#' \item \code{\link{stats_net_score}}
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords stats
+#' @export
+stats_mean <- function(x){
+	if(is.null(x)){
+		return(NULL)
+	}
+	weight <- NULL; rm(weight) # Dummy to trick R CMD check
+	response <- NULL; rm(response) # Dummy to trick R CMD check
+
+	x$response <- as.numeric(x$response)
+	cbweight <- ddply(x, c("cbreak", "question"), summarise, weight=sum(weight))
+	row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
+	x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
+	
+	
+	if (length(unique(x$question))==1){
+		# code single
+		df <- ddply(x, c("cbreak"), 
+				summarise, 
+				value = sum(weight*response, na.rm=TRUE)
+		)
+		
+	} else {
+		# code array
+		df <- ddply(x, c("cbreak", "question"), 
+				summarise, 
+				value = sum(weight*response, na.rm=TRUE)
+		)
+	}
+	
+	scale_breaks <- c(min(df$value), 0, max(df$value))
+	scale_breaks <- round_first_signif(scale_breaks)
+	
+	surveyor_stats(
+			df,
+			ylabel="Value",
+			formatter="format",
+			stats_method="stats_mean",
+			scale_breaks=scale_breaks)
+}
+
+
 #' Calculates summary statistics for ranking type questions
 #' 
 #' Takes the result of a code_function, e.g. code_single(), and calculates
@@ -357,10 +415,12 @@ stats_rank <- function(x, top_n=3){
 	if(is.null(x)){
 		return(NULL)
 	}
-	cbreakweight <- ddply(x, "cbreak", summarise, weight=sum(weight))
-	row.names(cbreakweight) <- cbreakweight$cbreak
-	x$weight <- x$weight / cbreakweight[x$cbreak, ]$weight
+	x$question <- as.numeric(x$question)
+	x <- x[x$question <= top_n, ]
 	
+	cbreakweight <- ddply(x, "cbreak", summarise, weight=sum(weight))
+#	row.names(cbreakweight) <- cbreakweight$cbreak
+	x$weight <- top_n * x$weight / cbreakweight$weight[match(x$cbreak, cbreakweight$cbreak)]
 	
 	if (length(unique(x$question))==1){
 		# code single
@@ -377,18 +437,12 @@ stats_rank <- function(x, top_n=3){
 		)
 	}
 	
-	h1 <- df[df$question<=3, ]
-
-	h2 <- ddply(h1, c("cbreak", "response"), summarize, value=sum(value))
+#	df$question <- as.numeric(df$question)
+#	h1 <- df[df$question <= top_n, ]
+#	h2 <- ddply(h1, c("cbreak", "response"), function(xt)summarise(xt, value=sum(xt$value)))
+#	h2 <- reorder_response(h2)
+	h2 <- ddply(df, c("cbreak", "response"), function(xt)summarise(xt, value=sum(xt$value)))
 	h2 <- reorder_response(h2)
-	
-#	if (is.ordered(x$response)){
-#		h2$response <- factor(h2$response, levels=levels(x$response), ordered=TRUE)
-#	} else {
-#		resp_levels  <- df[order(h2$value, decreasing=TRUE), ]$response
-#		h2$response <- factor(h2$response, levels=resp_levels, ordered=TRUE)
-#	}
-	
 	
 	surveyor_stats(
 			h2,

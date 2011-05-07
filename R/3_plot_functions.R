@@ -228,7 +228,12 @@ plot_column <- function(s, surveyor){
 						axis.text.y=theme_blank()
 				) +
 				labs(fill="Response")
-		p <- p + geom_text(aes_string(label="signif(value, 3)"), vjust=0.5, size=2)
+#		p <- p + geom_text(aes_string(label="signif(value, 3)"), vjust=0.5, size=2)
+		if(s$formatter=="percent"){
+			p <- p + geom_text(aes_string(label="paste_percent(value)"), vjust=0.5, size=2)
+		} else {
+			p <- p + geom_text(aes_string(label="value"), vjust=0.5, size=2)
+		}
 		
 		if (is.null(f$question)){
 			# Plot single question
@@ -360,10 +365,10 @@ plot_text <- function(f, surveyor){
 plot_net_score <- function(s, surveyor){
 	f <- s$data
 	f$hjust <- 0
-	if (max(f$value) >= 0)    f[f$value >= 0,   ]$hjust <- -0.1  
-	if (max(f$value) >= 0.5)  f[f$value >= 0.5, ]$hjust <-  1.1  
-	if (min(f$value) <= 0)    f[f$value < 0,    ]$hjust <-  1.1  
-	if (min(f$value) <= -0.5) f[f$value < -0.5, ]$hjust <- -0.1  
+	if (max(f$value) > 0)    f[f$value > 0,   ]$hjust <- -0.1  
+	if (max(f$value) > 0.5)  f[f$value > 0.5, ]$hjust <-  1.1  
+	if (min(f$value) < 0)    f[f$value < 0,    ]$hjust <-  1.1  
+	if (min(f$value) < -0.5) f[f$value < -0.5, ]$hjust <- -0.1  
 	
 	
 	p <- ggplot(f, aes_string(x="question", y="value")) +

@@ -145,20 +145,17 @@ surveyor_defaults <- function(
 
 ################################################################################
 
-##' Prints surveyor object.
-##' 
-##' Prints surveyor object
-##' 
-##' @name print.surveyor
-##' @aliases print print.surveyor
-##' @usage print(x, ...)
-##' @param x surveyor object
-##' @param ... ignored
-##' @method print surveyor
-#print.surveyor <- function(x, ...){
-#	cat("Surveyor\n\n")
-#	print.listof(x)
-#}
+#' Prints surveyor object.
+#' 
+#' Prints surveyor object
+#' 
+#' @param x surveyor object
+#' @param ... ignored
+#' @S3method print surveyor
+print.surveyor <- function(x, ...){
+	cat("Surveyor\n\n")
+	print.listof(x)
+}
 
 ################################################################################
 
@@ -178,7 +175,7 @@ is.surveyor <- function(x){
 		if (all(
 				!is.null(x$q_data),
 				!is.null(x$q_text),
-				!is.null(x$cbreak),
+				!is.null(x$crossbreak),
 				!is.null(x$weight),
 				!is.null(x$defaults)
 		)){
@@ -298,13 +295,20 @@ surveyor_plot <- function(
 	}
 		
 	if (is.list(surveyor$crossbreak)) {
-		for (i in 1:length(surveyor$crossbreak)) {
-			surveyor$cbreak <- unlist(surveyor$crossbreak[i])
-			plot_q_internal()
-		}		
+#		for (i in 1:length(surveyor$crossbreak)) {
+#			surveyor$cbreak <- unlist(surveyor$crossbreak[i])
+#			plot_q_internal()
+#		}		
+		l_ply(
+				seq(length(surveyor$crossbreak)), 
+#				function(i){surveyor$cbreak <- unlist(s_crossbreak[i]); plot_q_internal}
+				function(i){
+					surveyor$cbreak <<- surveyor$crossbreak[[i]]
+					plot_q_internal()
+				}
+		)
 	} else {
 		plot_q_internal()
-					
 	}
 
 }

@@ -36,43 +36,20 @@ table_guess <- function(g){
 	if (is.null(g$question)){
 		# Plot single question
 		v <- tapply(g$value, list(g$response, g$cbreak[drop=TRUE]), sum_function)
-#		dimtotal1 <- 1
-#		dimtotal2 <- 2
 	} else {
 		if (is.null(g$response)) {
 			v <- tapply(g$value, list(g$question, g$cbreak[drop=TRUE]), sum_function)
-#			dimtotal1 <- 1
-#			dimtotal2 <- 2
 		} else {
 			if(nlevels(g$response[drop=TRUE])==1){
 				v <- tapply(g$value, list(g$question, g$cbreak[drop=TRUE]), sum_function)
 			} else {
 				# Plot array question as stacked bar
 				v <- tapply(g$value, list(g$question, g$response[drop=TRUE], g$cbreak[drop=TRUE]), sum_function)
-#				dimtotal1 <- c(1,2)
-#				dimtotal2 <- c(2,1)
 			}
 		}
 	}
 	
-	
-#	if (!is.null(g$question) && !is.null(g$response)){
-#		v <- tapply(g$value, list(g$question, g$response, g$cbreak), sum, na.rm=TRUE)
-#		dimtotal1 <- c(1,2)
-#		dimtotal2 <- c(2,1)
-#	} else {	
-#		if (is.null(g$question)){
-#			v <- tapply(g$value, list(g$response, g$cbreak), sum, na.rm=TRUE)
-#			dimtotal1 <- 1
-#			dimtotal2 <- 2
-#		} else {
-#			v <- tapply(g$value, list(g$question, g$cbreak), sum, na.rm=TRUE)
-#			dimtotal1 <- 1
-#			dimtotal2 <- 2
-#		}
-#	}
-	
-	if(g_orig$formatter=="percent") v <- paste_percent(v)
+	if(g_orig$formatter=="percent") v <- apply(v, c(1, 2), paste_percent)
 	
 	paste(latex_table(v, "Weighted totals"), sep="", collapse="\n")
 
