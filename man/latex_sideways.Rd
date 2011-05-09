@@ -1,19 +1,7 @@
 \name{latex_sideways}
 \alias{latex_sideways}
-\title{Prints a string to Latex, dealing with special characters...}
+\title{Prepares a string to be printed sideways (vertical) in LaTex...}
 \usage{latex_sideways(x)}
-\description{Prints a string to Latex, dealing with special characters}
+\description{Prepares a string to be printed sideways (vertical) in LaTex}
 \keyword{internal}
-\keyword{Prepares}
-\keyword{a}
-\keyword{string}
-\keyword{to}
-\keyword{be}
-\keyword{printed}
-\keyword{sideways}
-\keyword{(vertical)}
-\keyword{in}
-\keyword{LaTex}
-\keyword{internal}
-\arguments{\item{x}{A string containing question text}
-\item{x}{A character vector}}
+\arguments{\item{x}{A character vector}}

@@ -5,16 +5,15 @@ License: GPL (>=2)
 Title: Tools for analysing, reporting and plotting survey data
 LazyData: true
 LazyLoad: true
-Author@R: person("Andrie", "de Vries", email="apdevries@gmail.com")
 Author: Andrie de Vries <apdevries@gmail.com>
 Description: This is a set of tools to analyse, report and plot survey
     data
-Version: 0.0-08
+Author@R: person("Andrie", "de Vries", email="apdevries@gmail.com")
+Version: 0.1-0
 URL:
-Date: 2011-03-22
-Depends: R (>= 2.11.0), Hmisc, ggplot2, xtable, reshape2, plyr, lattice
+Date: 2011-05-09
+Depends: R (>= 2.11.0), plyr, ggplot2, lattice, reshape2, braid
 Suggests:
 Collate: '1_code_functions.R' '2_stats_functions.R'
-    '3_plot_functions.R' '4_table_functions.R' 'latex.R'
-    'question_handling.R' 'redefine.R' 'strings.R' 'surveyor-object.R'
-    'surveyor-package.R'
+    '3_plot_functions.R' '4_table_functions.R' 'question_handling.R'
+    'redefine.R' 'strings.R' 'surveyor-object.R' 'surveyor-package.R'

@@ -3,6 +3,10 @@
 # Author: Andrie
 ###############################################################################
 
+#library(ggplot2)
+
+old_warn <- getOption("warn")
+options(warn = 2)
 
 
 long_string <- "the quick brown fox jumps over the lazy dog"
@@ -194,26 +198,27 @@ if (file.exists(file.path(latex_path, sinkfile))){
 
 ###############################################################################
 
-s_defaults <- surveyor_defaults(
+sbraid <- as.braid(
 		path_latex    = latex_path,
-		path_graphics = graph_path,
-		output_to_latex = FALSE
+		path_graphics = graph_path
 )
 
-s <- as.surveyor(q_data, q_text, q_data$crossbreak, q_data$weight, s_defaults)
+tbraid <- as.braid(
+    path_latex    = latex_path,
+    path_graphics = graph_path
+)
+
+s <- as.surveyor(q_data, q_text, q_data$crossbreak, q_data$weight, braid=sbraid)
 #s_count <- new_counter()
 
 t_defaults <- surveyor_defaults(
-		path_latex    = latex_path,
-		path_graphics = graph_path,
-		output_to_latex = TRUE,
-		output_filename = sinkfile
+		output_to_latex = TRUE
 )
 
-t <- as.surveyor(q_data, q_text, q_data$crossbreak, q_data$weight, t_defaults)
+t <- as.surveyor(q_data, q_text, q_data$crossbreak, q_data$weight, t_defaults, braid=tbraid)
 #t_count <- new_counter()
 
-s2 <- as.surveyor(q_data, q_text, list(q_data$crossbreak, q_data$crossbreak2), q_data$weight, s_defaults)
+s2 <- as.surveyor(q_data, q_text, list(q_data$crossbreak, q_data$crossbreak2), q_data$weight, braid=sbraid)
 #s2_count <- new_counter()
 
 
@@ -251,8 +256,8 @@ test_that("Surveyor objects are defined properly", {
 			expect_that(is.surveyor(s), equals(TRUE))
 			expect_that(is.surveyor(q_data), equals(FALSE))
 			expect_that(as.surveyor(q_data, q_text[-1]), throws_error())
-			expect_that(surveyor_defaults(path_latex=file.path("random")), throws_error())
-			expect_that(surveyor_defaults(path_graph=file.path("random")), throws_error())
+			#expect_that(surveyor_defaults(path_latex=file.path("random")), throws_error())
+			#expect_that(surveyor_defaults(path_graph=file.path("random")), throws_error())
 			
 		})
 
@@ -330,25 +335,25 @@ test_that("surveyor_plot works with multiple crossbreaks", {
 
 context("Test output to Latex")
 
-file.remove(list.files(graph_path))
-if (file.exists(file.path(latex_path, sinkfile))){
-	file.remove(file.path(latex_path, sinkfile))
-}
-
-
 test_that("surveyor_plot works in Latex", {
 			
-			surveyor_plot(t, "Q1", code_single, stats_bin, plot_bar)
+#      file.remove(list.files(graph_path))
+      if (file.exists(file.path(latex_path, sinkfile))){
+        file.remove(file.path(latex_path, sinkfile))
+      }
+      
+      surveyor_plot(t, "Q1", code_single, stats_bin, plot_bar)
 			surveyor_plot(t, "Q4", code_array, stats_bin, plot_bar)
-			expect_that(file.exists(sinkfile), equals(TRUE))
+			#expect_that(file.exists(sinkfile), equals(TRUE))
 			expect_that(file.exists(file.path(graph_path, "fig0001.pdf")), equals(TRUE))
 			expect_that(file.exists(file.path(graph_path, "fig0002.pdf")), equals(TRUE))
 			
 		})
 
+options(warn = old_warn) 
 ###############################################################################
 
-rm(list=ls())
+#rm(list=ls())
 
 #file.remove(list.files(graph_path))
 #if (file.exists(file.path(latex_path, sinkfile))){
