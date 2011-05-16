@@ -136,25 +136,33 @@ get_q_text_common <- function(q_data, q_id, q_text, surveyor=NULL){
 
 get_q_common_unique_pattern <- function(x, pattern=c(
         "^(.*)\\((.*)\\)$",  # Find "Please tell us" in "Email (Please tell us)"
-        "^(.*): (.*)$"        # Find "What is your choice?" in "What is your choice?: Email"
-    )){
+        "^(.*): (.*)$",        # Find "What is your choice?" in "What is your choice?: Email"
+        "^(.*):\\S(.*)$",        # Find "What is your choice?" in "What is your choice?:Email"
+        "^(.\\d*)\\(\\d{1,3}\\) (.*)$",        # Find "What is your choice?" in "What is your choice?:Email"
+        "^\\[(.*)\\] (.*)$"        # Find "What is your choice?" in "What is your choice?:Email"
+)){
   most_common <- function(x){
     r <- sapply(x, function(xt)sum(grepl(xt, x, fixed=TRUE)))
     sort(r, decreasing=TRUE)[1]
   }
-  which_patterns <- order(unname(vapply(pattern, function(p)sum(grepl(p, x)), 0)), decreasing=TRUE)[1]
-  test_pattern <- pattern[which_patterns]
-  xt <- str_match(x, test_pattern)
-  r1 <- most_common(xt[, 2])
-  r2 <- most_common(xt[, 3])
-  
-  if(unname(r1) > unname(r2)){
-    t <- list(common=names(r1)[1], unique=str_trim(xt[, 3]))
-  } else {  
-    t <- list(common=names(r2)[1], unique=str_trim(xt[, 2]))
-  }
-  nNa <- sum(is.na(t$unique))  
-  if(nNa > 0) t$unique[is.na(t$unique)] <- paste("NA_", seq_len(nNa), sep="")  
+  pattern_sum <- unname(vapply(pattern, function(p)sum(grepl(p, x)), 0))
+  if(max(pattern_sum) > 1){
+    which_patterns <- order(pattern_sum, decreasing=TRUE)[1]
+    test_pattern <- pattern[which_patterns]
+    xt <- str_match(x, test_pattern)
+    r1 <- most_common(xt[, 2])
+    r2 <- most_common(xt[, 3])
+    
+    if(unname(r1) > unname(r2)){
+      t <- list(common=names(r1)[1], unique=str_trim(xt[, 3]))
+    } else {  
+      t <- list(common=names(r2)[1], unique=str_trim(xt[, 2]))
+    }
+    nNa <- sum(is.na(t$unique))  
+    if(nNa > 0) t$unique[is.na(t$unique)] <- paste("NA_", seq_len(nNa), sep="")
+  } else {
+    t <- str_common_unique(x)
+  }  
   t
 }
 
