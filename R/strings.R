@@ -79,25 +79,13 @@ str_common_unique <- function(x){
 #' @keywords string
 #' @examples
 #' str_wrap("the quick brown fox jumps over the lazy dog", 10)  
-#str_wrap <- function(x, len=30)
-#{
-#	str_wrapfunction <- function(x, len) (paste(strwrap(x,width=len), collapse="\n"))
-#	if (is.factor(x)){
-#		str <- laply(as.character(levels(x)), str_wrapfunction, len)
-#		levels(x) <- str
-#		x
-#	} else {
-#		str <- laply(x, str_wrapfunction, len)
-#		as.character(str)
-#	}
-#}
 str_wrap <- function(x, len=30)
 {
 	if (is.factor(x)){
 		levels(x) <- vapply(
 				levels(x),
 				function(x) paste(strwrap(x ,width=len), collapse="\n"),
-				"character", 
+				"x", 
 				USE.NAMES=FALSE
 		)
 		x
@@ -105,7 +93,7 @@ str_wrap <- function(x, len=30)
 		l <- vapply(
 				unique(x),
 				function(x) paste(strwrap(x ,width=len), collapse="\n"),
-				"character",
+				"x",
 				USE.NAMES=TRUE
 		)
 		unname(l[x])		
@@ -122,9 +110,9 @@ str_wrap <- function(x, len=30)
 #' str_reverse("the quick brown fox jumps over the lazy dog")  
 str_reverse <- function(x) {
 	as.character(
-			lapply(x, function(x){
+			vapply(x, function(x){
 				paste(rev(substring(x, 1:nchar(x), 1:nchar(x))), collapse="")
-			})
+			}, "x")
 	)
 }
 

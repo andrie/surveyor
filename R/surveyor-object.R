@@ -80,6 +80,7 @@ as.surveyor <- function(
 #' @param fastgraphics Uses lattice graphics if true, otherwise ggplot 
 #' @param default_colour_area Default RGB colour for areas in graphs (e.g. bars)
 #' @param default_colour_point Default RGB colour for points in graphs (e.g. points)
+#' @param print_table If TRUE will print the table as part of the report
 #' @seealso \code{\link{as.surveyor}}
 #' @export
 #' @examples
@@ -93,7 +94,8 @@ surveyor_defaults <- function(
 		subquestion_prepend = !subquestion_append,
 		fastgraphics = FALSE,
 		default_colour_area = rgb(127,201,127, 255, maxColorValue=255),
-		default_colour_point = rgb(27, 158, 119, 255, maxColorValue=255)
+		default_colour_point = rgb(27, 158, 119, 255, maxColorValue=255),
+    print_table = TRUE
 ){
 	
 	list(
@@ -104,7 +106,9 @@ surveyor_defaults <- function(
 			subquestion_prepend  = subquestion_prepend,
 			fastgraphics         = fastgraphics,
 			default_colour_area  = default_colour_area,
-			default_colour_point = default_colour_point
+			default_colour_point = default_colour_point,
+      print_table          =print_table
+  
 	)
 }
 
@@ -186,12 +190,8 @@ surveyor_plot <- function(
 	
 	plot_q_internal <- function(){
 		
-		#counter <- eval(surveyor$defaults$counter(), envir=parent.frame(n=2))
-		
-		if(!(is.surveyor(surveyor))){
-			stop("You must pass a valid surveyor object to plot_q")
-		}
-		
+		if(!(is.surveyor(surveyor))){stop("You must pass a valid surveyor object to plot_q")}
+    
 		f <- code_function(surveyor, q_id, ...)
 		if (is.null(f)){
 			nothing_to_plot <- TRUE
@@ -204,11 +204,7 @@ surveyor_plot <- function(
 		}	
 		
 		if (!surveyor$defaults$output_to_latex){
-			if (nothing_to_plot){
-				message("Nothing to plot")
-			} else {
-				print(h)
-			}
+			ifelse(nothing_to_plot, message("Nothing to plot"), print(h))
 		} else {
 			cat_string <- surveyor_print_question(
 					surveyor,
@@ -224,8 +220,12 @@ surveyor_plot <- function(
 	
 	###  plot_q main function
 	
-	message(q_id)
-	if (surveyor$defaults$output_to_latex){
+  if(!exists(q_id, surveyor$q_data) & is.null(get_q_subquestions(surveyor$q_data, q_id, surveyor))){
+    message(paste(q_id,": Question not found.  Processing aborted"))
+    return(NULL)
+  }
+  message(q_id)
+  if (surveyor$defaults$output_to_latex){
 		braid_heading(
 				surveyor$braid, 
 				paste(q_id, get_q_text(surveyor, q_id)), 
@@ -234,18 +234,17 @@ surveyor_plot <- function(
 	}
 		
 	if (is.list(surveyor$crossbreak)) {
-#		for (i in 1:length(surveyor$crossbreak)) {
-#			surveyor$cbreak <- unlist(surveyor$crossbreak[i])
-#			plot_q_internal()
-#		}		
-		lapply(
-				seq_along(surveyor$crossbreak), 
-#				function(i){surveyor$cbreak <- unlist(s_crossbreak[i]); plot_q_internal}
-				function(i){
-					surveyor$cbreak <<- surveyor$crossbreak[[i]]
-					plot_q_internal()
-				}
-		)
+		for (i in seq_along(surveyor$crossbreak)) {
+			surveyor$cbreak <- unlist(surveyor$crossbreak[i])
+			plot_q_internal()
+		}		
+#		lapply(
+#				seq_along(surveyor$crossbreak), 
+#				function(i){
+#					surveyor$cbreak <<- surveyor$crossbreak[[i]]
+#					plot_q_internal()
+#				}
+#		)
 	} else {
 		plot_q_internal()
 	}
@@ -287,7 +286,7 @@ surveyor_print_question <- function(surveyor, q_id, f, g, h, plot_size){
 		braid_plot(surveyor$braid, h, filename=filename,
         width=plot_size[1], height=(plot_size[2] * height_multiplier))
 
-		cat_string <- table_guess(g)
+		cat_string <- ifelse(surveyor$defaults$print_table, table_guess(g), "")
 	}
 	
 	return(cat_string)

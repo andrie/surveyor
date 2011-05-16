@@ -56,7 +56,7 @@ surveyor_stats <- function(
 ){
 	structure(
 			list(
-				data=data, 
+				data=quickdf(data), 
 				ylabel=ylabel,
 				formatter=formatter,
 				nquestion=nquestion,
@@ -92,7 +92,7 @@ reorder_response <- function(df){
 #' @keywords internal
 all_na <- function(x){
 	if (is.list(x) || is.data.frame(x)){
-		return(all(as.logical(llply(x, function(y) all(is.na(y))))))
+		return(all(as.logical(sapply(x, function(y) all(is.na(y))))))
 	}
 	return(all(is.na(x)))
 }
@@ -106,7 +106,7 @@ all_na <- function(x){
 #' @keywords internal
 all_null <- function(x){
 	if (is.list(x) || is.data.frame(x)){
-		return(all(as.logical(llply(x, function(y) all(is.null(y))))))
+		return(all(as.logical(sapply(x, function(y) all(is.null(y))))))
 	}
 	return(all(is.null(x)))
 }
@@ -130,7 +130,7 @@ identify_net_score <- function(x, match_words = NULL){
 	w <- gsub("[[:punct:]]", "", l)
 	w <- tolower(w)
 	w <- strsplit(w, " ")
-	all(laply(w, function(wx)any(wx %in% tolower(match_words))))
+	all(sapply(w, function(wx)any(wx %in% tolower(match_words))))
 }
 
 
@@ -200,12 +200,20 @@ stats_bin <- function(x, ylabel="Respondents", stats_method="stats_bin", convert
 		return(NULL)
 	}
 	weight <- NULL; rm(weight) # Dummy to trick R CMD check
-	cbweight <- ddply(x, c("cbreak", "question"), summarise, weight=sum(weight))
-	row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
+	
+  cbweight <- ddply(x, c("cbreak", "question"), summarise, weight=sum(weight))
+  row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
+  
+#  x <- data.table(x)
+#  print(str(x))
+#  cbweight <- x[, list(weight=sum(weight), names=paste(cbreak, question, sep="_")), 
+#      by=list(cbreak, question)]
+#  cbweight$names <- paste(cbweight$cbreak, cbweight$question, sep="_")
 	
 	if(convert_to_percent){
 		x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
-	}
+#    x$weight <- x$weight / with(cbweight, weight[match(paste(x$cbreak, x$question, sep="_"), names)])
+  }
 	
 	
 	if (is.factor(x$response)){
@@ -214,11 +222,10 @@ stats_bin <- function(x, ylabel="Respondents", stats_method="stats_bin", convert
 	
 	if (length(unique(x$question))==1){
 		# code single
-		df <- ddply(x, c("cbreak", "response"), 
-				summarise, 
-				value=sum(weight)
-		)
-		if (is.factor(x$response)){
+		df <- ddply(x, c("cbreak", "response"), summarise, value=sum(weight))
+#    df <- x[, list(value=sum(weight)), by=c("cbreak", "response")]
+    #print(str(df))
+    if (is.factor(x$response)){
 			x$response <- x$response[drop=TRUE]
 			if(is.ordered(x$response)){
 				df$response <- factor(df$response, levels=levels(x$response), ordered=TRUE)
@@ -229,11 +236,11 @@ stats_bin <- function(x, ylabel="Respondents", stats_method="stats_bin", convert
 		
 	} else {
 		# code array
-		df <- ddply(x, c("cbreak", "question", "response"), 
-				summarise, 
-				value=sum(weight)
-		)
-	}
+		df <- ddply(x, c("cbreak", "question", "response"), summarise, value=sum(weight))
+#    print(str(x))
+#    df <- x[, list(value=sum(weight)), by=c("cbreak", "question", "response")]
+#    print(str(df))
+}
 	
 	# Test for yes/no responses
 	if(is.factor(df$response) && all(levels(df$response) %in% c("Yes", "No"))){

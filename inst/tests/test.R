@@ -4,9 +4,9 @@
 ###############################################################################
 
 #library(ggplot2)
+#library(data.table)
 
-old_warn <- getOption("warn")
-options(warn = 2)
+#options(warn = 0)
 
 
 long_string <- "the quick brown fox jumps over the lazy dog"
@@ -32,42 +32,42 @@ test_that("string wrap and reverse works", {
 		})
 
 
-context("String functions: common and unique")
-
-qs0 <- "Q"
-qs01 <- c("Q", "Q1")
-qs1 <- c("Q1", "Q1")
-qs2 <- c("Q1", "Q2")
-qs3 <- c("1", "2", "3")
-qs4 <- c("Q_1", "Q_2", "Q_3") 
-
-test_that("str_common_unique works", {
-			
-			str_common <- function(x) str_common_unique(x)$common
-			str_unique <- function(x) str_common_unique(x)$unique
-			
-			expect_that(str_common(qs1), is_a("character"))
-			expect_that(str_unique(qs1), is_a("character"))
-
-			expect_that(str_common(qs0), equals("Q"))
-			expect_that(str_unique(qs0), equals(""))
-			
-			expect_that(str_common(qs01), equals("Q"))
-			expect_that(str_unique(qs01), equals(c("", "1")))
-			
-			expect_that(str_common(qs1), equals("Q1"))
-			expect_that(str_unique(qs1), equals(c("", "")))
-			
-			expect_that(str_common(qs2), equals("Q"))
-			expect_that(str_unique(qs2), equals(c("1", "2")))
-			
-			expect_that(str_common(qs3), equals(""))
-			expect_that(str_unique(qs3), equals(c("1", "2", "3")))
-			
-			expect_that(str_common(qs4), equals("Q_"))
-			expect_that(str_unique(qs4), equals(c("1", "2", "3")))
-
-		})
+#context("String functions: common and unique")
+#
+#qs0 <- "Q"
+#qs01 <- c("Q", "Q1")
+#qs1 <- c("Q1", "Q1")
+#qs2 <- c("Q1", "Q2")
+#qs3 <- c("1", "2", "3")
+#qs4 <- c("Q_1", "Q_2", "Q_3") 
+#
+#test_that("str_common_unique works", {
+#			
+#			str_common <- function(x) str_common_unique(x)$common
+#			str_unique <- function(x) str_common_unique(x)$unique
+#			
+#			expect_that(str_common(qs1), is_a("character"))
+#			expect_that(str_unique(qs1), is_a("character"))
+#
+#			expect_that(str_common(qs0), equals("Q"))
+#			expect_that(str_unique(qs0), equals(""))
+#			
+#			expect_that(str_common(qs01), equals("Q"))
+#			expect_that(str_unique(qs01), equals(c("", "1")))
+#			
+#			expect_that(str_common(qs1), equals("Q1"))
+#			expect_that(str_unique(qs1), equals(c("", "")))
+#			
+#			expect_that(str_common(qs2), equals("Q"))
+#			expect_that(str_unique(qs2), equals(c("1", "2")))
+#			
+#			expect_that(str_common(qs3), equals(""))
+#			expect_that(str_unique(qs3), equals(c("1", "2", "3")))
+#			
+#			expect_that(str_common(qs4), equals("Q_"))
+#			expect_that(str_unique(qs4), equals(c("1", "2", "3")))
+#
+#		})
 
 
 ###############################################################################
@@ -232,11 +232,17 @@ test_that("Question handling functions work", {
 			expect_that(get_q_subquestions(q_data, "Q1"), is_a("NULL"))
 			expect_that(get_q_subquestions(q_data, "Q4"), equals(c("Q4_1","Q4_3","Q4_2")))
 			
-			expect_that(get_q_text_unique(q_data, "Q4", q_text), equals(c("red", "blue", "green")))
-			expect_that(get_q_text_common(q_data, "Q4", q_text), equals("Question 4: "))
+      r <- get_q_text_unique(q_data, "Q4", q_text)
+      #print(r)
+			expect_that(r, equals(c("red", "blue", "green")))
+      r <- get_q_text_common(q_data, "Q4", q_text)
+      #print(r)
+			expect_that(r, equals("Question 4"))
 			
 			expect_that(get_q_text(s, "Q1"), equals("Question 1"))
-			expect_that(get_q_text(s, "Q4"), equals("Question 4: "))
+      r <- get_q_text(s, "Q4")
+      #print(r)
+			expect_that(r, equals("Question 4"))
 			
 		})
 
@@ -265,20 +271,15 @@ test_that("Surveyor objects are defined properly", {
 
 context("Code as single question and plot")
 
-code <- code_single(s, "Q1")
-plotcode <- stats_bin(code)
-
 test_that("code_single works", {
-			
+      code <- code_single(s, "Q1")
 			expect_that(code, is_a("data.frame"))
 			expect_that(names(code), equals(names_cqrw))
 			expect_that(nrow(code), equals(4))
 			
-		})
-
-test_that("plot functions work with code_single", {
-			
-			expect_that(plot_bar(plotcode, s), is_a("ggplot"))
+      plotcode <- stats_bin(code)
+      expect_that(plotcode, is_a("surveyor_stats"))
+      expect_that(plot_bar(plotcode, s), is_a("ggplot"))
 			expect_that(plot_point(plotcode, s), is_a("ggplot"))
 			
 		})
@@ -287,12 +288,12 @@ test_that("plot functions work with code_single", {
 
 context("Code as array question and plot")
 
-code <- code_array(s, "Q4")
-plotcode <- stats_bin(code)
 
 test_that("code_array works", {
 			
-			expect_that(code, is_a("data.frame"))
+      code <- code_array(s, "Q4")
+      plotcode <- stats_bin(code)
+      expect_that(code, is_a("data.frame"))
 			expect_that(names(code), equals(names_cqrw))
 			expect_that(nrow(code), equals(12))
 			
@@ -300,7 +301,9 @@ test_that("code_array works", {
 
 test_that("plot functions work with code_array", {
 			
-			expect_that(plot_bar(plotcode, s), is_a("ggplot"))
+      code <- code_array(s, "Q4")
+      plotcode <- stats_bin(code)
+      expect_that(plot_bar(plotcode, s), is_a("ggplot"))
 			expect_that(plot_point(plotcode, s), is_a("ggplot"))
 			
 		})
@@ -311,10 +314,9 @@ context("Test plumbing of surveyor_plot")
 
 test_that("surveyor_plot works", {
 			
-			expect_that(surveyor_plot(s, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
-			expect_that(surveyor_plot(s, "Q1", code_single, stats_bin, plot_bar), is_a("NULL"))
-			
-			expect_that(surveyor_plot(s, "Q4", code_array, stats_bin, plot_point), is_a("NULL"))
+			expect_that(r <- surveyor_plot(s, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
+			expect_that(r, is_a("character"))
+			expect_that(surveyor_plot(s, "Q4", code_array, stats_bin, plot_point), is_a("character"))
 			
 		})
 
@@ -325,8 +327,9 @@ context("Test that multiple crossbreaks work")
 
 test_that("surveyor_plot works with multiple crossbreaks", {
 			
-			expect_that(surveyor_plot(s2, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
-			
+			expect_that(r <- surveyor_plot(s2, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
+      expect_that(r, is_a("NULL"))
+      
 		})
 
 ###############################################################################
@@ -350,7 +353,7 @@ test_that("surveyor_plot works in Latex", {
 			
 		})
 
-options(warn = old_warn) 
+#options(warn = 0) 
 ###############################################################################
 
 #rm(list=ls())

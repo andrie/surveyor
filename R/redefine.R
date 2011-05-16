@@ -10,13 +10,12 @@
 #' @param x an array
 #' @param margin index number (1 for rows, etc.)
 #' @param na.rm logical. Should missing values be removed? Passed to sum()
-#' @export 
-#' @examples 
-#' m <- matrix(1:4,2)
-#' margin.table(m, 1)
-#' margin.table(m, 2)
-margin.table <- function (x, margin = NULL, na.rm=TRUE)
-{
+#' @keywords internal 
+## #' @examples 
+## #' m <- matrix(1:4,2)
+## #' surveyor:::smargin.table(m, 1)
+## #' surveyor:::smargin.table(m, 2)
+smargin.table <- function (x, margin = NULL, na.rm=TRUE){
 	if (!is.array(x))
 		stop("'x' is not an array")
 	if (length(margin)) {
@@ -37,16 +36,14 @@ margin.table <- function (x, margin = NULL, na.rm=TRUE)
 #' @param x an array
 #' @param margin index number (1 for rows, etc.)
 #' @param na.rm logical. Should missing values be removed? Passed to sum()
-#' @export 
-#' @examples 
-#' m <- matrix(1:4,2)
-#' prop.table(m,1)
-#' prop.table(m,2)
-prop.table <- function (x, margin = NULL, na.rm=TRUE)
-# Redefines prop.table to deal with na.rm
-{
+#' @keywords internal 
+## #' @examples 
+## #' m <- matrix(1:4,2)
+## #' surveyor:::sprop.table(m,1)
+## #' surveyor:::sprop.table(m,2)
+sprop.table <- function (x, margin = NULL, na.rm=TRUE){
 	if (length(margin))
-		sweep(x, margin, margin.table(x, margin), "/", check.margin = FALSE)
+		sweep(x, margin, smargin.table(x, margin), "/", check.margin = FALSE)
 	else x/sum(x, na.rm)
 }
 

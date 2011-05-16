@@ -147,11 +147,11 @@ latex_table <- function(x, caption){
 #		dimtotal2 <- c(2,1)
 #	}
 #	
-#	vp1 <- prop.table(v, dimtotal2, na.rm=TRUE)
+#	vp1 <- sprop.table(v, dimtotal2, na.rm=TRUE)
 #	p1 <- vp1
 #	#p1 <- paste_percent(vp1)
 #	
-#	vp2 <- prop.table(v, dimtotal1, na.rm=TRUE)
+#	vp2 <- sprop.table(v, dimtotal1, na.rm=TRUE)
 #	p2 <- vp2
 #	#p2 <- paste_percent(vp2)
 #	

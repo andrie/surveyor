@@ -63,6 +63,7 @@ theme_minimal <- opts(
 #' @export
 plot_bar <- function(s, surveyor){
 	f <- s$data
+  #print(str(f))
 		
 	f$cbreak <- f$cbreak[drop=TRUE]
 	

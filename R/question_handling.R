@@ -25,12 +25,12 @@ get_q_subquestions <- function(q_data, q_id, surveyor=NULL){
 	}	
 	find <- grep(paste("^", q_id, pattern, sep="", collapse=""), names(q_data))
 	if (identical(find, integer(0))){
-		return(NULL)
+		ret <- NULL
 	} else {
 		s <- sort(which(names(q_data) %in% names(q_data)[find]))
-		
-		return(names(q_data)[s])
+		ret <- names(q_data)[s]
 	}	
+  ret
 }
 
 
@@ -52,42 +52,31 @@ get_q_subquestions <- function(q_data, q_id, surveyor=NULL){
 #' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
 #' get_q_text_unique(q_data, "Q4", q_text) 					
 get_q_text_unique <- function(q_data, q_id, q_text, surveyor=NULL){
-	if (is.null(surveyor)){
-		append  <- TRUE
-		prepend <- FALSE
-	} else {
-		append  <- surveyor$defaults$subquestion_append
-		prepend <- surveyor$defaults$subquestion_prepend
-	}
-	
-	Q <- get_q_subquestions(q_data, q_id, surveyor)
-	if(is.null(Q)){
-		return(NULL)
-	} else {
-		Q <- q_text[Q]
-	
-		tmp <- str_reverse(str_common_unique(as.character(Q))$unique)
-		Qu  <- str_reverse(str_common_unique(tmp)$unique)
-	#	Qu <- sub("^[0-9]+\\. ", "", Qu)
-		
-	#	if (append){
-	#		tmp <- str_reverse(str_common_unique(as.character(Q))$unique)
-	#		Qu <- tmp
-	#	}
-	#	
-	#	if (prepend){
-	#		tmp <- str_common_unique(as.character(Q))$unique
-	#		Qu <- tmp
-	#	}
-	#
-	#	if (append && prepend){
-	#		tmp <- str_reverse(str_common_unique(as.character(Q))$unique)
-	#		Qu  <- str_reverse(str_common_unique(tmp)$unique)
-	#		#	sub("^[0-9]+\\. ", "", Qu)
-	#	}
-		Qu
-	}	
+  Q <- as.character(q_text[get_q_subquestions(q_data, q_id, surveyor)])
+  get_q_common_unique_pattern(Q)$unique
 }
+
+#get_q_text_unique <- function(q_data, q_id, q_text, surveyor=NULL){
+#  if (is.null(surveyor)){
+#    append  <- TRUE
+#    prepend <- FALSE
+#  } else {
+#    append  <- surveyor$defaults$subquestion_append
+#    prepend <- surveyor$defaults$subquestion_prepend
+#  }
+#  
+#  Q <- get_q_subquestions(q_data, q_id, surveyor)
+#  if(is.null(Q)){
+#    return(NULL)
+#  } else {
+#    Q <- q_text[Q]
+#    
+#    tmp <- str_reverse(str_common_unique(as.character(Q))$unique)
+#    Qu  <- str_reverse(str_common_unique(tmp)$unique)
+#    Qu
+#  } 
+#}
+
 
 #' Returns common elements of question text
 #' 
@@ -106,38 +95,68 @@ get_q_text_unique <- function(q_data, q_id, q_text, surveyor=NULL){
 #' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
 #' get_q_text_common(q_data, "Q4", q_text) 					
 get_q_text_common <- function(q_data, q_id, q_text, surveyor=NULL){
-	if (is.null(surveyor)){
-		append  <- TRUE
-		prepend <- FALSE
-	} else {
-		append  <- surveyor$defaults$subquestion_append
-		prepend <- surveyor$defaults$subquestion_prepend
-	}
-
-	Q <- get_q_subquestions(q_data, q_id, surveyor)
-	Q <- q_text[Q]
-	
-	tmpleft <- ""
-	tmpright <- ""
-	
-	if (append){
-		tmpleft <- str_common_unique(as.character(Q))$common
-	}
-	
-	if (prepend){
-		tmpright <- str_reverse(str_common_unique(as.character(str_reverse(Q)))$common)
-	}
-
-	if (append && prepend){
-		tmpleft <- str_common_unique(as.character(Q))$common
-		tmpright <- str_reverse(str_common_unique(as.character(str_reverse(Q)))$common)
-	}
-	
-	Qu <- paste(tmpleft, tmpright, sep="")
-#	tmp <- gsub("^[0-9]+\\. ", "", Qu)   # Remove leading question number
-#	gsub("^[[[:print:]]*] *", "", tmp)
+	Q <- as.character(q_text[get_q_subquestions(q_data, q_id, surveyor)])
+  get_q_common_unique_pattern(Q)$common
 }
 
+#get_q_text_common <- function(q_data, q_id, q_text, surveyor=NULL){
+#  if (is.null(surveyor)){
+#    append  <- TRUE
+#    prepend <- FALSE
+#  } else {
+#    append  <- surveyor$defaults$subquestion_append
+#    prepend <- surveyor$defaults$subquestion_prepend
+#  }
+#  
+#  Q <- get_q_subquestions(q_data, q_id, surveyor)
+#  Q <- q_text[Q]
+#  
+#  tmpleft <- ""
+#  tmpright <- ""
+#  
+#  if (append){
+#    tmpleft <- str_common_unique(as.character(Q))$common
+#  }
+#  
+#  if (prepend){
+#    tmpright <- str_reverse(str_common_unique(as.character(str_reverse(Q)))$common)
+#  }
+#  
+#  if (append && prepend){
+#    tmpleft <- str_common_unique(as.character(Q))$common
+#    tmpright <- str_reverse(str_common_unique(as.character(str_reverse(Q)))$common)
+#  }
+#  
+#  Qu <- paste(tmpleft, tmpright, sep="")
+## tmp <- gsub("^[0-9]+\\. ", "", Qu)   # Remove leading question number
+## gsub("^[[[:print:]]*] *", "", tmp)
+#}
+
+
+
+get_q_common_unique_pattern <- function(x, pattern=c(
+        "^(.*)\\((.*)\\)$",  # Find "Please tell us" in "Email (Please tell us)"
+        "^(.*): (.*)$"        # Find "What is your choice?" in "What is your choice?: Email"
+    )){
+  most_common <- function(x){
+    r <- sapply(x, function(xt)sum(grepl(xt, x, fixed=TRUE)))
+    sort(r, decreasing=TRUE)[1]
+  }
+  which_patterns <- order(unname(vapply(pattern, function(p)sum(grepl(p, x)), 0)), decreasing=TRUE)[1]
+  test_pattern <- pattern[which_patterns]
+  xt <- str_match(x, test_pattern)
+  r1 <- most_common(xt[, 2])
+  r2 <- most_common(xt[, 3])
+  
+  if(unname(r1) > unname(r2)){
+    t <- list(common=names(r1)[1], unique=str_trim(xt[, 3]))
+  } else {  
+    t <- list(common=names(r2)[1], unique=str_trim(xt[, 2]))
+  }
+  nNa <- sum(is.na(t$unique))  
+  if(nNa > 0) t$unique[is.na(t$unique)] <- paste("NA_", seq_len(nNa), sep="")  
+  t
+}
 
 
 
@@ -175,3 +194,6 @@ get_q_text <- function(surveyor, q_id){
 }
 
 
+question_list <- function(surveyor){
+  unique(gsub("_[[:digit:]]*(_other)?$", "", names(surveyor$q_data)))
+}
