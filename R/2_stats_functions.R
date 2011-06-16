@@ -2,38 +2,6 @@
 # Step 2 in the triad of code, summarize and plot
 ###############################################################################
 
-#' Finds first significant digit.
-#' 
-#' Finds first significant digit
-#' 
-#' @param x Numeric vector
-#' @keywords internal
-first_signif <- function(x){
-	sapply(x, function(xt){
-				if(xt==0){
-					0
-				} else {
-					p <- 10:-10
-					upper <- 10^(p)
-					lower <- 10^(p-1)
-					p[which(abs(xt) >=lower & abs(xt)<upper)]
-				}
-			}
-	)
-}
-
-#' Rounds to level of first significant digit.
-#'
-#' Rounds to level of first significant digit
-#'  
-#' @param x Numeric vector
-#' @param f Rounding function, e.g. round, trunc, floor or ceiling
-#' @keywords internal
-round_first_signif <- function(x, f=round){
-	round_any(x, 10^(first_signif(x)-1), f)
-}
-
-
 #' Creates surveyor_stats object, used as input to plot.
 #'  
 #' Creates surveyor_stats object, used as input to plot 
@@ -254,7 +222,7 @@ stats_bin <- function(x, ylabel="Respondents", stats_method="stats_bin", convert
 			df,
 			ylabel=ylabel,
 			stats_method=stats_method,
-			formatter=ifelse(convert_to_percent, "percent", "format"))
+			formatter=ifelse(convert_to_percent, "paste_percent", "format"))
 }
 
 #' Calculates summary statistics
@@ -334,7 +302,7 @@ stats_sum <- function(x){
 	surveyor_stats(
 			df,
 			ylabel="Value",
-			formatter="format",
+			formatter="format_round",
 			stats_method="stats_sum",
 			scale_breaks=scale_breaks)
 }
@@ -520,6 +488,7 @@ stats_net_score <- function(x){
 	surveyor_stats(
 			df,
 			ylabel="Net score",
+      formatter="format",
 			stats_method="stats_net_score")
 }
 

@@ -117,16 +117,3 @@ str_reverse <- function(x) {
 }
 
 
-#' Appends a percentage sign to numeric vector
-#' 
-#' Turns a numeric vector into a character vector
-#'
-#' @keywords internal
-#' @keywords string
-#' @param x Numeric vector
-paste_percent <- function(x){
-	xt <- sprintf("%.1f%%", x*100)
-	xt[xt=="NA%"] <- ""
-	xt
-}
-

@@ -1,8 +1,9 @@
-\name{plot_column}
-\alias{plot_column}
-\title{Plot data in column chart format...}
-\usage{plot_column(s, surveyor)}
-\description{Plot data in column chart format}
+\name{plot_guess}
+\alias{plot_guess}
+\title{Guesses which plot format is optimal...}
+\usage{plot_guess(s, surveyor)}
+\description{Guesses which plot format is optimal}
+\details{Investigates columns in supplied data, and then chooses either \code{\link{plot_bar}} or \code{\link{plot_column}}}
 \seealso{Plot functions: 
 \itemize{
 \item \code{\link{plot_bar}} 

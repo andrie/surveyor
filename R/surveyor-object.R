@@ -182,7 +182,7 @@ surveyor_plot <- function(
 		q_id,
 		code_function = code_guess,
 		stats_function = stats_guess,
-		plot_function = plot_bar,
+		plot_function = plot_guess,
 		plot_size = surveyor$braid$default_plot_size,
 		...){
 	

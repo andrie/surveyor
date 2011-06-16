@@ -133,20 +133,24 @@ get_q_text_common <- function(q_data, q_id, q_text, surveyor=NULL){
 #}
 
 
-
-get_q_common_unique_pattern <- function(x, pattern=c(
-        "^(.*)\\((.*)\\)$",  # Find "Please tell us" in "Email (Please tell us)"
-        "^(.*): (.*)$",        # Find "What is your choice?" in "What is your choice?: Email"
-        "^(.*):\\S(.*)$",        # Find "What is your choice?" in "What is your choice?:Email"
-        "^(.\\d*)\\(\\d{1,3}\\) (.*)$",        # Find "What is your choice?" in "What is your choice?:Email"
-        "^\\[(.*)\\] (.*)$"        # Find "What is your choice?" in "What is your choice?:Email"
-)){
-  most_common <- function(x){
+#' Get common and unique text in question based on regex pattern identification
+#' 
+#' @param x A character vector
+#' @param pattern A character vector with regex patterns
+get_q_common_unique_pattern <- function(x){
+  pattern <- c(
+      "^(.*)\\((.*)\\)$",             # Find "Please tell us" in "Email (Please tell us)"
+      "^(.*): (.*)$",                 # Find "What is your choice?" in "What is your choice?: Email"
+      "^(.*):\\S(.*)$",               # Find "What is your choice?" in "What is your choice?:Email"
+      "^(.\\d*)\\(\\d{1,3}\\) (.*)$", # Find "What is your choice?" in "What is your choice?:Email"
+      "^\\[(.*)\\] (.*)$"             # Find "What is your choice?" in "What is your choice?:Email"
+  )
+    most_common <- function(x){
     r <- sapply(x, function(xt)sum(grepl(xt, x, fixed=TRUE)))
     sort(r, decreasing=TRUE)[1]
   }
   pattern_sum <- unname(vapply(pattern, function(p)sum(grepl(p, x)), 0))
-  if(max(pattern_sum) > 1){
+  if(max(pattern_sum) >= 1){
     which_patterns <- order(pattern_sum, decreasing=TRUE)[1]
     test_pattern <- pattern[which_patterns]
     xt <- str_match(x, test_pattern)

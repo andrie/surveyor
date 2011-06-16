@@ -42,6 +42,47 @@ theme_minimal <- opts(
 )
 
 
+#' Guesses which plot format is optimal
+#' 
+#' Investigates columns in supplied data, and then chooses either \code{\link{plot_bar}} or \code{\link{plot_column}}
+#'
+#' @param s A surveyor_stats object
+#' @param surveyor Surveyor object
+#' @seealso 
+#' Plot functions: 
+#' \itemize{
+#' \item \code{\link{plot_bar}} 
+#' \item \code{\link{plot_bar_sum}} 
+#' \item \code{\link{plot_column}} 
+#' \item \code{\link{plot_point}} 
+#' \item \code{\link{plot_text}} 
+#' \item \code{\link{plot_net_score}} 
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor-package}}
+#' @keywords plot
+#' @export
+plot_guess <- function(s, surveyor){
+  f <- s$data
+  if (is.null(f$question)){
+    # Plot single question
+    if (is.null(f$response)) {
+      plot_column(s, surveyor)
+    } else {  
+      plot_bar(s, surveyor)
+    }  
+    
+  } else {
+    if (is.null(f$response)) {
+      # Plot array of single values per question
+      plot_bar(s, surveyor)
+    } else {
+      # Plot array question as stacked bar
+      plot_bar(s, surveyor)
+    }
+  }
+  
+}
 
 
 
@@ -53,12 +94,14 @@ theme_minimal <- opts(
 #' Plot functions: 
 #' \itemize{
 #' \item \code{\link{plot_bar}} 
+#' \item \code{\link{plot_bar_sum}} 
+#' \item \code{\link{plot_column}} 
 #' \item \code{\link{plot_point}} 
 #' \item \code{\link{plot_text}} 
 #' \item \code{\link{plot_net_score}} 
 #' }
 #' 
-#' For an overview of the surveyor package \code{\link{surveyor}}
+#' For an overview of the surveyor package \code{\link{surveyor-package}}
 #' @keywords plot
 #' @export
 plot_bar <- function(s, surveyor){
@@ -68,10 +111,15 @@ plot_bar <- function(s, surveyor){
 	f$cbreak <- f$cbreak[drop=TRUE]
 	
 	if(surveyor$defaults$fastgraphics){
+    ### plot using lattice
 		qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
 		if (is.null(f$question)){
 			# Plot single question
-			q <- lattice::barchart(response~value|cbreak, f, layout=qlayout,	box.ratio=1.5, origin=0)
+      if (is.null(f$response)) {
+        q <- lattice::barchart(value~cbreak, f, layout=qlayout,  box.ratio=1.5, origin=0)
+      } else {  
+        q <- lattice::barchart(response~value|cbreak, f, layout=qlayout,	box.ratio=1.5, origin=0)
+      }  
 			
 		} else {
 			if (is.null(f$response)) {
@@ -86,13 +134,18 @@ plot_bar <- function(s, surveyor){
 			}
 		}
 	} else {
-		if (is.null(f$question)){
-			# Plot single question
-			p <- ggplot(f, aes_string(x="response", y="value", fill="factor(cbreak)"))
+    ### plot using ggplot
+    if (is.null(f$question)){
+      # Plot single question
+      if (is.null(f$response)) {
+        p <- ggplot(f, aes_string(x="1", y="value", fill="factor(cbreak)"))
+      } else {  
+        p <- ggplot(f, aes_string(x="response", y="value", fill="factor(cbreak)"))
+      }  
 			
 		} else {
-			if (is.null(f$response)) {
-			# Plot array of single values per question
+      if (is.null(f$response)) {
+        # Plot array of single values per question
 				p <- ggplot(f, aes_string(x="question", y="value", fill="factor(cbreak)"))
 			} else {
 				# Plot array question as stacked bar
@@ -146,12 +199,14 @@ plot_bar <- function(s, surveyor){
 #' Plot functions: 
 #' \itemize{
 #' \item \code{\link{plot_bar}} 
+#' \item \code{\link{plot_bar_sum}} 
+#' \item \code{\link{plot_column}} 
 #' \item \code{\link{plot_point}} 
 #' \item \code{\link{plot_text}} 
 #' \item \code{\link{plot_net_score}} 
 #' }
 #' 
-#' For an overview of the surveyor package \code{\link{surveyor}}
+#' For an overview of the surveyor package \code{\link{surveyor-package}}
 #' @keywords plot
 #' @export
 plot_bar_sum <- function(s, surveyor){
@@ -167,12 +222,14 @@ plot_bar_sum <- function(s, surveyor){
 #' Plot functions: 
 #' \itemize{
 #' \item \code{\link{plot_bar}} 
+#' \item \code{\link{plot_bar_sum}} 
+#' \item \code{\link{plot_column}} 
 #' \item \code{\link{plot_point}} 
 #' \item \code{\link{plot_text}} 
 #' \item \code{\link{plot_net_score}} 
 #' }
 #' 
-#' For an overview of the surveyor package \code{\link{surveyor}}
+#' For an overview of the surveyor package \code{\link{surveyor-package}}
 #' @keywords plot
 #' @export
 plot_column <- function(s, surveyor){
@@ -229,12 +286,9 @@ plot_column <- function(s, surveyor){
 						axis.text.y=theme_blank()
 				) +
 				labs(fill="Response")
-#		p <- p + geom_text(aes_string(label="signif(value, 3)"), vjust=0.5, size=2)
-		if(s$formatter=="percent"){
-			p <- p + geom_text(aes_string(label="paste_percent(value)"), vjust=0.5, size=2)
-		} else {
-			p <- p + geom_text(aes_string(label="value"), vjust=0.5, size=2)
-		}
+    f$value_labels <- match.fun(s$formatter)(f$value)
+    p <- p + geom_text(data=f, aes_string(label="value_labels"), vjust=0.5, size=2)
+
 		
 		if (is.null(f$question)){
 			# Plot single question
@@ -271,12 +325,14 @@ plot_column <- function(s, surveyor){
 #' Plot functions: 
 #' \itemize{
 #' \item \code{\link{plot_bar}} 
+#' \item \code{\link{plot_bar_sum}} 
+#' \item \code{\link{plot_column}} 
 #' \item \code{\link{plot_point}} 
 #' \item \code{\link{plot_text}} 
 #' \item \code{\link{plot_net_score}} 
 #' }
 #' 
-#' For an overview of the surveyor package \code{\link{surveyor}}
+#' For an overview of the surveyor package \code{\link{surveyor-package}}
 #' @keywords plot
 #' @export
 plot_point <- function(s, surveyor){
@@ -326,12 +382,14 @@ plot_point <- function(s, surveyor){
 #' Plot functions: 
 #' \itemize{
 #' \item \code{\link{plot_bar}} 
+#' \item \code{\link{plot_bar_sum}} 
+#' \item \code{\link{plot_column}} 
 #' \item \code{\link{plot_point}} 
 #' \item \code{\link{plot_text}} 
 #' \item \code{\link{plot_net_score}} 
 #' }
 #' 
-#' For an overview of the surveyor package \code{\link{surveyor}}
+#' For an overview of the surveyor package \code{\link{surveyor-package}}
 #' @keywords plot
 #' @export
 plot_text <- function(f, surveyor){
@@ -356,12 +414,14 @@ plot_text <- function(f, surveyor){
 #' Plot functions: 
 #' \itemize{
 #' \item \code{\link{plot_bar}} 
+#' \item \code{\link{plot_bar_sum}} 
+#' \item \code{\link{plot_column}} 
 #' \item \code{\link{plot_point}} 
 #' \item \code{\link{plot_text}} 
 #' \item \code{\link{plot_net_score}} 
 #' }
 #' 
-#' For an overview of the surveyor package \code{\link{surveyor}}
+#' For an overview of the surveyor package \code{\link{surveyor-package}}
 #' @keywords plot
 plot_net_score <- function(s, surveyor){
 	f <- s$data
