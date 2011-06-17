@@ -45,8 +45,6 @@
 #' @name package-surveyor
 #' @aliases surveyor package-surveyor
 #' @docType package
-#' @import data.table
-#' @import braid
 #' @title Tools for analysing and reporting on survey objects.
 #' @author Andrie de Vries \email{andrie.de.vries@@pentalibra.com}
 #' @keywords package

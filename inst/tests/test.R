@@ -315,8 +315,8 @@ context("Test plumbing of surveyor_plot")
 test_that("surveyor_plot works", {
 			
 			expect_that(r <- surveyor_plot(s, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
-			expect_that(r, is_a("character"))
-			expect_that(surveyor_plot(s, "Q4", code_array, stats_bin, plot_point), is_a("character"))
+			expect_that(r, is_a("NULL"))
+			expect_that(surveyor_plot(s, "Q4", code_array, stats_bin, plot_point), is_a("NULL"))
 			
 		})
 

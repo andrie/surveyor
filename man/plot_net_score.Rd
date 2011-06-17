@@ -13,7 +13,7 @@
 \item \code{\link{plot_net_score}} 
 }
 
-For an overview of the surveyor package \code{\link{surveyor-package}}}
+For an overview of the surveyor package \code{\link{surveyor}}}
 \keyword{plot}
 \arguments{\item{s}{A data frame with coded answers, provided by a code_* function}
 \item{surveyor}{Surveyor object}}

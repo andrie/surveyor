@@ -59,7 +59,7 @@ theme_minimal <- opts(
 #' \item \code{\link{plot_net_score}} 
 #' }
 #' 
-#' For an overview of the surveyor package \code{\link{surveyor-package}}
+#' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 #' @export
 plot_guess <- function(s, surveyor){
@@ -101,7 +101,7 @@ plot_guess <- function(s, surveyor){
 #' \item \code{\link{plot_net_score}} 
 #' }
 #' 
-#' For an overview of the surveyor package \code{\link{surveyor-package}}
+#' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 #' @export
 plot_bar <- function(s, surveyor){
@@ -206,7 +206,7 @@ plot_bar <- function(s, surveyor){
 #' \item \code{\link{plot_net_score}} 
 #' }
 #' 
-#' For an overview of the surveyor package \code{\link{surveyor-package}}
+#' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 #' @export
 plot_bar_sum <- function(s, surveyor){
@@ -229,7 +229,7 @@ plot_bar_sum <- function(s, surveyor){
 #' \item \code{\link{plot_net_score}} 
 #' }
 #' 
-#' For an overview of the surveyor package \code{\link{surveyor-package}}
+#' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 #' @export
 plot_column <- function(s, surveyor){
@@ -332,7 +332,7 @@ plot_column <- function(s, surveyor){
 #' \item \code{\link{plot_net_score}} 
 #' }
 #' 
-#' For an overview of the surveyor package \code{\link{surveyor-package}}
+#' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 #' @export
 plot_point <- function(s, surveyor){
@@ -389,7 +389,7 @@ plot_point <- function(s, surveyor){
 #' \item \code{\link{plot_net_score}} 
 #' }
 #' 
-#' For an overview of the surveyor package \code{\link{surveyor-package}}
+#' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 #' @export
 plot_text <- function(f, surveyor){
@@ -421,7 +421,7 @@ plot_text <- function(f, surveyor){
 #' \item \code{\link{plot_net_score}} 
 #' }
 #' 
-#' For an overview of the surveyor package \code{\link{surveyor-package}}
+#' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 plot_net_score <- function(s, surveyor){
 	f <- s$data

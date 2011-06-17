@@ -136,7 +136,6 @@ get_q_text_common <- function(q_data, q_id, q_text, surveyor=NULL){
 #' Get common and unique text in question based on regex pattern identification
 #' 
 #' @param x A character vector
-#' @param pattern A character vector with regex patterns
 get_q_common_unique_pattern <- function(x){
   pattern <- c(
       "^(.*)\\((.*)\\)$",             # Find "Please tell us" in "Email (Please tell us)"
@@ -206,6 +205,3 @@ get_q_text <- function(surveyor, q_id){
 }
 
 
-question_list <- function(surveyor){
-  unique(gsub("_[[:digit:]]*(_other)?$", "", names(surveyor$q_data)))
-}

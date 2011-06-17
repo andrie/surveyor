@@ -1,5 +1,5 @@
 Package: surveyor
-Imports: braid, data.table
+Imports:
 Maintainer: Andrie de Vries <apdevries@gmail.com>
 License: GPL (>=2)
 Title: Tools for analysing, reporting and plotting survey data
@@ -9,11 +9,10 @@ Author: Andrie de Vries <apdevries@gmail.com>
 Description: This is a set of tools to analyse, report and plot survey
     data
 Author@R: person("Andrie", "de Vries", email="apdevries@gmail.com")
-Version: 0.1-02
+Version: 0.1-03
 URL:
-Date: 2011-06-14
-Depends: R (>= 2.11.0), plyr, ggplot2, stringr, lattice, reshape2,
-    braid
+Date: 2011-06-17
+Depends: plyr, stringr, reshape2, braid, ggplot2, lattice
 Suggests:
 Collate: '1_code_functions.R' '2_stats_functions.R'
     '3_plot_functions.R' '4_table_functions.R' 'formatters.R'
