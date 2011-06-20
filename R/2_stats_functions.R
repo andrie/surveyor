@@ -492,3 +492,10 @@ stats_net_score <- function(x){
 			stats_method="stats_net_score")
 }
 
+stats_text <- function(x){
+  surveyor_stats(
+      x,
+      ylabel="NA",
+      formatter="format",
+      stats_method="stats_text")
+}

@@ -206,14 +206,14 @@ surveyor_plot <- function(
 		if (!surveyor$defaults$output_to_latex){
 			ifelse(nothing_to_plot, message("Nothing to plot"), print(h))
 		} else {
-			cat_string <- surveyor_print_question(
-					surveyor,
-					q_id,
-					f,
-					g,
-					h, 
-					plot_size)
-			braid_write(surveyor$braid, cat_string)
+  			cat_string <- surveyor_print_question(
+  					surveyor,
+  					q_id,
+  					f,
+  					g,
+  					h, 
+  					plot_size)
+  			braid_write(surveyor$braid, cat_string)
 		}
 		
 	}
@@ -269,25 +269,31 @@ surveyor_print_question <- function(surveyor, q_id, f, g, h, plot_size){
 					
 	if (is.null(f)){
 		cat_string <- "\nNo data\n\n"
-	} else {
-		# Print plot
-		filename <- braid_filename(surveyor$braid)
-		message(paste("Now saving ", filename, sep=""))
-
-		# Adjust vertical size of plot depending on number of questions
-		# Make the assumption that 7 questions can fit on a plot
-		# Limit vertical size to [1, 3]*size of default
-		height_multiplier <- ifelse(
-				is.numeric(g$nquestion), 
-				min(3, max(1, g$nquestion / 7)),
-				1
-		)
-		#message(paste("In surveyor_print_question, height_multiplier = ", height_multiplier))
-		braid_plot(surveyor$braid, h, filename=filename,
-        width=plot_size[1], height=(plot_size[2] * height_multiplier))
-
-		cat_string <- ifelse(surveyor$defaults$print_table, table_guess(g), "")
+    return(cat_string)
 	}
+  
+  if(class(h)=="text"){
+    cat_string <- h
+    return(cat_string)
+  }
+    
+	# Print plot
+	filename <- braid_filename(surveyor$braid)
+	message(paste("Now saving ", filename, sep=""))
+
+	# Adjust vertical size of plot depending on number of questions
+	# Make the assumption that 7 questions can fit on a plot
+	# Limit vertical size to [1, 3]*size of default
+	height_multiplier <- ifelse(
+			is.numeric(g$nquestion), 
+			min(3, max(1, g$nquestion / 7)),
+			1
+	)
+	#message(paste("In surveyor_print_question, height_multiplier = ", height_multiplier))
+	braid_plot(surveyor$braid, h, filename=filename,
+      width=plot_size[1], height=(plot_size[2] * height_multiplier))
+
+	cat_string <- ifelse(surveyor$defaults$print_table, table_guess(g), "")
 	
 	return(cat_string)
 }
@@ -302,8 +308,7 @@ surveyor_print_question <- function(surveyor, q_id, f, g, h, plot_size){
 #' @param h Results from plot_* function
 #' @param plot_size the plot size in inches
 #' @keywords internal
-theme_surveyor <- function (base_size = 12, base_family = "") 
-{
+theme_surveyor <- function (base_size = 12, base_family = ""){
 	structure(
 			list(
 					axis.line = theme_blank(), 

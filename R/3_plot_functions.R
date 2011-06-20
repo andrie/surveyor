@@ -175,15 +175,16 @@ plot_bar <- function(s, surveyor){
 			# Plot array of single values per question
 			# Plot array question as stacked bar
 			p <- p + opts(
-					axis.text.x=theme_text(size=surveyor$defaults$default_theme_size*0.5, angle=90,
-							
-					)
+					axis.text.x=theme_text(size=surveyor$defaults$default_theme_size*0.5, angle=90)
 			)
 			if(length(unique(f$question)) > 8){p <- p + scale_fill_hue()}
-			if (!is.null(f$response) & nlevels(f$response[drop=TRUE]==1)){ 
+			if (!is.null(f$response) & nlevels(f$response[drop=TRUE])>1){ 
 				p <- p + opts(legend.position="right")
 			}	
-		}
+#      if (!is.null(f$response) && !is.null(f$response)){ 
+#        p <- p + opts(legend.position="right")
+#      } 
+    }
 	}
 		
 	ifelse(surveyor$defaults$fastgraphics, return(q), return(p))
@@ -287,7 +288,7 @@ plot_column <- function(s, surveyor){
 				) +
 				labs(fill="Response")
     f$value_labels <- match.fun(s$formatter)(f$value)
-    p <- p + geom_text(data=f, aes_string(label="value_labels"), vjust=0.5, size=2)
+    p <- p + geom_text(data=f, aes_string(label="value_labels"), vjust=0.5, size=3)
 
 		
 		if (is.null(f$question)){
@@ -392,13 +393,16 @@ plot_point <- function(s, surveyor){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 #' @export
-plot_text <- function(f, surveyor){
-		paste(
+plot_text <- function(s, surveyor){
+  items <- paste("\\item", latexTranslate(s$data$response))
+    p <- paste(
 			"\\begin{itemize}",
-			f,
+			items,
 			"\n\\end{itemize}",
-			sep="\n"
-	)
+			collapse="\n"
+	  )
+    class(p) <- "text"
+    p
 }
 
 ###############################################################################
