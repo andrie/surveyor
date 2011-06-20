@@ -272,7 +272,9 @@ plot_column <- function(s, surveyor){
 #			p <- ggplot(f, aes_string(x="question", y="value", fill="factor(response)"))
 			p <- ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(response)"))
 			}
-		}
+#      f$value_labels <- match.fun(s$formatter)(f$value)
+#      p <- p + geom_text(data=f, aes_string(label="value_labels"), vjust=0.5, size=3)
+    }
 		p <- p + 
 				theme_surveyor(surveyor$defaults$default_theme_size) +
 				geom_bar(stat="identity") + 
@@ -287,8 +289,6 @@ plot_column <- function(s, surveyor){
 						axis.text.y=theme_blank()
 				) +
 				labs(fill="Response")
-    f$value_labels <- match.fun(s$formatter)(f$value)
-    p <- p + geom_text(data=f, aes_string(label="value_labels"), vjust=0.5, size=3)
 
 		
 		if (is.null(f$question)){
@@ -302,7 +302,7 @@ plot_column <- function(s, surveyor){
 							strip.text.y = theme_text(size = surveyor$defaults$default_theme_size * 0.8)
 #							axis.text.y = theme_text(size = surveyor$defaults$default_theme_size * 0.5)
 					)
-			p <- p + geom_text(aes_string(label="signif(value, 3)"), vjust=0.5, size=2)
+			p <- p + geom_text(aes_string(label="signif(value, 3)"), vjust=0.5, size=3)
 			if(length(unique(f$question)) > 8){p <- p + scale_fill_hue()}
 			if (!is.null(f$response) & nlevels(f$response[drop=TRUE]==1)){ 
 				p <- p + opts(legend.position="right")
@@ -377,7 +377,7 @@ plot_point <- function(s, surveyor){
 
 #' Plot data as text
 #'
-#' @param f A data frame with coded answers, provided by a code_* function
+#' @param s A surveyor_stats object
 #' @param surveyor Surveyor object
 #' @seealso
 #' Plot functions: 

@@ -15,5 +15,5 @@
 
 For an overview of the surveyor package \code{\link{surveyor}}}
 \keyword{plot}
-\arguments{\item{f}{A data frame with coded answers, provided by a code_* function}
+\arguments{\item{s}{A surveyor_stats object}
 \item{surveyor}{Surveyor object}}

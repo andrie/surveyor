@@ -452,7 +452,7 @@ net_score <- function(x){
 
 # TODO: Fix stats_net_score to deal with 
 
-#' Code survey data as net score
+#' Code survey data as net score.
 #'
 #' Code survey data in net score form
 #' 
@@ -492,6 +492,23 @@ stats_net_score <- function(x){
 			stats_method="stats_net_score")
 }
 
+#' Code survey data as text.
+#'
+#' Code survey data in text form
+#' 
+#' @param x A data frame column 
+#' @return data frame
+#' @seealso
+#' Stats functions:
+#' \itemize{
+#' \item \code{\link{stats_bin}} 
+#' \item \code{\link{stats_rank}} 
+#' \item \code{\link{stats_net_score}}
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords stats
+#' @export
 stats_text <- function(x){
   surveyor_stats(
       x,
