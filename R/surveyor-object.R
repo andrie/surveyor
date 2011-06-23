@@ -359,7 +359,7 @@ theme_surveyor <- function (base_size = 12, base_family = ""){
 }
 
 ################################################################################
-# TODO: Define question class
+# TODO: Surveyor: Define question class
 # 
 # Author: Andrie
 ###############################################################################
@@ -397,7 +397,6 @@ theme_surveyor <- function (base_size = 12, base_family = ""){
 
 
 
-# TODO: Once pattern is passed to question handling, write a function to guess question ids 
 
 
 

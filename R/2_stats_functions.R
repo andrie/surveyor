@@ -450,7 +450,7 @@ net_score <- function(x){
 	netScore
 }
 
-# TODO: Fix stats_net_score to deal with 
+# TODO: Surveyor: Fix stats_net_score to deal with weighting 
 
 #' Code survey data as net score.
 #'

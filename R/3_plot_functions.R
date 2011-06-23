@@ -1,5 +1,5 @@
-# TODO: Fix stacked bar chart - make axes quiet, reduce size of legend
-# TODO: Modify default behaviour to get rid of RColorBrewer warning messages
+# TODO: Surveyor: Fix stacked bar chart - make axes quiet, reduce size of legend
+# TODO: Surveyor: Modify default behaviour to get rid of RColorBrewer warning messages
 
 
 
@@ -408,7 +408,7 @@ plot_text <- function(s, surveyor){
 ###############################################################################
 
 
-# TODO: Fix plot_net_score to deal with weighting
+# TODO: Surveyor: Fix plot_net_score to deal with weighting
 #' Plot data in net score format (bar chart, but percentage axis)
 #'
 #' @param s A data frame with coded answers, provided by a code_* function
