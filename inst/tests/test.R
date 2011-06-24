@@ -264,6 +264,7 @@ test_that("Surveyor objects are defined properly", {
 			expect_that(as.surveyor(q_data, q_text[-1]), throws_error())
 			#expect_that(surveyor_defaults(path_latex=file.path("random")), throws_error())
 			#expect_that(surveyor_defaults(path_graph=file.path("random")), throws_error())
+      
 			
 		})
 

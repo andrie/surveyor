@@ -17,4 +17,5 @@
 For an overview of the surveyor package \code{\link{surveyor}}}
 \keyword{plot}
 \arguments{\item{s}{A surveyor_stats object}
-\item{surveyor}{Surveyor object}}
+\item{surveyor}{Surveyor object}
+\item{plot_function}{Character vector: Identifies the name of the plot function used to create the plot}}

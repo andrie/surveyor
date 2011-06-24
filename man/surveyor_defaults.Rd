@@ -8,7 +8,7 @@
     default_colour_point=rgb(27, 158, 119, 255, maxColorValue = 255),
     print_table=TRUE)}
 \description{Initialises surveyor object defaults.}
-\seealso{\code{\link{as.surveyor}}}
+\seealso{\code{\link{as.surveyor}}, \code{\link{surveyor_update_defaults}}}
 \arguments{\item{output_to_latex}{TRUE or FALSE, determines if latex commands is output}
 \item{default_theme_size}{Text size in points, passed to ggplot}
 \item{question_pattern}{A text pattern passed to grep() to distinguish 

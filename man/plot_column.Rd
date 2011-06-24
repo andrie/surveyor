@@ -1,7 +1,7 @@
 \name{plot_column}
 \alias{plot_column}
 \title{Plot data in column chart format...}
-\usage{plot_column(s, surveyor)}
+\usage{plot_column(s, surveyor, plot_function="plot_column")}
 \description{Plot data in column chart format}
 \seealso{Plot functions: 
 \itemize{

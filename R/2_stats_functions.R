@@ -20,7 +20,8 @@ surveyor_stats <- function(
 		formatter="percent",
 		nquestion=length(unique(data$question)),
 		scale_breaks=NULL,
-		stats_method=""
+		stats_method="",
+    plot_function=""
 ){
 	structure(
 			list(
@@ -29,15 +30,16 @@ surveyor_stats <- function(
 				formatter=formatter,
 				nquestion=nquestion,
 				scale_breaks=scale_breaks,
-				stats_method=stats_method
+				stats_method=stats_method,
+        plot_function=plot_function
 			),
 			class = "surveyor_stats"
 	)
 }
 
-#' Sorts data.frame in descending order
+#' Sorts data.frame responses in descending order by value.
 #' 
-#' Sorts df in descending order 
+#' Sorts data.frame responses in descending order by value 
 #' 
 #' @param df A data frame containing at least two columns: response and value 
 #' @return A data frame
@@ -49,6 +51,20 @@ reorder_response <- function(df){
 	df
 }
 
+#' Sorts data.frame questions in descending order by value.
+#' 
+#' Sorts data.frame question in descending order by value 
+#' 
+#' @param df A data frame containing at least two columns: response and value 
+#' @return A data frame
+#' @keywords internal
+reorder_question <- function(df, reverse=FALSE){
+  q_levels  <- df[order(df$value, decreasing=TRUE), ]$question
+  q_levels <- unique(q_levels)
+  if(reverse) q_levels <- rev(q_levels)
+  df$question <- factor(df$question, levels=q_levels, ordered=TRUE)
+  df
+}
 
 
 #' Tests for all NA values.
@@ -208,6 +224,7 @@ stats_bin <- function(x, ylabel="Respondents", stats_method="stats_bin", convert
 #    print(str(x))
 #    df <- x[, list(value=sum(weight)), by=c("cbreak", "question", "response")]
 #    print(str(df))
+  df <- reorder_question(df, reverse=TRUE)
 }
 	
 	# Test for yes/no responses
@@ -482,14 +499,16 @@ stats_net_score <- function(x){
 		df <- ddply(x, c("cbreak", "question"), 
 				summarise,
 				value=net_score(response))
-		quest_levels  <- df[order(df$value, decreasing=TRUE), ]$question
+		#quest_levels  <- df[order(df$value, decreasing=TRUE), ]$question
 		#df$question <- factor(df$question, levels=quest_levels, ordered=TRUE)
-	}
+    df <- reorder_question(df, reverse=FALSE)
+  }
 	surveyor_stats(
 			df,
 			ylabel="Net score",
       formatter="format",
-			stats_method="stats_net_score")
+			stats_method="stats_net_score",
+      plot_function="plot_net_score")
 }
 
 #' Code survey data as text.

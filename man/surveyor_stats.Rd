@@ -3,7 +3,7 @@
 \title{Creates surveyor_stats object, used as input to plot.}
 \usage{surveyor_stats(data, ylabel="Fraction of respondents",
     formatter="percent", nquestion=length(unique(data$question)),
-    scale_breaks, stats_method="")}
+    scale_breaks, stats_method="", plot_function="")}
 \description{Creates surveyor_stats object, used as input to plot.}
 \details{Creates surveyor_stats object, used as input to plot}
 \value{A surveyor_stats object}

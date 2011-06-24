@@ -1,6 +1,10 @@
 ################################################################################
 ### Define surveyor class and methods
 ################################################################################
+# TODO: Default switch to print graphics
+# TODO: Modify plotq with simpler parameters
+# TODO: Modify surveyor architecture to use environments
+
 
 #' Creates object of class surveyor.
 #' 
@@ -33,7 +37,7 @@ as.surveyor <- function(
 	}
 	
 	if (is.list(crossbreak)) {
-		if (any(laply(crossbreak, length) != nrow(sd))) {
+		if (any(lapply(crossbreak, length) != nrow(sd))) {
 			stop ("Surveyor object: each element in crossbreak list must match q_data in length")
 		} else {
 			cbreak <- unlist(crossbreak[1])
@@ -81,7 +85,7 @@ as.surveyor <- function(
 #' @param default_colour_area Default RGB colour for areas in graphs (e.g. bars)
 #' @param default_colour_point Default RGB colour for points in graphs (e.g. points)
 #' @param print_table If TRUE will print the table as part of the report
-#' @seealso \code{\link{as.surveyor}}
+#' @seealso \code{\link{as.surveyor}}, \code{\link{surveyor_update_defaults}}
 #' @export
 #' @examples
 #' s <- surveyor_defaults()
@@ -107,9 +111,49 @@ surveyor_defaults <- function(
 			fastgraphics         = fastgraphics,
 			default_colour_area  = default_colour_area,
 			default_colour_point = default_colour_point,
-      print_table          =print_table
+      print_table          = print_table
   
 	)
+}
+
+#' Selectively updates surveyor defaults.
+#'
+#' Selectively updates surveyor defaults.
+#' @param surveyor Surveyor object
+#' @param output_to_latex TRUE or FALSE, determines if latex commands is output
+#' @param default_theme_size Text size in points, passed to ggplot
+#' @param question_pattern A text pattern passed to grep() to distinguish 
+#' between single and array questions
+#' @param subquestion_append Indicates whether subquestion text is appended to question text
+#' @param subquestion_prepend Indicates whether subquestion text is prepended to question text
+#' @param fastgraphics Uses lattice graphics if true, otherwise ggplot 
+#' @param default_colour_area Default RGB colour for areas in graphs (e.g. bars)
+#' @param default_colour_point Default RGB colour for points in graphs (e.g. points)
+#' @param print_table If TRUE will print the table as part of the report
+#' @seealso \code{\link{as.surveyor}}, \code{\link{surveyor_defaults}}
+#' @export 
+surveyor_update_defaults <- function(
+    surveyor,
+    output_to_latex = NULL,
+    default_theme_size = NULL,
+    question_pattern = NULL,
+    subquestion_append = NULL,
+    subquestion_prepend = NULL,
+    fastgraphics = NULL,
+    default_colour_area = NULL,
+    default_colour_point = NULL,
+    print_table = NULL
+){
+  if(!missing(output_to_latex))      surveyor$defaults$output_to_latex <- output_to_latex
+  if(!missing(default_theme_size))   surveyor$defaults$default_theme_size <- default_theme_size
+  if(!missing(question_pattern))     surveyor$defaults$question_pattern <- question_pattern
+  if(!missing(subquestion_append))   surveyor$defaults$subquestion_append <- subquestion_append
+  if(!missing(subquestion_prepend))  surveyor$defaults$subquestion_prepend <- subquestion_prepend
+  if(!missing(fastgraphics))         surveyor$defaults$fastgraphics <- fastgraphics
+  if(!missing(default_colour_area))  surveyor$defaults$default_colour_area <- default_colour_area
+  if(!missing(default_colour_point)) surveyor$defaults$default_colour_point <- default_colour_point
+  if(!missing(print_table))          surveyor$defaults$print_table <- print_table
+  surveyor
 }
 
 ################################################################################
@@ -272,8 +316,8 @@ surveyor_print_question <- function(surveyor, q_id, f, g, h, plot_size){
     return(cat_string)
 	}
   
-  if(class(h)=="text"){
-    cat_string <- h
+  if(class(h$plot)=="text"){
+    cat_string <- h$plot
     return(cat_string)
   }
     
@@ -290,7 +334,7 @@ surveyor_print_question <- function(surveyor, q_id, f, g, h, plot_size){
 			1
 	)
 	#message(paste("In surveyor_print_question, height_multiplier = ", height_multiplier))
-	braid_plot(surveyor$braid, h, filename=filename,
+	braid_plot(surveyor$braid, h$plot, filename=filename,
       width=plot_size[1], height=(plot_size[2] * height_multiplier))
 
 	cat_string <- ifelse(surveyor$defaults$print_table, table_guess(g), "")
