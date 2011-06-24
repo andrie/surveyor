@@ -248,7 +248,7 @@ surveyor_plot <- function(
 		}	
 		
 		if (!surveyor$defaults$output_to_latex){
-			ifelse(nothing_to_plot, message("Nothing to plot"), print(h))
+			ifelse(nothing_to_plot, message("Nothing to plot"), print(h$plot))
 		} else {
   			cat_string <- surveyor_print_question(
   					surveyor,
@@ -282,13 +282,6 @@ surveyor_plot <- function(
 			surveyor$cbreak <- unlist(surveyor$crossbreak[i])
 			plot_q_internal()
 		}		
-#		lapply(
-#				seq_along(surveyor$crossbreak), 
-#				function(i){
-#					surveyor$cbreak <<- surveyor$crossbreak[[i]]
-#					plot_q_internal()
-#				}
-#		)
 	} else {
 		plot_q_internal()
 	}

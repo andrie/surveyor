@@ -1,6 +1,4 @@
-# TODO: Surveyor: Fix stacked bar chart - make axes quiet, reduce size of legend
-# TODO: Surveyor: Modify default behaviour to get rid of RColorBrewer warning messages
-
+# TODO: Surveyor: Move plot vertical sizing into plot itself
 
 
 #' Blank axis titles and no legend
@@ -91,7 +89,11 @@ plot_guess <- function(s, surveyor){
   if(class(surveyor)!="surveyor") stop("plot_guess: surveyor must be a surveyor object")
   f <- s$data
   if(s$plot_function!=""){
-    if(s$plot_function=="plot_net_score") plot_net_score(s, surveyor)
+    if(s$plot_function=="plot_net_score") {
+      plot_net_score(s, surveyor)
+    } else {
+      stop(paste("plot_guess: This should never happen. plot_function =", plot_function))
+    }  
   } else {
     if (is.null(f$question)){
       # Plot single question
@@ -179,7 +181,9 @@ plot_bar <- function(s, surveyor, plot_function="plot_bar"){
 				p <- ggplot(f, aes_string(x="question", y="value", fill="factor(cbreak)"))
 			} else {
 				# Plot array question as stacked bar
+        
 				p <- ggplot(f, aes_string(x="question", y="value", fill="factor(response)"))
+            
 			}
 		}
 		p <- p + 
@@ -210,7 +214,11 @@ plot_bar <- function(s, surveyor, plot_function="plot_bar"){
 			if(length(unique(f$question)) > 8){p <- p + scale_fill_hue()}
 			if (!is.null(f$response) & nlevels(f$response[drop=TRUE])>1){ 
 				p <- p + opts(legend.position="right")
+        
 			}	
+      if (!is.null(f$response)){
+        p <- p + geom_text(aes_string(label="signif(value, 3)"), hjust=1, size=3)
+      }  
 #      if (!is.null(f$response) && !is.null(f$response)){ 
 #        p <- p + opts(legend.position="right")
 #      } 
@@ -503,9 +511,9 @@ plot_net_score <- function(s, surveyor){
 	qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
 	q <- lattice::barchart(question~value|cbreak, f, layout=qlayout, origin=0)
 			
-	ifelse(surveyor$defaults$fastgraphics, 
-      as_surveyor_plot(q, plot_function="plot_net_score"), 
-      as_surveyor_plot(p, plot_function="plot_net_score")
+  ifelse(surveyor$defaults$fastgraphics, 
+      return(as_surveyor_plot(q, plot_function="plot_net_score")), 
+      return(as_surveyor_plot(p, plot_function="plot_net_score"))
   )
 }
 
