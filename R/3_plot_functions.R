@@ -115,6 +115,35 @@ plot_guess <- function(s, surveyor){
   }
 }
 
+#' Determines question type as single/grid question and single/multi response.
+#' 
+#' @param s A surveyor_stats object
+#' @keywords internal
+qtype <- function(s){
+  if(is.null(s$data)) return(NULL)
+  if (is.null(s$data$question)){
+    x <- ifelse (is.null(s$data$response), "singleQ_singleResponse", "singleQ_multiResponse")
+  } else {
+    x <- ifelse(is.null(s$data$response), "gridQ_singleResponse", "gridQ_multiResponse")
+  }
+  x
+}
+
+#' Checks if question has response of yes/no.
+#' 
+#' @param s A surveyor_stats object
+#' @keywords internal
+is.yesno <- function(s){
+  ifelse(!is.null(s$data$response), x <- s$data$response, return(FALSE))  
+  ret <- FALSE
+  if(is.factor(x)){
+    if(length(levels(x))==2){
+      if(sort(levels(x))==c("No", "Yes") || sort(levels(x))==c("Not selected", "Yes")){
+        ret <- TRUE
+      }}}
+  ret
+}
+
 
 
 #' Plot data in bar chart format
@@ -138,6 +167,7 @@ plot_guess <- function(s, surveyor){
 #' @export
 plot_bar <- function(s, surveyor, plot_function="plot_bar"){
 	f <- s$data
+  qtype <- qtype(s)
   #print(str(f))
 		
 	f$cbreak <- f$cbreak[drop=TRUE]
@@ -145,50 +175,46 @@ plot_bar <- function(s, surveyor, plot_function="plot_bar"){
 	if(surveyor$defaults$fastgraphics){
     ### plot using lattice
 		qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
-		if (is.null(f$question)){
-			# Plot single question
-      if (is.null(f$response)) {
-        q <- lattice::barchart(value~cbreak, f, layout=qlayout,  box.ratio=1.5, origin=0)
-      } else {  
-        q <- lattice::barchart(response~value|cbreak, f, layout=qlayout,	box.ratio=1.5, origin=0)
-      }  
-			
-		} else {
-			if (is.null(f$response)) {
-				# Plot array of single values per question
-				q <- lattice::barchart(question~value|cbreak, 
-						f, layout=qlayout,	box.ratio=1.5, origin=0, groups=f$cbreak, stack=TRUE)
-			} else {
-				# Plot array question as stacked bar
-				q <- lattice::barchart(question~value|cbreak, 
-						f, layout=qlayout,	box.ratio=1.5, origin=0, groups=f$response, stack=TRUE, 
-						auto.key=list(space="right"))
-			}
-		}
-	} else {
-    ### plot using ggplot
-    if (is.null(f$question)){
-      # Plot single question
-      if (is.null(f$response)) {
-        p <- ggplot(f, aes_string(x="1", y="value", fill="factor(cbreak)"))
-      } else {  
-        p <- ggplot(f, aes_string(x="response", y="value", fill="factor(cbreak)"))
-      }  
-			
-		} else {
-      if (is.null(f$response)) {
-        # Plot array of single values per question
-				p <- ggplot(f, aes_string(x="question", y="value", fill="factor(cbreak)"))
-			} else {
-				# Plot array question as stacked bar
-        
-				p <- ggplot(f, aes_string(x="question", y="value", fill="factor(response)"))
-            
-			}
-		}
-		p <- p + 
+    q <- switch(qtype,
+        singleQ_singleResponse = 
+            lattice::barchart(value~cbreak, f, layout=qlayout,  box.ratio=1.5, origin=0),
+        singleQ_multiResponse = 
+            lattice::barchart(response~value|cbreak, f, layout=qlayout,	box.ratio=1.5, origin=0),
+        gridQ_singleResponse = 
+            lattice::barchart(question~value|cbreak, 
+						    f, layout=qlayout,	box.ratio=1.5, origin=0, groups=f$cbreak, stack=TRUE),
+        gridQ_multiResponse = 
+            lattice::barchart(question~value|cbreak, 
+						  f, layout=qlayout,	box.ratio=1.5, origin=0, groups=f$response, stack=TRUE, 
+						  auto.key=list(space="right")),
+        stop("plot_bar: Invalid value of qtype.  This should never happen")
+    )
+  }
+    
+  if(!surveyor$defaults$fastgraphics){
+    ### Set up basic ggplot graphic ###
+    p <- switch(qtype,
+        singleQ_singleResponse =
+            ggplot(f, aes_string(x="1", y="value", fill="factor(cbreak)")),
+        singleQ_multiResponse =
+            ggplot(f, aes_string(x="response", y="value", fill="factor(cbreak)")),
+        gridQ_singleResponse = 
+            ggplot(f, aes_string(x="question", y="value", fill="factor(cbreak)")),
+        gridQ_multiResponse = 
+                ggplot(f, aes_string(x="question", y="value", fill="factor(response)")),
+        stop("plot_bar: Invalid value of qtype.  This should never happen")
+    )    
+    
+    p <- p + geom_bar(stat="identity") 
+    
+    # TODO: labels
+    ### Add labels ###
+    if(qtype %in% c("singleQ_multiResponse", "gridQ_singleResponse") || is.yesno(s))
+        p <- p + geom_text(aes_string(label="signif(value, 3)"), hjust=1, size=3)
+    
+    ### Plot options ###
+    p <- p + 
 				theme_surveyor(surveyor$defaults$default_theme_size) +
-				geom_bar(stat="identity") + 
 				coord_flip() + 
 				scale_y_continuous(
 						s$ylabel, 
@@ -200,28 +226,17 @@ plot_bar <- function(s, surveyor, plot_function="plot_bar"){
 						axis.title.y = theme_blank()
 				) +
 				labs(fill="Response")
-		
-		
-		if (is.null(f$question)){
-			# Plot single question
-			if(length(unique(f$response)) > 8){p <- p + scale_fill_hue()}
-		} else {
-			# Plot array of single values per question
-			# Plot array question as stacked bar
+    
+    ### Add legend for multiple response ### 
+    if(qtype=="gridQ_multiResponse"  && !is.yesno(s))
+      p <- p + opts(legend.position="right")
+
+    ### Deal with too many colours ###
+    if(length(unique(f$response)) > 8) p <- p + scale_fill_hue()
+		if (qtype %in% c("singleQ_multiResponse", "gridQ_multiResponse")){
 			p <- p + opts(
 					axis.text.x=theme_text(size=surveyor$defaults$default_theme_size*0.5, angle=90)
 			)
-			if(length(unique(f$question)) > 8){p <- p + scale_fill_hue()}
-			if (!is.null(f$response) & nlevels(f$response[drop=TRUE])>1){ 
-				p <- p + opts(legend.position="right")
-        
-			}	
-      if (!is.null(f$response)){
-        p <- p + geom_text(aes_string(label="signif(value, 3)"), hjust=1, size=3)
-      }  
-#      if (!is.null(f$response) && !is.null(f$response)){ 
-#        p <- p + opts(legend.position="right")
-#      } 
     }
 	}
 		
@@ -230,6 +245,103 @@ plot_bar <- function(s, surveyor, plot_function="plot_bar"){
       return(as_surveyor_plot(p, plot_function=plot_function))
   )
 }
+
+#plot_bar <- function(s, surveyor, plot_function="plot_bar"){
+#  f <- s$data
+#  qtype <- qtype(s)
+#  #print(str(f))
+#  
+#  f$cbreak <- f$cbreak[drop=TRUE]
+#  
+#  if(surveyor$defaults$fastgraphics){
+#    ### plot using lattice
+#    qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
+#    if (is.null(f$question)){
+#      # Plot single question
+#      if (is.null(f$response)) {
+#        q <- lattice::barchart(value~cbreak, f, layout=qlayout,  box.ratio=1.5, origin=0)
+#      } else {  
+#        q <- lattice::barchart(response~value|cbreak, f, layout=qlayout,  box.ratio=1.5, origin=0)
+#      }  
+#      
+#    } else {
+#      if (is.null(f$response)) {
+#        # Plot array of single values per question
+#        q <- lattice::barchart(question~value|cbreak, 
+#            f, layout=qlayout,  box.ratio=1.5, origin=0, groups=f$cbreak, stack=TRUE)
+#      } else {
+#        # Plot array question as stacked bar
+#        q <- lattice::barchart(question~value|cbreak, 
+#            f, layout=qlayout,  box.ratio=1.5, origin=0, groups=f$response, stack=TRUE, 
+#            auto.key=list(space="right"))
+#      }
+#    }
+#  } else {
+#    ### plot using ggplot
+#    if (is.null(f$question)){
+#      # Plot single question
+#      if (is.null(f$response)) {
+#        p <- ggplot(f, aes_string(x="1", y="value", fill="factor(cbreak)"))
+#      } else {  
+#        p <- ggplot(f, aes_string(x="response", y="value", fill="factor(cbreak)"))
+#      }  
+#      
+#    } else {
+#      if (is.null(f$response)) {
+#        # Plot array of single values per question
+#        p <- ggplot(f, aes_string(x="question", y="value", fill="factor(cbreak)"))
+#      } else {
+#        # Plot array question as stacked bar
+#        
+#        p <- ggplot(f, aes_string(x="question", y="value", fill="factor(response)"))
+#        
+#      }
+#    }
+#    p <- p + 
+#        theme_surveyor(surveyor$defaults$default_theme_size) +
+#        geom_bar(stat="identity") + 
+#        coord_flip() + 
+#        scale_y_continuous(
+#            s$ylabel, 
+#            formatter=s$formatter,
+#            breaks=s$scale_breaks) +
+#        facet_grid(~cbreak) + 
+#        opts(
+#            legend.position="none",
+#            axis.title.y = theme_blank()
+#        ) +
+#        labs(fill="Response")
+#    
+#    
+#    if (is.null(f$question)){
+#      # Plot single question
+#      if(length(unique(f$response)) > 8){p <- p + scale_fill_hue()}
+#    } else {
+#      # Plot array of single values per question
+#      # Plot array question as stacked bar
+#      p <- p + opts(
+#          axis.text.x=theme_text(size=surveyor$defaults$default_theme_size*0.5, angle=90)
+#      )
+#      if(length(unique(f$question)) > 8){p <- p + scale_fill_hue()}
+#      if (!is.null(f$response) & nlevels(f$response[drop=TRUE])>1){ 
+#        p <- p + opts(legend.position="right")
+#        
+#      } 
+#      if (!is.null(f$response)){
+#        p <- p + geom_text(aes_string(label="signif(value, 3)"), hjust=1, size=3)
+#      }  
+##      if (!is.null(f$response) && !is.null(f$response)){ 
+##        p <- p + opts(legend.position="right")
+##      } 
+#    }
+#  }
+#  
+#  ifelse(surveyor$defaults$fastgraphics,
+#      return(as_surveyor_plot(q, plot_function=plot_function)), 
+#      return(as_surveyor_plot(p, plot_function=plot_function))
+#  )
+#}
+
 
 #' Plot data in bar chart format without modifying format.
 #' 
