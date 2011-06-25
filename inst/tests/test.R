@@ -280,9 +280,13 @@ test_that("code_single works", {
 			
       plotcode <- stats_bin(code)
       expect_that(plotcode, is_a("surveyor_stats"))
-      expect_that(plot_bar(plotcode, s), is_a("ggplot"))
-			expect_that(plot_point(plotcode, s), is_a("ggplot"))
-			
+      pb <- plot_bar(plotcode, s)
+      ps <- plot_point(plotcode, s)
+      expect_that(pb, is_a("surveyor_plot"))
+      expect_that(pb$plot, is_a("ggplot"))
+      expect_that(ps, is_a("surveyor_plot"))
+      expect_that(ps$plot, is_a("ggplot"))
+      
 		})
 
 ###############################################################################
@@ -304,9 +308,13 @@ test_that("plot functions work with code_array", {
 			
       code <- code_array(s, "Q4")
       plotcode <- stats_bin(code)
-      expect_that(plot_bar(plotcode, s), is_a("ggplot"))
-			expect_that(plot_point(plotcode, s), is_a("ggplot"))
-			
+      pb <- plot_bar(plotcode, s)
+      ps <- plot_point(plotcode, s)
+      expect_that(pb, is_a("surveyor_plot"))
+      expect_that(pb$plot, is_a("ggplot"))
+      expect_that(ps, is_a("surveyor_plot"))
+      expect_that(ps$plot, is_a("ggplot"))
+      
 		})
 
 ###############################################################################

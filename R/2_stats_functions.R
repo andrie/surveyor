@@ -9,7 +9,7 @@
 #' @param data A data frame 
 #' @param ylabel Character string to print as plot y label
 #' @param formatter Name of a formatting function
-#' @param nquestion Number of identifiable questions, used for plot sizing downstream
+#' @param nquestion Number of identifiable questions / responses, used for plot sizing downstream
 #' @param scale_breaks Vector that specifies breaks in ggplot
 #' @param stats_method Character description of calling function name - for audit trail
 #' @return A surveyor_stats object
@@ -18,11 +18,16 @@ surveyor_stats <- function(
 		data,
 		ylabel = "Fraction of respondents",
 		formatter="percent",
-		nquestion=length(unique(data$question)),
+		nquestion=NULL,
 		scale_breaks=NULL,
 		stats_method="",
     plot_function=""
 ){
+  if(is.null(nquestion)) 
+    nquestion <- ifelse(
+        !is.null(data$question), 
+        length(unique(data$question)),
+        length(unique(data$response)))
 	structure(
 			list(
 				data=quickdf(data), 
