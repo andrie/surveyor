@@ -412,6 +412,9 @@ stats_rank <- function(x, top_n=3){
 	if(is.null(x)){
 		return(NULL)
 	}
+  
+  ### Removes all characters other than digits from question text, e.g. "Rank 1" >- "1"
+  x$question <- gsub(".*([[:digit:]]).*", "\\1", x$question)
 	x$question <- as.numeric(x$question)
 	x <- x[x$question <= top_n, ]
 	
@@ -538,5 +541,6 @@ stats_text <- function(x){
       x,
       ylabel="NA",
       formatter="format",
-      stats_method="stats_text")
+      stats_method="stats_text",
+      plot_function="plot_text")
 }

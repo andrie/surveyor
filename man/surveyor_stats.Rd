@@ -11,6 +11,6 @@
 \arguments{\item{data}{A data frame}
 \item{ylabel}{Character string to print as plot y label}
 \item{formatter}{Name of a formatting function}
-\item{nquestion}{Number of identifiable questions, used for plot sizing downstream}
+\item{nquestion}{Number of identifiable questions / responses, used for plot sizing downstream}
 \item{scale_breaks}{Vector that specifies breaks in ggplot}
 \item{stats_method}{Character description of calling function name - for audit trail}}
