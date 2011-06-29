@@ -70,6 +70,7 @@ as_surveyor_plot <- function(
 #'
 #' @param s A surveyor_stats object
 #' @param surveyor Surveyor object
+#' @param ... Other parameters passed to specific plot function
 #' @seealso 
 #' Plot functions: 
 #' \itemize{
@@ -94,7 +95,7 @@ plot_guess <- function(s, surveyor, ...){
 #      plot_net_score(s, surveyor)
     match.fun(s$plot_function)(s, surveyor, ...)
     } else {
-      stop(paste("Plot function specified in surveyor_stats not found, plot_function =", plot_function))
+      stop(paste("Plot function specified in surveyor_stats not found, plot_function =", s$plot_function))
     }  
   } else {
     if (is.null(f$question)){
@@ -146,13 +147,27 @@ is.yesno <- function(s){
   ret
 }
 
+#' Applies format function to x.
+#' 
+#' Applies format function (specified by formatter) to x.
+#' 
+#' @param x Character vector
+#' @param formatter Formatting function
+#' @keywords internal
 format_values <- function(x, formatter){
-  formatter(x)
+  match.fun(formatter)(x)
 }
 
+#' Applies formatting to labels and calculates justification position.
+#' 
+#' Takes a surveyor_stats object and adds two additional data columns: value_labels and labels_just.
+#' 
+#' @param s A surveyor_stats object
+#' @keywords internal
 format_labels <- function(s){
   stopifnot(class(s)=="surveyor_stats")
   s$data$value_labels <- match.fun(s$formatter)(s$data$value)
+  s$data$labels_just <- -0.1 + 1.2 * with(s$data, as.numeric(value >= mean(value)))
   s
 }
 
@@ -222,7 +237,7 @@ plot_bar <- function(s, surveyor, plot_function="plot_bar"){
     ### Add labels ###
     if(qtype %in% c("singleQ_multiResponse", "gridQ_singleResponse") || is.yesno(s))
 #      p <- p + geom_text(aes_string(label="signif(value, 3)"), hjust=1, size=3)
-      p <- p + geom_text(aes_string(label="value_labels"), hjust=1, size=3)
+      p <- p + geom_text(aes_string(label="value_labels", hjust="labels_just"), size=3)
     
     ### Plot options ###
     p <- p + 
@@ -280,8 +295,8 @@ plot_bar <- function(s, surveyor, plot_function="plot_bar"){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 #' @export
-plot_bar_sum <- function(s, surveyor){
-	plot_bar(s, surveyor, plot_function="plot_bar_sum")
+plot_bar_sum <- function(s, surveyor, plot_function="plot_bar_sum"){
+	plot_bar(s, surveyor, plot_function=plot_function)
 }
 
 ###############################################################################
@@ -289,6 +304,7 @@ plot_bar_sum <- function(s, surveyor){
 #'
 #' @param s A surveyor_stats object
 #' @param surveyor Surveyor object
+#' @param plot_function Character vector: Identifies the name of the plot function used to create the plot
 #' @seealso 
 #' Plot functions: 
 #' \itemize{
@@ -333,7 +349,7 @@ plot_column <- function(s, surveyor, plot_function="plot_column"){
     ### Set up basic ggplot graphic ###
     p <- switch(qtype,
         singleQ_singleResponse =
-            ggplot(f, aes_string(x="1", y="value", fill="factor(cbreak)")),
+            ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(cbreak)")),
         singleQ_multiResponse =
             ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(cbreak)")),
         gridQ_singleResponse = 
@@ -377,7 +393,8 @@ plot_column <- function(s, surveyor, plot_function="plot_column"){
     if(qtype %in% c("singleQ_singleResponse", "singleQ_multiResponse", "gridQ_singleResponse") || 
         is.yesno(s))
 #      p <- p + geom_text(aes_string(label="signif(value, 3)"), hjust=1, size=3)
-      p <- p + geom_text(aes_string(label="value_labels"), vjust=1, size=3)
+#      p <- p + geom_text(aes_string(label="value_labels"), vjust=1, size=3)
+      p <- p + geom_text(aes_string(label="value_labels", vjust="labels_just"), size=3)
     
 		
     ### Add legend for multiple response ### 
@@ -480,7 +497,9 @@ plot_point <- function(s, surveyor){
 ###############################################################################
 
 
-#' Plot data as text
+#' Plot data as text.
+#' 
+#' Plots questions that are summarised using \code{\link{stats_text}}.
 #'
 #' @param s A surveyor_stats object
 #' @param surveyor Surveyor object
@@ -499,16 +518,33 @@ plot_point <- function(s, surveyor){
 #' @keywords plot
 #' @export
 plot_text <- function(s, surveyor){
-  items <- paste("\\item", latexTranslate(s$data$response))
-    p <- paste(
-			"\\begin{itemize}",
-			items,
-			"\n\\end{itemize}",
-			collapse="\n"
-	  )
-    class(p) <- "text"
-    as_surveyor_plot(p, plot_function="plot_text")
+  ### Only print if cbreak equal to first crossbreak in surveyor
+#  print(is.list(surveyor$crossbreak))
+#  print(all(s$data$cbreak!=surveyor$crossbreak[[1]]))
+  p <- ""
+  flag <- FALSE
+  #browser()
+  if(is.list(surveyor$crossbreak)){
+    if(identical(surveyor$cbreak, surveyor$crossbreak[[1]])) flag <- TRUE
   }
+  
+  if(!is.list(surveyor$crossbreak)) flag <- TRUE
+  
+  if(flag){
+    #if(s$data$cbreak != surveyor$crossbreak) return(NULL)
+    ### Carry on as usual
+    unique_resp <- unique(s$data$response)
+    items <- paste("\\item", latexTranslate(unique_resp))
+      p <- paste(
+  			"\\begin{itemize}",
+  			items,
+  			"\n\\end{itemize}",
+  			collapse="\n"
+  	  )
+  }
+  class(p) <- "text"
+  as_surveyor_plot(p, plot_function="plot_text")
+}
 
 ###############################################################################
 

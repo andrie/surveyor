@@ -162,11 +162,9 @@ surveyor_update_defaults <- function(
 #' 
 #' Prints surveyor object
 #' 
-#' @usage print(x, ...)
-#' @aliases print print.surveyor
 #' @param x surveyor object
 #' @param ... ignored
-#' @S3method print surveyor
+#' @method print surveyor
 print.surveyor <- function(x, ...){
 	cat("Surveyor\n\n")
 	print.listof(x)
@@ -218,6 +216,7 @@ is.surveyor <- function(x){
 #' @param stats_function A reference to a function that summarizes the coded data
 #' @param plot_function A reference to a function that plots the summarized data
 #' @param plot_size Size in inches of plot output, e.g. c(4,3)
+#' @param output_to_latex If TRUE, wraps output in latex code, otherwise print to console
 #' @param ... Other parameters passed to code_function
 #' @export
 #' @seealso \code{\link{as.surveyor}}
@@ -228,6 +227,7 @@ surveyor_plot <- function(
 		stats_function = stats_guess,
 		plot_function = plot_guess,
 		plot_size = surveyor$braid$default_plot_size,
+    output_to_latex = surveyor$defaults$output_to_latex,
 		...){
 	
 	###  plot_q internal functions
@@ -247,7 +247,7 @@ surveyor_plot <- function(
 			nothing_to_plot <- FALSE
 		}	
 		
-		if (!surveyor$defaults$output_to_latex){
+		if (!output_to_latex){
 			ifelse(nothing_to_plot, message("Nothing to plot"), print(h$plot))
 		} else {
   			cat_string <- surveyor_print_question(

@@ -1,8 +1,9 @@
 \name{plot_text}
 \alias{plot_text}
-\title{Plot data as text...}
+\title{Plot data as text.}
 \usage{plot_text(s, surveyor)}
-\description{Plot data as text}
+\description{Plot data as text.}
+\details{Plots questions that are summarised using \code{\link{stats_text}}.}
 \seealso{Plot functions: 
 \itemize{
 \item \code{\link{plot_bar}} 
