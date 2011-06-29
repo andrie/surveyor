@@ -9,9 +9,9 @@ Author: Andrie de Vries <apdevries@gmail.com>
 Description: This is a set of tools to analyse, report and plot survey
     data
 Author@R: person("Andrie", "de Vries", email="apdevries@gmail.com")
-Version: 0.1-03
+Version: 0.1-04
 URL:
-Date: 2011-06-17
+Date: 2011-06-29
 Depends: plyr, stringr, reshape2, braid, ggplot2, lattice
 Suggests:
 Collate: '1_code_functions.R' '2_stats_functions.R'
