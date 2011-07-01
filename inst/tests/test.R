@@ -273,12 +273,14 @@ test_that("Surveyor objects are defined properly", {
 context("Code as single question and plot")
 
 test_that("code_single works", {
-      code <- code_single(s, "Q1")
-			expect_that(code, is_a("data.frame"))
-			expect_that(names(code), equals(names_cqrw))
-			expect_that(nrow(code), equals(4))
-			
-      plotcode <- stats_bin(code)
+      scode <- code_single(s, "Q1")
+      expect_that(scode, is_a("surveyor_code"))
+      expect_that(scode$data, is_a("data.frame"))
+#      expect_that(code, is_a("data.frame"))
+			expect_that(names(scode$data), equals(names_cqrw))
+			expect_that(nrow(scode$data), equals(4))
+      
+      plotcode <- stats_bin(scode)
       expect_that(plotcode, is_a("surveyor_stats"))
       pb <- plot_bar(plotcode, s)
       ps <- plot_point(plotcode, s)
@@ -296,18 +298,19 @@ context("Code as array question and plot")
 
 test_that("code_array works", {
 			
-      code <- code_array(s, "Q4")
-      plotcode <- stats_bin(code)
-      expect_that(code, is_a("data.frame"))
-			expect_that(names(code), equals(names_cqrw))
-			expect_that(nrow(code), equals(12))
-			
+      scode <- code_array(s, "Q4")
+      plotcode <- stats_bin(scode)
+      expect_that(scode, is_a("surveyor_code"))
+      expect_that(scode$data, is_a("data.frame"))
+      expect_that(names(scode$data), equals(names_cqrw))
+			expect_that(nrow(scode$data), equals(12))
+      
 		})
 
 test_that("plot functions work with code_array", {
 			
-      code <- code_array(s, "Q4")
-      plotcode <- stats_bin(code)
+      scode <- code_array(s, "Q4")
+      plotcode <- stats_bin(scode)
       pb <- plot_bar(plotcode, s)
       ps <- plot_point(plotcode, s)
       expect_that(pb, is_a("surveyor_plot"))

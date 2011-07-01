@@ -81,7 +81,8 @@ as.surveyor <- function(
 #' between single and array questions
 #' @param subquestion_append Indicates whether subquestion text is appended to question text
 #' @param subquestion_prepend Indicates whether subquestion text is prepended to question text
-#' @param fastgraphics Uses lattice graphics if true, otherwise ggplot 
+#' @param fastgraphics Uses lattice graphics if true, otherwise ggplot
+#' @param add_plot_title If true, adds question text as plot title 
 #' @param default_colour_area Default RGB colour for areas in graphs (e.g. bars)
 #' @param default_colour_point Default RGB colour for points in graphs (e.g. points)
 #' @param print_table If TRUE will print the table as part of the report
@@ -97,6 +98,7 @@ surveyor_defaults <- function(
 		subquestion_append = TRUE,
 		subquestion_prepend = !subquestion_append,
 		fastgraphics = FALSE,
+    add_plot_title = FALSE,
 		default_colour_area = rgb(127,201,127, 255, maxColorValue=255),
 		default_colour_point = rgb(27, 158, 119, 255, maxColorValue=255),
     print_table = TRUE
@@ -109,7 +111,8 @@ surveyor_defaults <- function(
 			subquestion_append   = subquestion_append,
 			subquestion_prepend  = subquestion_prepend,
 			fastgraphics         = fastgraphics,
-			default_colour_area  = default_colour_area,
+      add_plot_title       = add_plot_title,
+      default_colour_area  = default_colour_area,
 			default_colour_point = default_colour_point,
       print_table          = print_table
   
@@ -127,6 +130,7 @@ surveyor_defaults <- function(
 #' @param subquestion_append Indicates whether subquestion text is appended to question text
 #' @param subquestion_prepend Indicates whether subquestion text is prepended to question text
 #' @param fastgraphics Uses lattice graphics if true, otherwise ggplot 
+#' @param add_plot_title If true, adds question text as plot title 
 #' @param default_colour_area Default RGB colour for areas in graphs (e.g. bars)
 #' @param default_colour_point Default RGB colour for points in graphs (e.g. points)
 #' @param print_table If TRUE will print the table as part of the report
@@ -140,6 +144,7 @@ surveyor_update_defaults <- function(
     subquestion_append = NULL,
     subquestion_prepend = NULL,
     fastgraphics = NULL,
+    add_plot_title = NULL,
     default_colour_area = NULL,
     default_colour_point = NULL,
     print_table = NULL
@@ -150,6 +155,7 @@ surveyor_update_defaults <- function(
   if(!missing(subquestion_append))   surveyor$defaults$subquestion_append <- subquestion_append
   if(!missing(subquestion_prepend))  surveyor$defaults$subquestion_prepend <- subquestion_prepend
   if(!missing(fastgraphics))         surveyor$defaults$fastgraphics <- fastgraphics
+  if(!missing(add_plot_title))       surveyor$defaults$add_plot_title <- add_plot_title
   if(!missing(default_colour_area))  surveyor$defaults$default_colour_area <- default_colour_area
   if(!missing(default_colour_point)) surveyor$defaults$default_colour_point <- default_colour_point
   if(!missing(print_table))          surveyor$defaults$print_table <- print_table
@@ -175,7 +181,7 @@ print.surveyor <- function(x, ...){
 #' Tests that object is of class surveyor object.
 #' 
 #' @param x Object to be tested
-#' @export
+#' @method is surveyor
 #' @examples 
 #' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
 #' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
@@ -185,7 +191,7 @@ print.surveyor <- function(x, ...){
 #' is.surveyor(s) # TRUE
 #' is.surveyor("String") #FALSE 					
 is.surveyor <- function(x){
-	if (class(x)=="surveyor") {
+	if (inherits(x, "surveyor")) {
     ifelse(
         all(
           !is.null(x$q_data),
@@ -194,7 +200,9 @@ is.surveyor <- function(x){
   				!is.null(x$weight),
   				!is.null(x$defaults)
 		    ), TRUE, FALSE)
-		} else {FALSE}
+		} else {
+      FALSE
+    }
 }
 
 

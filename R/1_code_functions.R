@@ -1,3 +1,31 @@
+#' Creates object of class "surveyor_code".
+#'
+#' Creates object of class "surveyor_code".
+#' @param x Data created by surveyor code function
+#' @param surveyor A surveyor object
+#' @param qid Question identifier, e.g. "Q4"
+#' @export
+#' @return An object of class "surveyor_code"
+as.surveyor_code <- function(x, surveyor, qid){
+  ret <- list(
+      data = x,
+      surveyor = surveyor,
+      qid = qid
+  )
+  class(ret) <- "surveyor_code"
+  ret
+}
+
+#' Tests whether object is of class "surveyor_code".
+#'
+#' Tests whether object is of class "surveyor_code".
+#' @param x Object to test
+#' @export
+#' @return TRUE or FALSE
+is.surveyor_code <- function(x){
+  inherits(x, "surveyor_code")
+}
+
 #' Code survey data in single question form
 #'
 #' Code survey data in single question form (i.e. without subquestions)
@@ -36,8 +64,12 @@ code_single <- function(surveyor, q_id,	...){
 			weight = surveyor$weight
 #			stringsAsFactors = FALSE
 	))
-	x1[!is.na(x1$response), ]
-	
+
+  as.surveyor_code(
+      x1[!is.na(x1$response), ],
+      surveyor,
+      q_id)
+  
 }
 
 ################################################################################
@@ -99,7 +131,12 @@ code_array <- function(surveyor, q_id, remove_other=FALSE){
 			weight=x$weight
 #			stringsAsFactors=FALSE
 	))
-	x1[!is.na(x1$response), ]
+
+  as.surveyor_code(
+      x1[!is.na(x1$response), ],
+      surveyor,
+      q_id)
+  
 }
 
 ################################################################################
@@ -125,10 +162,11 @@ code_array <- function(surveyor, q_id, remove_other=FALSE){
 #' @export
 code_guess <- function(surveyor, q_id, ...){
 	if (any(names(surveyor$q_text)==q_id)){
-		return(code_single(surveyor, q_id, ...))
+		dat <- code_single(surveyor, q_id, ...)
 	} else {
-		return(code_array(surveyor, q_id, ...))
+		dat <- code_array(surveyor, q_id, ...)
 	}
+  dat
 }
 
 ################################################################################

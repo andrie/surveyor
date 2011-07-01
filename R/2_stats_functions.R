@@ -7,6 +7,7 @@
 #' Creates surveyor_stats object, used as input to plot 
 #' 
 #' @param data A data frame 
+#' @param surveyor_code A surveyor_code object
 #' @param ylabel Character string to print as plot y label
 #' @param formatter Name of a formatting function
 #' @param nquestion Number of identifiable questions / responses, used for plot sizing downstream
@@ -14,8 +15,9 @@
 #' @param stats_method Character description of calling function name - for audit trail
 #' @return A surveyor_stats object
 #' @keywords internal
-surveyor_stats <- function(
+as.surveyor_stats <- function(
 		data,
+    surveyor_code,
 		ylabel = "Fraction of respondents",
 		formatter="percent",
 		nquestion=NULL,
@@ -23,6 +25,7 @@ surveyor_stats <- function(
 		stats_method="",
     plot_function=""
 ){
+  stopifnot(is.surveyor_code(surveyor_code))
   if(is.null(nquestion)) 
     nquestion <- ifelse(
         !is.null(data$question), 
@@ -31,6 +34,7 @@ surveyor_stats <- function(
 	structure(
 			list(
 				data=quickdf(data), 
+        surveyor_code = surveyor_code,
 				ylabel=ylabel,
 				formatter=formatter,
 				nquestion=nquestion,
@@ -41,6 +45,19 @@ surveyor_stats <- function(
 			class = "surveyor_stats"
 	)
 }
+
+#' Test object for membership of class "surveyor_stats".
+#'  
+#' Test object for membership of class "surveyor_stats".
+#' 
+#' @param x Object 
+#' @return TRUE or FALSE
+#' @keywords internal
+is.surveyor_stats <- function(x){
+  inherits(x, "surveyor_stats")
+}
+
+
 
 #' Sorts data.frame responses in descending order by value.
 #' 
@@ -127,7 +144,7 @@ identify_net_score <- function(x, match_words = NULL){
 #' 
 #' If data is categorical stats_bin, if data is metric then stats_sum
 #' 
-#' @param x A data frame with four columns: cbreak, question, response, weight 
+#' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
 #' Stats functions:
@@ -140,22 +157,24 @@ identify_net_score <- function(x, match_words = NULL){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @export
-stats_guess <- function(x){
-	if(is.null(x)){
+stats_guess <- function(surveyor_code){
+  stopifnot(is.surveyor_code(surveyor_code))
+  x <- surveyor_code$data
+  if(is.null(x)){
 		return(NULL)
 	}
 	
 	if(is.factor(x$response)){
 		if(identify_net_score(x$response)){
-			stats_net_score(x)
+			stats_net_score(surveyor_code)
 		} else {	
-			stats_bin_percent(x)
+			stats_bin_percent(surveyor_code)
 		}
 	} else {
 		if(is.numeric(x$response)){
-			stats_sum(x)
+			stats_sum(surveyor_code)
 		} else {
-			stats_bin_percent(x)
+			stats_bin_percent(surveyor_code)
 		}	
 	}
 }
@@ -168,7 +187,7 @@ stats_guess <- function(x){
 #' 
 #' The results are sorted in descending order of value, and "response" is coerced into an ordered factor (unless "response" is already an ordered factor).
 #' 
-#' @param x A data frame with four columns: cbreak, question, response, weight 
+#' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
 #' @param ylabel The label to print on y-axis of plots; used downstream
 #' @param stats_method A character vector describing name of stats method.  Used for audit trail
 #' @param convert_to_percent If true, will express results as fractions, rather than counts
@@ -184,7 +203,10 @@ stats_guess <- function(x){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @export
-stats_bin <- function(x, ylabel="Respondents", stats_method="stats_bin", convert_to_percent=FALSE){
+stats_bin <- function(surveyor_code, ylabel="Respondents", stats_method="stats_bin", convert_to_percent=FALSE){
+  stopifnot(is.surveyor_code(surveyor_code))
+  x <- surveyor_code$data
+  
 	if(is.null(x)){
 		return(NULL)
 	}
@@ -240,8 +262,9 @@ stats_bin <- function(x, ylabel="Respondents", stats_method="stats_bin", convert
 		df <- df[df$response == TRUE, ]
 	}
 	
-	surveyor_stats(
+	as.surveyor_stats(
 			df,
+      surveyor_code,
 			ylabel=ylabel,
 			stats_method=stats_method,
 			formatter=ifelse(convert_to_percent, "paste_percent", "format"))
@@ -253,7 +276,7 @@ stats_bin <- function(x, ylabel="Respondents", stats_method="stats_bin", convert
 #' 
 #' The results are sorted in descending order of value, and "response" is coerced into an ordered factor (unless "response" is already an ordered factor).
 #' 
-#' @param x A data frame with four columns: cbreak, question, response, weight 
+#' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
 #' Stats functions:
@@ -266,9 +289,11 @@ stats_bin <- function(x, ylabel="Respondents", stats_method="stats_bin", convert
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @export
-stats_bin_percent <- function(x){
-	stats_bin(
-			x,
+stats_bin_percent <- function(surveyor_code){
+  stopifnot(is.surveyor_code(surveyor_code))
+  #x <- surveyor_code$data
+  stats_bin(
+      surveyor_code,
 			ylabel="Fraction of respondents",
 			stats_method="stats_bin_percent",
 			convert_to_percent=TRUE)
@@ -279,7 +304,7 @@ stats_bin_percent <- function(x){
 #'
 #' Add description 
 #' 
-#' @param x A data frame with four columns: cbreak, question, response, weight 
+#' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
 #' Stats functions:
@@ -292,8 +317,10 @@ stats_bin_percent <- function(x){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @export
-stats_sum <- function(x){
-	if(is.null(x)){
+stats_sum <- function(surveyor_code){
+  stopifnot(is.surveyor_code(surveyor_code))
+  x <- surveyor_code$data
+  if(is.null(x)){
 		return(NULL)
 	}
 	weight <- NULL; rm(weight) # Dummy to trick R CMD check
@@ -321,8 +348,9 @@ stats_sum <- function(x){
 	scale_breaks <- c(min(df$value), 0, max(df$value))
 	scale_breaks <- round_first_signif(scale_breaks)
 	
-	surveyor_stats(
+	as.surveyor_stats(
 			df,
+      surveyor_code,
 			ylabel="Value",
 			formatter="format_round",
 			stats_method="stats_sum",
@@ -334,7 +362,7 @@ stats_sum <- function(x){
 #'
 #' Add description 
 #' 
-#' @param x A data frame with four columns: cbreak, question, response, weight 
+#' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
 #' Stats functions:
@@ -347,8 +375,10 @@ stats_sum <- function(x){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @export
-stats_mean <- function(x){
-	if(is.null(x)){
+stats_mean <- function(surveyor_code){
+  stopifnot(is.surveyor_code(surveyor_code))
+  x <- surveyor_code$data
+  if(is.null(x)){
 		return(NULL)
 	}
 	weight <- NULL; rm(weight) # Dummy to trick R CMD check
@@ -378,9 +408,10 @@ stats_mean <- function(x){
 	scale_breaks <- c(min(df$value), 0, max(df$value))
 	scale_breaks <- round_first_signif(scale_breaks)
 	
-	surveyor_stats(
+	as.surveyor_stats(
 			df,
-			ylabel="Value",
+      surveyor_code,
+      ylabel="Value",
 			formatter="format",
 			stats_method="stats_mean",
 			scale_breaks=scale_breaks)
@@ -392,7 +423,7 @@ stats_mean <- function(x){
 #' Takes the result of a code_function, e.g. code_single(), and calculates
 #' summary values, for direct plotting by a plot_function, e.g. plot_bar()
 #' 
-#' @param x A data frame with four columns: cbreak, question, response, weight 
+#' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
 #' @param top_n Numeric, indicates how the ranking is summarised
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
@@ -406,8 +437,10 @@ stats_mean <- function(x){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @export
-stats_rank <- function(x, top_n=3){
-	weight <- NULL; rm(weight) # Dummy to trick R CMD check
+stats_rank <- function(surveyor_code, top_n=3){
+  stopifnot(is.surveyor_code(surveyor_code))
+  x <- surveyor_code$data
+  weight <- NULL; rm(weight) # Dummy to trick R CMD check
 	value <- NULL; rm(value) # Dummy to trick R CMD check
 	if(is.null(x)){
 		return(NULL)
@@ -444,9 +477,10 @@ stats_rank <- function(x, top_n=3){
 	h2 <- ddply(df, c("cbreak", "response"), function(xt)summarise(xt, value=sum(xt$value)))
 	h2 <- reorder_response(h2)
 	
-	surveyor_stats(
+	as.surveyor_stats(
 			h2,
-			ylabel=paste("Percentage of responses in top", top_n),
+      surveyor_code,
+      ylabel=paste("Percentage of responses in top", top_n),
 			stats_method="stats_rank"
 	)
 }
@@ -481,7 +515,7 @@ net_score <- function(x){
 #'
 #' Code survey data in net score form
 #' 
-#' @param x A data frame with four columns: cbreak, question, response, weight 
+#' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
 #' @return data frame
 #' @seealso
 #' Stats functions:
@@ -494,8 +528,10 @@ net_score <- function(x){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @export
-stats_net_score <- function(x){
-	response <- NULL; rm(response) # Dummy to trick R CMD check
+stats_net_score <- function(surveyor_code){
+  stopifnot(is.surveyor_code(surveyor_code))
+  x <- surveyor_code$data
+  response <- NULL; rm(response) # Dummy to trick R CMD check
 	if (length(unique(x$question))==0){
 		# code single
 		df <- ddply(x, c("cbreak", "response"), 
@@ -511,9 +547,10 @@ stats_net_score <- function(x){
 		#df$question <- factor(df$question, levels=quest_levels, ordered=TRUE)
     df <- reorder_question(df, reverse=FALSE)
   }
-	surveyor_stats(
+	as.surveyor_stats(
 			df,
-			ylabel="Net score",
+      surveyor_code,
+      ylabel="Net score",
       formatter="format",
 			stats_method="stats_net_score",
       plot_function="plot_net_score")
@@ -523,7 +560,7 @@ stats_net_score <- function(x){
 #'
 #' Code survey data in text form
 #' 
-#' @param x A data frame column 
+#' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
 #' @return data frame
 #' @seealso
 #' Stats functions:
@@ -536,9 +573,12 @@ stats_net_score <- function(x){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @export
-stats_text <- function(x){
-  surveyor_stats(
+stats_text <- function(surveyor_code){
+  stopifnot(is.surveyor_code(surveyor_code))
+  x <- surveyor_code$data
+  as.surveyor_stats(
       x,
+      surveyor_code,
       ylabel="NA",
       formatter="format",
       stats_method="stats_text",

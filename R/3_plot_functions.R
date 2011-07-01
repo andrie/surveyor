@@ -48,7 +48,7 @@ theme_minimal <- opts(
 #' @param plot_function The plot function that was used to create the plot
 #' @return A surveyor_plot object
 #' @keywords internal
-as_surveyor_plot <- function(
+as.surveyor_plot <- function(
     plot,
     expansion = 1,
     plot_function =""
@@ -62,6 +62,18 @@ as_surveyor_plot <- function(
       class = "surveyor_plot"
   )
 }
+
+#' Test object for membership of class "surveyor_plot".
+#'  
+#' Test object for membership of class "surveyor_plot".
+#' 
+#' @param x Object 
+#' @return TRUE or FALSE
+#' @keywords internal
+is.surveyor_plot <- function(x){
+  inherits(x, "surveyor_plot")
+}
+
 
 
 #' Guesses which plot format is optimal
@@ -268,8 +280,8 @@ plot_bar <- function(s, surveyor, plot_function="plot_bar"){
 	}
 		
 	ifelse(surveyor$defaults$fastgraphics,
-      return(as_surveyor_plot(q, plot_function=plot_function)), 
-      return(as_surveyor_plot(p, plot_function=plot_function))
+      return(as.surveyor_plot(q, plot_function=plot_function)), 
+      return(as.surveyor_plot(p, plot_function=plot_function))
   )
 }
 
@@ -430,8 +442,8 @@ plot_column <- function(s, surveyor, plot_function="plot_column"){
 	}
 	
   ifelse(surveyor$defaults$fastgraphics,
-      return(as_surveyor_plot(q, plot_function=plot_function)), 
-      return(as_surveyor_plot(p, plot_function=plot_function))
+      return(as.surveyor_plot(q, plot_function=plot_function)), 
+      return(as.surveyor_plot(p, plot_function=plot_function))
   )
 }
 
@@ -491,7 +503,7 @@ plot_point <- function(s, surveyor){
 							hjust=1)
 			)
 	
-	as_surveyor_plot(p, plot_function="plot_point")
+	as.surveyor_plot(p, plot_function="plot_point")
 }
 
 ###############################################################################
@@ -543,7 +555,7 @@ plot_text <- function(s, surveyor){
   	  )
   }
   class(p) <- "text"
-  as_surveyor_plot(p, plot_function="plot_text")
+  as.surveyor_plot(p, plot_function="plot_text")
 }
 
 ###############################################################################
@@ -608,8 +620,8 @@ plot_net_score <- function(s, surveyor){
 	q <- lattice::barchart(question~value|cbreak, f, layout=qlayout, origin=0)
 			
   ifelse(surveyor$defaults$fastgraphics, 
-      return(as_surveyor_plot(q, plot_function="plot_net_score")), 
-      return(as_surveyor_plot(p, plot_function="plot_net_score"))
+      return(as.surveyor_plot(q, plot_function="plot_net_score")), 
+      return(as.surveyor_plot(p, plot_function="plot_net_score"))
   )
 }
 
