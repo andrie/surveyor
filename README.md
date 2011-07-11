@@ -1,3 +1,3 @@
-# Surveyor
+# UK postcodes
 
-This package contains a set of tools to process survey data
+Contains UK postal code data and geographical locations, as well as function to plot data on a map.

@@ -7,6 +7,9 @@
 #' @export
 #' @return An object of class "surveyor_code"
 as.surveyor_code <- function(x, surveyor, qid){
+  stopifnot(is.surveyor(surveyor))
+  surveyor$plot_title <- get_q_text(surveyor, qid) 
+  surveyor$q_data <- NULL
   ret <- list(
       data = x,
       surveyor = surveyor,
@@ -32,6 +35,7 @@ is.surveyor_code <- function(x){
 #' 
 #' @param surveyor Surveyor object
 #' @param q_id Question id
+#' @param wrap_length Position where labels will be wrapped (in character count)
 #' @param ... Not used
 #' @seealso
 #' Other coding functions: 
@@ -45,11 +49,11 @@ is.surveyor_code <- function(x){
 #' @return data frame
 #' @keywords code
 #' @export
-code_single <- function(surveyor, q_id,	...){
+code_single <- function(surveyor, q_id,	wrap_length=50, ...){
 	if(is.numeric(surveyor$q_data[, q_id])){
 		response <- surveyor$q_data[, q_id]
 	} else {
-		response <- str_wrap(surveyor$q_data[, q_id], 30)
+		response <- str_wrap(surveyor$q_data[, q_id], wrap_length)
 	}	
 	response[response=="NA"] <- NA
 	
@@ -81,6 +85,7 @@ code_single <- function(surveyor, q_id,	...){
 #' @param surveyor Surveyor object
 #' @param q_id Question id
 #' @param remove_other If true, will remove last column
+#' @param wrap_length Position where labels will be wrapped (in character count)
 #' @seealso
 #' Other coding functions: 
 #' \code{\link{code_single}},  
@@ -93,7 +98,7 @@ code_single <- function(surveyor, q_id,	...){
 #' @return data frame
 #' @keywords code
 #' @export
-code_array <- function(surveyor, q_id, remove_other=FALSE){
+code_array <- function(surveyor, q_id, remove_other=FALSE, wrap_length=50){
 	# Melt multicoded question in data.frame, and code question text to variable
 	
 	q_data <- surveyor$q_data
@@ -123,7 +128,7 @@ code_array <- function(surveyor, q_id, remove_other=FALSE){
 	x <- melt(x, id.vars=c("cbreak", "weight"), na.rm=TRUE)
 	
 	x$variable <- r[as.character(x$variable)]
-	x$variable <- str_wrap(x$variable, 50)
+	x$variable <- str_wrap(x$variable, wrap_length)
 	x1 <- quickdf(list(
 			cbreak=x$cbreak,
 			question=x$variable,

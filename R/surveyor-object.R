@@ -61,6 +61,7 @@ as.surveyor <- function(
 					q_data     = q_data, 
 					q_text     = q_text,
 					cbreak     = cbreak,
+          plot_title = NULL,
 					crossbreak = crossbreak,
 					weight     = weight,
 					defaults   = defaults,
@@ -69,6 +70,37 @@ as.surveyor <- function(
 			class = "surveyor"
 	)
 }
+
+################################################################################
+
+#' Tests that object is of class surveyor object.
+#' 
+#' @param x Object to be tested
+#' @method is surveyor
+#' @export
+#' @examples 
+#' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
+#' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
+#' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
+#' b <- as.braid()
+#' s <- as.surveyor(q_data, q_text, crossbreak=c("aa", "bb"), weight=c(1,1), b)
+#' is.surveyor(s) # TRUE
+#' is.surveyor("String") #FALSE           
+is.surveyor <- function(x){
+  if (inherits(x, "surveyor")) {
+    ifelse(
+        all(
+            !is.null(x$q_data),
+            !is.null(x$q_text),
+            !is.null(x$crossbreak),
+            !is.null(x$weight),
+            !is.null(x$defaults)
+        ), TRUE, FALSE)
+  } else {
+    FALSE
+  }
+}
+
 
 ###############################################################################
 
@@ -176,34 +208,6 @@ print.surveyor <- function(x, ...){
 	print.listof(x)
 }
 
-################################################################################
-
-#' Tests that object is of class surveyor object.
-#' 
-#' @param x Object to be tested
-#' @method is surveyor
-#' @examples 
-#' q_data <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
-#' q_text <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
-#' names(q_text) <- c("Q1", "Q4_1", "Q4_2", "Q4_3")
-#' b <- as.braid()
-#' s <- as.surveyor(q_data, q_text, crossbreak=c("aa", "bb"), weight=c(1,1), b)
-#' is.surveyor(s) # TRUE
-#' is.surveyor("String") #FALSE 					
-is.surveyor <- function(x){
-	if (inherits(x, "surveyor")) {
-    ifelse(
-        all(
-          !is.null(x$q_data),
-  				!is.null(x$q_text),
-  				!is.null(x$crossbreak),
-  				!is.null(x$weight),
-  				!is.null(x$defaults)
-		    ), TRUE, FALSE)
-		} else {
-      FALSE
-    }
-}
 
 
 
@@ -213,7 +217,7 @@ is.surveyor <- function(x){
 ### Plugin architecture to process each question
 ################################################################################
 
-#' Codes and plots a survey question
+#' Codes and plots a survey question.
 #' 
 #' This is the top level function that determines how a question is processed,
 #' coded, printed and plotted.
@@ -242,31 +246,43 @@ surveyor_plot <- function(
 	
 	plot_q_internal <- function(){
 		
-		if(!(is.surveyor(surveyor))){stop("You must pass a valid surveyor object to plot_q")}
+		stopifnot(is.surveyor(surveyor))
     
-		f <- code_function(surveyor, q_id, ...)
+    f <- match.fun(code_function)(surveyor, q_id, ...)
 		if (is.null(f)){
 			nothing_to_plot <- TRUE
+      message("Nothing to plot")
 		} else {
-			g <- stats_function(f)
-			g2 <- g
-			g2$data <- subset(g2$data, subset=!is.na("value")) # Remove NA values from g
-			h <- plot_function(g2, surveyor)
-			nothing_to_plot <- FALSE
-		}	
+      nothing_to_plot <- FALSE
+      g <- match.fun(stats_function)(f)
+			g$data <- subset(g$data, subset=!is.na("value")) # Remove NA values from g
+      h <- match.fun(plot_function)(g, ...)
+     if (output_to_latex){
+      cat_string <- surveyor_print_question(
+           surveyor,
+           q_id,
+           f,
+           g,
+           h, 
+           plot_size)
+       braid_write(surveyor$braid, cat_string)
+  		} else {
+        print(h$plot)
+      }
+    }
 		
-		if (!output_to_latex){
-			ifelse(nothing_to_plot, message("Nothing to plot"), print(h$plot))
-		} else {
-  			cat_string <- surveyor_print_question(
-  					surveyor,
-  					q_id,
-  					f,
-  					g,
-  					h, 
-  					plot_size)
-  			braid_write(surveyor$braid, cat_string)
-		}
+#		if (!output_to_latex){
+#			ifelse(nothing_to_plot, message("Nothing to plot"), print(h$plot))
+#		} else {
+#  			cat_string <- surveyor_print_question(
+#  					surveyor,
+#  					q_id,
+#  					f,
+#  					g,
+#  					h, 
+#  					plot_size)
+#  			braid_write(surveyor$braid, cat_string)
+#		}
 		
 	}
 	
@@ -277,10 +293,12 @@ surveyor_plot <- function(
     return(NULL)
   }
   message(q_id)
-  if (surveyor$defaults$output_to_latex){
+  plot_title <- get_q_text(surveyor, q_id)
+  surveyor$plot_title <- plot_title
+  if (output_to_latex){
 		braid_heading(
 				surveyor$braid, 
-				paste(q_id, get_q_text(surveyor, q_id)), 
+				paste(q_id, plot_title), 
 				headinglevel= "section",
 				pagebreak=FALSE)
 	}
@@ -293,7 +311,7 @@ surveyor_plot <- function(
 	} else {
 		plot_q_internal()
 	}
-
+  return(NULL)
 }
 
 
@@ -343,65 +361,6 @@ surveyor_print_question <- function(surveyor, q_id, f, g, h, plot_size){
 	return(cat_string)
 }
 
-#' Sets up default surveyor theme for use in ggplot. 
-#' 
-#' @param surveyor A surveyor object
-#' @param q_id The question id
-#' @param counter The file number
-#' @param f Results from code_* function
-#' @param g Results from stats_* function
-#' @param h Results from plot_* function
-#' @param plot_size the plot size in inches
-#' @keywords internal
-theme_surveyor <- function (base_size = 12, base_family = ""){
-	structure(
-			list(
-					axis.line = theme_blank(), 
-					axis.text.x = theme_text(
-							family = base_family, 
-							size = base_size * 0.8, 
-							lineheight = 0.9, 
-							colour = "grey20", #"grey50", 
-							vjust = 1), 
-					axis.text.y = theme_text(
-							family = base_family, 
-							size = base_size * 0.8, 
-							lineheight = 0.9, 
-							colour = "grey20", #"grey50",
-							hjust = 1), 
-					axis.ticks = theme_segment(colour = "grey50"), 
-					axis.title.x = theme_text(family = base_family, size = base_size, vjust = 0.5), 
-					axis.title.y = theme_text(family = base_family, 
-							size = base_size, angle = 90, vjust = 0.5), 
-					axis.ticks.length = unit(0.15, "cm"), 
-					axis.ticks.margin = unit(0.1, "cm"), legend.background = theme_rect(colour = "white"), 
-					legend.key = theme_rect(fill = "grey95", colour = "white"), 
-					legend.key.size = unit(1.2, "lines"), legend.key.height = NA, 
-					legend.key.width = NA, 
-					legend.text = theme_text(family = base_family, size = base_size * 0.8), 
-					legend.text.align = NA, 
-					legend.title = theme_text(family = base_family, size = base_size * 
-									0.8, face = "bold", hjust = 0), 
-					legend.title.align = NA, 
-					legend.position = "right", 
-					legend.direction = "vertical", 
-					legend.box = NA, 
-					panel.background = theme_rect(fill = "grey90", 
-							colour = NA), 
-					panel.border = theme_blank(), panel.grid.major = theme_line(colour = "white"), 
-					panel.grid.minor = theme_line(colour = "grey95", size = 0.25), 
-					panel.margin = unit(0.25, "lines"), 
-					strip.background = theme_rect(fill = "grey80", 
-							colour = NA), 
-					strip.text.x = theme_text(family = base_family, size = base_size * 0.8), 
-					strip.text.y = theme_text(family = base_family, size = base_size * 0.8, angle = -90), 
-					plot.background = theme_rect(colour = NA, fill = "white"), 
-					plot.title = theme_text(family = base_family, size = base_size * 1.2), 
-					plot.margin = unit(c(1, 1, 0.5, 0.5), "lines")
-			), 
-			class = "options"
-	)
-}
 
 ################################################################################
 # TODO: Surveyor: Define question class

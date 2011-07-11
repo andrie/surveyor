@@ -1,7 +1,7 @@
 \name{stats_text}
 \alias{stats_text}
 \title{Code survey data as text.}
-\usage{stats_text(x)}
+\usage{stats_text(surveyor_code)}
 \description{Code survey data as text.}
 \details{Code survey data in text form}
 \value{data frame}
@@ -14,4 +14,4 @@
 
 For an overview of the surveyor package \code{\link{surveyor}}}
 \keyword{stats}
-\arguments{\item{x}{A data frame column}}
+\arguments{\item{surveyor_code}{An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight}}

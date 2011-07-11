@@ -1,7 +1,7 @@
 \name{plot_bar_sum}
 \alias{plot_bar_sum}
 \title{Plot data in bar chart format without modifying format.}
-\usage{plot_bar_sum(s, surveyor, plot_function="plot_bar_sum")}
+\usage{plot_bar_sum(s, plot_function="plot_bar_sum", ...)}
 \description{Plot data in bar chart format without modifying format.}
 \details{The standard plot_bar() function will plot the data in a stacked bar chart format and apply percentage formatting.  plot_bar_sum() applies no formatting.}
 \seealso{Plot functions: 
@@ -17,5 +17,5 @@
 For an overview of the surveyor package \code{\link{surveyor}}}
 \keyword{plot}
 \arguments{\item{s}{A surveyor_stats object}
-\item{surveyor}{Surveyor object}
-\item{plot_function}{Character vector: Identifies the name of the plot function used to create the plot}}
+\item{plot_function}{Character vector: Identifies the name of the plot function used to create the plot}
+\item{...}{Ignored}}

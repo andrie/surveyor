@@ -1,7 +1,7 @@
 \name{plot_guess}
 \alias{plot_guess}
 \title{Guesses which plot format is optimal...}
-\usage{plot_guess(s, surveyor, ...)}
+\usage{plot_guess(s, ...)}
 \description{Guesses which plot format is optimal}
 \details{Investigates columns in supplied data, and then chooses either \code{\link{plot_bar}} or \code{\link{plot_column}}}
 \seealso{Plot functions: 
@@ -17,5 +17,4 @@
 For an overview of the surveyor package \code{\link{surveyor}}}
 \keyword{plot}
 \arguments{\item{s}{A surveyor_stats object}
-\item{surveyor}{Surveyor object}
 \item{...}{Other parameters passed to specific plot function}}

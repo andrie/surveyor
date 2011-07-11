@@ -1,7 +1,7 @@
 \name{plot_text}
 \alias{plot_text}
 \title{Plot data as text.}
-\usage{plot_text(s, surveyor)}
+\usage{plot_text(s, plot_function="plot_text", ...)}
 \description{Plot data as text.}
 \details{Plots questions that are summarised using \code{\link{stats_text}}.}
 \seealso{Plot functions: 
@@ -17,4 +17,5 @@
 For an overview of the surveyor package \code{\link{surveyor}}}
 \keyword{plot}
 \arguments{\item{s}{A surveyor_stats object}
-\item{surveyor}{Surveyor object}}
+\item{plot_function}{Character vector: Identifies the name of the plot function used to create the plot}
+\item{...}{Ignored}}

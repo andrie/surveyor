@@ -1,11 +1,11 @@
 \name{surveyor_plot}
 \alias{surveyor_plot}
-\title{Codes and plots a survey question...}
+\title{Codes and plots a survey question.}
 \usage{surveyor_plot(surveyor, q_id, code_function=code_guess,
     stats_function=stats_guess, plot_function=plot_guess,
     plot_size=surveyor$braid$default_plot_size,
     output_to_latex=surveyor$defaults$output_to_latex, ...)}
-\description{Codes and plots a survey question}
+\description{Codes and plots a survey question.}
 \details{This is the top level function that determines how a question is processed,
 coded, printed and plotted.}
 \seealso{\code{\link{as.surveyor}}}

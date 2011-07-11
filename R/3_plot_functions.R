@@ -1,44 +1,6 @@
 # TODO: Surveyor: Move plot vertical sizing into plot itself
 
 
-#' Blank axis titles and no legend
-#' 
-#' @keywords internal
-quiet <- opts(
-		legend.position="none",
-		axis.title.x = theme_blank(),
-		axis.title.y = theme_blank()
-)
-
-#' Blank axis titles
-#' 
-#' @keywords internal
-quiet_axes <- opts(
-		axis.title.x = theme_blank(),
-		axis.title.y = theme_blank()
-)
-
-
-#' Define minimal theme
-#' 
-#' @keywords internal
-theme_minimal <- opts(
-		axis.title.x = theme_blank(),
-		axis.title.y = theme_blank(),
-		axis.text.x  = theme_blank(),
-		axis.text.y  = theme_blank(),
-		axis.ticks   = theme_blank(),
-		axis.ticks.margin = unit(rep(0,4), "lines"),
-		axis.ticks.length = unit(0, "cm"),
-		panel.border = theme_blank(),
-		panel.ticks  = theme_blank(),
-		panel.grid.major = theme_blank(),
-		panel.grid.minor = theme_blank(),
-		plot.margin = unit(rep(0,4), "lines"),
-		panel.margin = unit(rep(0,4), "lines"),
-		legend.position  = "none"
-)
-
 #' Creates surveyor_plot object.
 #'  
 #' Creates surveyor_plot object, a container for either ggplot or lattice graphic. 
@@ -50,9 +12,17 @@ theme_minimal <- opts(
 #' @keywords internal
 as.surveyor_plot <- function(
     plot,
+    surveyor_stats,
     expansion = 1,
     plot_function =""
 ){
+  stopifnot(is.surveyor_stats(surveyor_stats))
+  ### Adds plot title ###
+  if(surveyor_stats$surveyor$defaults$add_plot_title & inherits(plot, "ggplot")){
+      plot <- plot + opts(title=surveyor_stats$surveyor$plot_title)
+    }
+  
+  ### Create list ###
   structure(
       list(
           plot=plot,
@@ -81,7 +51,6 @@ is.surveyor_plot <- function(x){
 #' Investigates columns in supplied data, and then chooses either \code{\link{plot_bar}} or \code{\link{plot_column}}
 #'
 #' @param s A surveyor_stats object
-#' @param surveyor Surveyor object
 #' @param ... Other parameters passed to specific plot function
 #' @seealso 
 #' Plot functions: 
@@ -97,15 +66,14 @@ is.surveyor_plot <- function(x){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 #' @export
-plot_guess <- function(s, surveyor, ...){
-  if(class(s)!="surveyor_stats")  stop("plot_guess: s must be a surveyor_stats object")
-  if(class(surveyor)!="surveyor") stop("plot_guess: surveyor must be a surveyor object")
+plot_guess <- function(s, ...){
+  stopifnot(is.surveyor_stats(s))
   f <- s$data
   if(s$plot_function != ""){
     if(is.function(match.fun(s$plot_function))){
 #    if(s$plot_function=="plot_net_score") {
 #      plot_net_score(s, surveyor)
-    match.fun(s$plot_function)(s, surveyor, ...)
+    match.fun(s$plot_function)(s, ...)
     } else {
       stop(paste("Plot function specified in surveyor_stats not found, plot_function =", s$plot_function))
     }  
@@ -113,82 +81,29 @@ plot_guess <- function(s, surveyor, ...){
     if (is.null(f$question)){
       # Plot single question
       if (is.null(f$response)) {
-        plot_column(s, surveyor, ...)
+        plot_column(s, ...)
       } else {  
-        plot_bar(s, surveyor, ...)
+        plot_bar(s, ...)
       }  
       
     } else {
       if (is.null(f$response)) {
         # Plot array of single values per question
-        plot_bar(s, surveyor, ...)
+        plot_bar(s, ...)
       } else {
         # Plot array question as stacked bar
-        plot_bar(s, surveyor, ...)
+        plot_bar(s, ...)
       }
     }
   }
-}
-
-#' Determines question type as single/grid question and single/multi response.
-#' 
-#' @param s A surveyor_stats object
-#' @keywords internal
-qtype <- function(s){
-  if(is.null(s$data)) return(NULL)
-  if (is.null(s$data$question)){
-    x <- ifelse (is.null(s$data$response), "singleQ_singleResponse", "singleQ_multiResponse")
-  } else {
-    x <- ifelse(is.null(s$data$response), "gridQ_singleResponse", "gridQ_multiResponse")
-  }
-  x
-}
-
-#' Checks if question has response of yes/no.
-#' 
-#' @param s A surveyor_stats object
-#' @keywords internal
-is.yesno <- function(s){
-  ifelse(!is.null(s$data$response), x <- s$data$response, return(FALSE))  
-  ret <- FALSE
-  if(is.factor(x)){
-    if(length(levels(x))==2){
-      if(sort(levels(x))==c("No", "Yes") || sort(levels(x))==c("Not selected", "Yes")){
-        ret <- TRUE
-      }}}
-  ret
-}
-
-#' Applies format function to x.
-#' 
-#' Applies format function (specified by formatter) to x.
-#' 
-#' @param x Character vector
-#' @param formatter Formatting function
-#' @keywords internal
-format_values <- function(x, formatter){
-  match.fun(formatter)(x)
-}
-
-#' Applies formatting to labels and calculates justification position.
-#' 
-#' Takes a surveyor_stats object and adds two additional data columns: value_labels and labels_just.
-#' 
-#' @param s A surveyor_stats object
-#' @keywords internal
-format_labels <- function(s){
-  stopifnot(class(s)=="surveyor_stats")
-  s$data$value_labels <- match.fun(s$formatter)(s$data$value)
-  s$data$labels_just <- -0.1 + 1.2 * with(s$data, as.numeric(value >= mean(value)))
-  s
 }
 
 
 #' Plot data in bar chart format
 #'
 #' @param s A surveyor_stats object
-#' @param surveyor Surveyor object
 #' @param plot_function Character vector: Identifies the name of the plot function used to create the plot
+#' @param ... ignored
 #' @seealso 
 #' Plot functions: 
 #' \itemize{
@@ -203,7 +118,8 @@ format_labels <- function(s){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 #' @export
-plot_bar <- function(s, surveyor, plot_function="plot_bar"){
+plot_bar <- function(s, plot_function="plot_bar", ...){
+  stopifnot(is.surveyor_stats(s))
   s <- format_labels(s)
 	f <- s$data
   qtype <- qtype(s)
@@ -211,7 +127,7 @@ plot_bar <- function(s, surveyor, plot_function="plot_bar"){
 		
 	f$cbreak <- f$cbreak[drop=TRUE]
 	
-	if(surveyor$defaults$fastgraphics){
+	if(s$surveyor$defaults$fastgraphics){
     ### plot using lattice
 		qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
     q <- switch(qtype,
@@ -230,7 +146,7 @@ plot_bar <- function(s, surveyor, plot_function="plot_bar"){
     )
   }
     
-  if(!surveyor$defaults$fastgraphics){
+  if(!s$surveyor$defaults$fastgraphics){
     ### Set up basic ggplot graphic ###
     p <- switch(qtype,
         singleQ_singleResponse =
@@ -253,7 +169,7 @@ plot_bar <- function(s, surveyor, plot_function="plot_bar"){
     
     ### Plot options ###
     p <- p + 
-				theme_surveyor(surveyor$defaults$default_theme_size) +
+				theme_surveyor(s$surveyor$defaults$default_theme_size) +
 				coord_flip() + 
 				scale_y_continuous(
 						s$ylabel, 
@@ -274,14 +190,14 @@ plot_bar <- function(s, surveyor, plot_function="plot_bar"){
     if(length(unique(f$response)) > 8) p <- p + scale_fill_hue()
 		if (qtype %in% c("singleQ_multiResponse", "gridQ_multiResponse")){
 			p <- p + opts(
-					axis.text.x=theme_text(size=surveyor$defaults$default_theme_size*0.5, angle=90)
+					axis.text.x=theme_text(size=s$surveyor$defaults$default_theme_size*0.5, angle=90)
 			)
     }
 	}
 		
-	ifelse(surveyor$defaults$fastgraphics,
-      return(as.surveyor_plot(q, plot_function=plot_function)), 
-      return(as.surveyor_plot(p, plot_function=plot_function))
+	ifelse(s$surveyor$defaults$fastgraphics,
+      return(as.surveyor_plot(q, s, plot_function=plot_function)), 
+      return(as.surveyor_plot(p, s, plot_function=plot_function))
   )
 }
 
@@ -291,8 +207,8 @@ plot_bar <- function(s, surveyor, plot_function="plot_bar"){
 #' The standard plot_bar() function will plot the data in a stacked bar chart format and apply percentage formatting.  plot_bar_sum() applies no formatting.
 #'
 #' @param s A surveyor_stats object
-#' @param surveyor Surveyor object
 #' @param plot_function Character vector: Identifies the name of the plot function used to create the plot
+#' @param ... Ignored
 #' @seealso 
 #' Plot functions: 
 #' \itemize{
@@ -307,16 +223,16 @@ plot_bar <- function(s, surveyor, plot_function="plot_bar"){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 #' @export
-plot_bar_sum <- function(s, surveyor, plot_function="plot_bar_sum"){
-	plot_bar(s, surveyor, plot_function=plot_function)
+plot_bar_sum <- function(s, plot_function="plot_bar_sum", ...){
+	plot_bar(s, plot_function=plot_function, ...)
 }
 
 ###############################################################################
 #' Plot data in column chart format
 #'
 #' @param s A surveyor_stats object
-#' @param surveyor Surveyor object
 #' @param plot_function Character vector: Identifies the name of the plot function used to create the plot
+#' @param ... Ignored
 #' @seealso 
 #' Plot functions: 
 #' \itemize{
@@ -331,14 +247,15 @@ plot_bar_sum <- function(s, surveyor, plot_function="plot_bar_sum"){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 #' @export
-plot_column <- function(s, surveyor, plot_function="plot_column"){
+plot_column <- function(s, plot_function="plot_column", ...){
+  stopifnot(is.surveyor_stats(s))
   s <- format_labels(s)
 	f <- s$data
   qtype <- qtype(s)
   
 	f$cbreak <- f$cbreak[drop=TRUE]
 	
-  if(surveyor$defaults$fastgraphics){
+  if(s$surveyor$defaults$fastgraphics){
     ### plot using lattice
     qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
     q <- switch(qtype,
@@ -357,7 +274,7 @@ plot_column <- function(s, surveyor, plot_function="plot_column"){
     )
   }
   
-  if(!surveyor$defaults$fastgraphics){
+  if(!s$surveyor$defaults$fastgraphics){
     ### Set up basic ggplot graphic ###
     p <- switch(qtype,
         singleQ_singleResponse =
@@ -385,11 +302,12 @@ plot_column <- function(s, surveyor, plot_function="plot_column"){
 #			}
 #    }
   
+  
     p <- p + geom_bar(stat="identity")
   
     ### Add plot options ###
     p <- p + 
-				theme_surveyor(surveyor$defaults$default_theme_size) +
+				theme_surveyor(s$surveyor$defaults$default_theme_size) +
 				scale_y_continuous(
 						s$ylabel, 
 						formatter=s$formatter) +
@@ -417,7 +335,7 @@ plot_column <- function(s, surveyor, plot_function="plot_column"){
     if(length(unique(f$response)) > 8) p <- p + scale_fill_hue()
     if (qtype %in% c("singleQ_multiResponse", "gridQ_multiResponse")){
       p <- p + opts(
-          axis.text.x=theme_text(size=surveyor$defaults$default_theme_size*0.5, angle=90)
+          axis.text.x=theme_text(size=s$surveyor$defaults$default_theme_size*0.5, angle=90)
       )
     }  
       
@@ -441,9 +359,9 @@ plot_column <- function(s, surveyor, plot_function="plot_column"){
 #		}
 	}
 	
-  ifelse(surveyor$defaults$fastgraphics,
-      return(as.surveyor_plot(q, plot_function=plot_function)), 
-      return(as.surveyor_plot(p, plot_function=plot_function))
+  ifelse(s$surveyor$defaults$fastgraphics,
+      return(as.surveyor_plot(q, s, plot_function=plot_function)), 
+      return(as.surveyor_plot(p, s, plot_function=plot_function))
   )
 }
 
@@ -455,7 +373,8 @@ plot_column <- function(s, surveyor, plot_function="plot_column"){
 #' Plot data in bubble chart format
 #'
 #' @param s A surveyor_stats object
-#' @param surveyor Surveyor object
+#' @param plot_function Character vector: Identifies the name of the plot function used to create the plot
+#' @param ... Ignored
 #' @seealso 
 #' Plot functions: 
 #' \itemize{
@@ -470,8 +389,9 @@ plot_column <- function(s, surveyor, plot_function="plot_column"){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 #' @export
-plot_point <- function(s, surveyor){
-	question <- NULL; rm(question) # Dummy to trick R CMD check
+plot_point <- function(s, plot_function="plot_point", ...){
+  stopifnot(is.surveyor_stats(s))
+  question <- NULL; rm(question) # Dummy to trick R CMD check
 	response <- NULL; rm(response) # Dummy to trick R CMD check
 	value <- NULL; rm(value) # Dummy to trick R CMD check
 	cbreak <- NULL; rm(cbreak) # Dummy to trick R CMD check
@@ -487,7 +407,7 @@ plot_point <- function(s, surveyor){
 							colour=factor(cbreak), fill=factor(cbreak)))
 		}
 	p <- p + 
-			theme_surveyor(surveyor$defaults$default_theme_size) +
+			theme_surveyor(s$surveyor$defaults$default_theme_size) +
 			geom_point(stat="sum") +
 			geom_text(aes(label=round(value*100, 0)),
 					size=3, vjust=2) +
@@ -498,12 +418,12 @@ plot_point <- function(s, surveyor){
 			opts(
 					panel.grid.minor = theme_blank(), 
 					axis.text.x = theme_text(
-							size=surveyor$defaults$default_theme_size, 
+							size=s$surveyor$defaults$default_theme_size, 
 							angle=90, 
 							hjust=1)
 			)
 	
-	as.surveyor_plot(p, plot_function="plot_point")
+	as.surveyor_plot(p, s, plot_function=plot_function)
 }
 
 ###############################################################################
@@ -514,7 +434,8 @@ plot_point <- function(s, surveyor){
 #' Plots questions that are summarised using \code{\link{stats_text}}.
 #'
 #' @param s A surveyor_stats object
-#' @param surveyor Surveyor object
+#' @param plot_function Character vector: Identifies the name of the plot function used to create the plot
+#' @param ... Ignored
 #' @seealso
 #' Plot functions: 
 #' \itemize{
@@ -529,18 +450,19 @@ plot_point <- function(s, surveyor){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
 #' @export
-plot_text <- function(s, surveyor){
+plot_text <- function(s, plot_function="plot_text", ...){
+  stopifnot(is.surveyor_stats(s))
   ### Only print if cbreak equal to first crossbreak in surveyor
 #  print(is.list(surveyor$crossbreak))
 #  print(all(s$data$cbreak!=surveyor$crossbreak[[1]]))
   p <- ""
   flag <- FALSE
   #browser()
-  if(is.list(surveyor$crossbreak)){
-    if(identical(surveyor$cbreak, surveyor$crossbreak[[1]])) flag <- TRUE
+  if(is.list(s$surveyor$crossbreak)){
+    if(identical(s$surveyor$cbreak, s$surveyor$crossbreak[[1]])) flag <- TRUE
   }
   
-  if(!is.list(surveyor$crossbreak)) flag <- TRUE
+  if(!is.list(s$surveyor$crossbreak)) flag <- TRUE
   
   if(flag){
     #if(s$data$cbreak != surveyor$crossbreak) return(NULL)
@@ -555,7 +477,7 @@ plot_text <- function(s, surveyor){
   	  )
   }
   class(p) <- "text"
-  as.surveyor_plot(p, plot_function="plot_text")
+  as.surveyor_plot(p, s, plot_function=plot_function)
 }
 
 ###############################################################################
@@ -564,8 +486,9 @@ plot_text <- function(s, surveyor){
 # TODO: Surveyor: Fix plot_net_score to deal with weighting
 #' Plot data in net score format (bar chart, but percentage axis)
 #'
-#' @param s A data frame with coded answers, provided by a code_* function
-#' @param surveyor Surveyor object
+#' @param s A surveyor_stats object
+#' @param plot_function Character vector: Identifies the name of the plot function used to create the plot
+#' @param ... Ignored
 #' @export
 #' @seealso
 #' Plot functions: 
@@ -580,8 +503,9 @@ plot_text <- function(s, surveyor){
 #' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords plot
-plot_net_score <- function(s, surveyor){
-	f <- s$data
+plot_net_score <- function(s, plot_function="plot_net_score", ...){
+  stopifnot(is.surveyor_stats(s))
+  f <- s$data
 	f$hjust <- 0
 	if (max(f$value) > 0)    f[f$value > 0,   ]$hjust <- -0.1  
 	if (max(f$value) > 0.5)  f[f$value > 0.5, ]$hjust <-  1.1  
@@ -590,7 +514,7 @@ plot_net_score <- function(s, surveyor){
 	
 	
 	p <- ggplot(f, aes_string(x="question", y="value")) +
-			theme_surveyor(surveyor$defaults$default_theme_size) +
+			theme_surveyor(s$surveyor$defaults$default_theme_size) +
 			geom_bar(
 					aes_string(fill="factor(cbreak)"),
 					stat="identity", 
@@ -619,9 +543,9 @@ plot_net_score <- function(s, surveyor){
 	qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
 	q <- lattice::barchart(question~value|cbreak, f, layout=qlayout, origin=0)
 			
-  ifelse(surveyor$defaults$fastgraphics, 
-      return(as.surveyor_plot(q, plot_function="plot_net_score")), 
-      return(as.surveyor_plot(p, plot_function="plot_net_score"))
+  ifelse(s$surveyor$defaults$fastgraphics, 
+      return(as.surveyor_plot(q, s, plot_function="plot_net_score")), 
+      return(as.surveyor_plot(p, s, plot_function="plot_net_score"))
   )
 }
 

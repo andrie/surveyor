@@ -13,6 +13,15 @@
 #' @param nquestion Number of identifiable questions / responses, used for plot sizing downstream
 #' @param scale_breaks Vector that specifies breaks in ggplot
 #' @param stats_method Character description of calling function name - for audit trail
+#' @usage as.surveyor_stats(
+#' data, 
+#' surveyor_code,
+#' ylabel="Fraction of respondents", 
+#' formatter="percent", 
+#' nquestion, 
+#' scale_breaks,
+#' stats_method="", 
+#' plot_function="")
 #' @return A surveyor_stats object
 #' @keywords internal
 as.surveyor_stats <- function(
@@ -34,7 +43,8 @@ as.surveyor_stats <- function(
 	structure(
 			list(
 				data=quickdf(data), 
-        surveyor_code = surveyor_code,
+        surveyor = surveyor_code$surveyor,
+        qid = surveyor_code$qid,
 				ylabel=ylabel,
 				formatter=formatter,
 				nquestion=nquestion,
@@ -58,64 +68,6 @@ is.surveyor_stats <- function(x){
 }
 
 
-
-#' Sorts data.frame responses in descending order by value.
-#' 
-#' Sorts data.frame responses in descending order by value 
-#' 
-#' @param df A data frame containing at least two columns: response and value 
-#' @return A data frame
-#' @keywords internal
-reorder_response <- function(df){
-	resp_levels  <- df[order(df$value, decreasing=TRUE), ]$response
-	resp_levels <- unique(resp_levels)
-	df$response <- factor(df$response, levels=resp_levels, ordered=TRUE)
-	df
-}
-
-#' Sorts data.frame questions in descending order by value.
-#' 
-#' Sorts data.frame question in descending order by value 
-#' 
-#' @param df A data frame containing at least two columns: response and value 
-#' @return A data frame
-#' @keywords internal
-reorder_question <- function(df, reverse=FALSE){
-  q_levels  <- df[order(df$value, decreasing=TRUE), ]$question
-  q_levels <- unique(q_levels)
-  if(reverse) q_levels <- rev(q_levels)
-  df$question <- factor(df$question, levels=q_levels, ordered=TRUE)
-  df
-}
-
-
-#' Tests for all NA values.
-#'  
-#' Tests for all NA values. 
-#' 
-#' @param x A list, data frame or vector 
-#' @return TRUE if all values are NA, FALSE otherwise
-#' @keywords internal
-all_na <- function(x){
-	if (is.list(x) || is.data.frame(x)){
-		return(all(as.logical(sapply(x, function(y) all(is.na(y))))))
-	}
-	return(all(is.na(x)))
-}
-
-#' Tests for all NULL values 
-#' 
-#' Tests for all NULL values 
-#' 
-#' @param x A list, data frame or vector 
-#' @return TRUE if all values are NULL, FALSE otherwise
-#' @keywords internal
-all_null <- function(x){
-	if (is.list(x) || is.data.frame(x)){
-		return(all(as.logical(sapply(x, function(y) all(is.null(y))))))
-	}
-	return(all(is.null(x)))
-}
 
 #' Guesses whether a question should be coded as net score.
 #' 

@@ -1,7 +1,7 @@
 \name{plot_column}
 \alias{plot_column}
 \title{Plot data in column chart format...}
-\usage{plot_column(s, surveyor, plot_function="plot_column")}
+\usage{plot_column(s, plot_function="plot_column", ...)}
 \description{Plot data in column chart format}
 \seealso{Plot functions: 
 \itemize{
@@ -16,5 +16,5 @@
 For an overview of the surveyor package \code{\link{surveyor}}}
 \keyword{plot}
 \arguments{\item{s}{A surveyor_stats object}
-\item{surveyor}{Surveyor object}
-\item{plot_function}{Character vector: Identifies the name of the plot function used to create the plot}}
+\item{plot_function}{Character vector: Identifies the name of the plot function used to create the plot}
+\item{...}{Ignored}}

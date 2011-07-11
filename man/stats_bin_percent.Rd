@@ -1,7 +1,7 @@
 \name{stats_bin_percent}
 \alias{stats_bin_percent}
 \title{Calculates summary statistics...}
-\usage{stats_bin_percent(x)}
+\usage{stats_bin_percent(surveyor_code)}
 \description{Calculates summary statistics}
 \details{Wrapper around \code{\link{stats_bin}}, binning statistics and calculating percentage
 
@@ -16,4 +16,4 @@ The results are sorted in descending order of value, and "response" is coerced i
 
 For an overview of the surveyor package \code{\link{surveyor}}}
 \keyword{stats}
-\arguments{\item{x}{A data frame with four columns: cbreak, question, response, weight}}
+\arguments{\item{surveyor_code}{An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight}}

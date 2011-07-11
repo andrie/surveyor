@@ -282,8 +282,8 @@ test_that("code_single works", {
       
       plotcode <- stats_bin(scode)
       expect_that(plotcode, is_a("surveyor_stats"))
-      pb <- plot_bar(plotcode, s)
-      ps <- plot_point(plotcode, s)
+      pb <- plot_bar(plotcode)
+      ps <- plot_point(plotcode)
       expect_that(pb, is_a("surveyor_plot"))
       expect_that(pb$plot, is_a("ggplot"))
       expect_that(ps, is_a("surveyor_plot"))
@@ -311,8 +311,8 @@ test_that("plot functions work with code_array", {
 			
       scode <- code_array(s, "Q4")
       plotcode <- stats_bin(scode)
-      pb <- plot_bar(plotcode, s)
-      ps <- plot_point(plotcode, s)
+      pb <- plot_bar(plotcode)
+      ps <- plot_point(plotcode)
       expect_that(pb, is_a("surveyor_plot"))
       expect_that(pb$plot, is_a("ggplot"))
       expect_that(ps, is_a("surveyor_plot"))
@@ -326,8 +326,7 @@ context("Test plumbing of surveyor_plot")
 
 test_that("surveyor_plot works", {
 			
-			expect_that(r <- surveyor_plot(s, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
-			expect_that(r, is_a("NULL"))
+			expect_that(surveyor_plot(s, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
 			expect_that(surveyor_plot(s, "Q4", code_array, stats_bin, plot_point), is_a("NULL"))
 			
 		})
@@ -339,8 +338,8 @@ context("Test that multiple crossbreaks work")
 
 test_that("surveyor_plot works with multiple crossbreaks", {
 			
-			expect_that(r <- surveyor_plot(s2, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
-      expect_that(r, is_a("NULL"))
+			expect_that(surveyor_plot(s2, "Q1", code_single, stats_bin, plot_bar), shows_message("Q1"))
+      expect_that(surveyor_plot(s2, "Q1", code_single, stats_bin, plot_bar), is_a("NULL"))
       
 		})
 
@@ -352,10 +351,14 @@ context("Test output to Latex")
 
 test_that("surveyor_plot works in Latex", {
 			
-#      file.remove(list.files(graph_path))
+      if(!identical(list.files(graph_path), "")){
+        lapply(list.files(graph_path), function(x)file.remove(file.path(graph_path, x)))
+      }          
       if (file.exists(file.path(latex_path, sinkfile))){
         file.remove(file.path(latex_path, sinkfile))
       }
+      expect_that(file.exists(file.path(graph_path, "fig0001.pdf")), equals(FALSE))
+      expect_that(file.exists(file.path(graph_path, "fig0002.pdf")), equals(FALSE))
       
       surveyor_plot(t, "Q1", code_single, stats_bin, plot_bar)
 			surveyor_plot(t, "Q4", code_array, stats_bin, plot_bar)
