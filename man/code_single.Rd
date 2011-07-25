@@ -1,19 +1,33 @@
 \name{code_single}
 \alias{code_single}
-\title{Code survey data in single question form...}
-\usage{code_single(surveyor, q_id, wrap_length=50, ...)}
-\description{Code survey data in single question form}
-\details{Code survey data in single question form (i.e. without subquestions)}
-\seealso{Other coding functions: 
-\code{\link{code_single}},  
-\code{\link{code_array}}, 
-\code{\link{code_text}}, 
-\code{\link{code_guess}}
+\title{Code survey data in single question form}
+\usage{
+  code_single(surveyor, q_id, wrap_length = 50, ...)
+}
+\arguments{
+  \item{surveyor}{Surveyor object}
 
-For an overview of the surveyor package \code{\link{surveyor}}}
-\value{data frame}
+  \item{q_id}{Question id}
+
+  \item{wrap_length}{Position where labels will be wrapped
+  (in character count)}
+
+  \item{...}{Not used}
+}
+\value{
+  data frame
+}
+\description{
+  Code survey data in single question form (i.e. without
+  subquestions)
+}
+\seealso{
+  Other coding functions: \code{\link{code_single}},
+  \code{\link{code_array}}, \code{\link{code_text}},
+  \code{\link{code_guess}}
+
+  For an overview of the surveyor package
+  \code{\link{surveyor}}
+}
 \keyword{code}
-\arguments{\item{surveyor}{Surveyor object}
-\item{q_id}{Question id}
-\item{wrap_length}{Position where labels will be wrapped (in character count)}
-\item{...}{Not used}}
+

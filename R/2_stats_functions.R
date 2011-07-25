@@ -109,7 +109,7 @@ identify_net_score <- function(x, match_words = NULL){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @export
-stats_guess <- function(surveyor_code){
+stats_guess <- function(surveyor_code, ...){
   stopifnot(is.surveyor_code(surveyor_code))
   x <- surveyor_code$data
   if(is.null(x)){
@@ -118,15 +118,15 @@ stats_guess <- function(surveyor_code){
 	
 	if(is.factor(x$response)){
 		if(identify_net_score(x$response)){
-			stats_net_score(surveyor_code)
+			stats_net_score(surveyor_code, ...)
 		} else {	
-			stats_bin_percent(surveyor_code)
+			stats_bin_percent(surveyor_code, ...)
 		}
 	} else {
 		if(is.numeric(x$response)){
-			stats_sum(surveyor_code)
+			stats_sum(surveyor_code, ...)
 		} else {
-			stats_bin_percent(surveyor_code)
+			stats_bin_percent(surveyor_code, ...)
 		}	
 	}
 }
@@ -252,15 +252,85 @@ stats_bin_percent <- function(surveyor_code){
 }
 
 
+#' Calculates median
+#'
+#' Add description 
+#' 
+#' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
+#' @param fun The function to use to calculate central tendency, e.g. mean, median or sum
+#' @param stats_function The name of the function, for audit trail 
+#' @param yLabel y axis label
+#' @return A data frame with three columns: cbreak, variable, value
+#' @seealso
+#' Stats functions:
+#' \itemize{
+#' \item \code{\link{stats_mean}}
+#' \item \code{\link{stats_sum}}
+#' \item \code{\link{stats_bin}} 
+#' \item \code{\link{stats_rank}} 
+#' \item \code{\link{stats_net_score}}
+#' }
+#' 
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords stats
+#' @export
+stats_median <- function(surveyor_code, fun="weightedMedian", stats_method="stats_median", yLabel="Median value"){
+  stopifnot(is.surveyor_code(surveyor_code))
+  x <- surveyor_code$data
+  if(is.null(x)){
+    return(NULL)
+  }
+  
+#  x$response <- ifelse(is.factor(x$response),
+#      as.numeric(levels(x$response)[x$response]),
+#      as.numeric(x$response)
+#  )
+#  cat(str(x$response))
+  #browser()
+  if (length(unique(x$question))==1){
+    # code single
+    df <- ddply(x, c("cbreak"), 
+        summarise, 
+        value = weightedMedian(response, weight, na.rm=TRUE)
+    )
+    
+  } else {
+    # code array
+    df <- ddply(x, c("cbreak", "question"), 
+        summarise, 
+        value = weightedMedian(response, weight, na.rm=TRUE)
+    )
+  }
+  
+#  df$value <- levels(x$response)[df$value]
+#  df$value <- factor(df$value, levels=levels(x$response))
+  
+  #scale_breaks <- c(min(df$value), 0, max(df$value))
+  #scale_breaks <- round_first_signif(scale_breaks)
+  
+  as.surveyor_stats(
+      df,
+      surveyor_code,
+      ylabel=yLabel,
+      formatter="format",
+      stats_method=stats_method
+#      scale_breaks=scale_breaks
+  )
+}
+
+
 #' Calculates numeric sum
 #'
 #' Add description 
 #' 
 #' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
+#' @param fun The function to use to calculate central tendency, e.g. mean, median or sum
+#' @param stats_function The name of the function, for audit trail 
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
 #' Stats functions:
 #' \itemize{
+#' \item \code{\link{stats_mean}}
 #' \item \code{\link{stats_bin}} 
 #' \item \code{\link{stats_rank}} 
 #' \item \code{\link{stats_net_score}}
@@ -310,15 +380,20 @@ stats_sum <- function(surveyor_code){
 }
 
 
+
 #' Calculates numeric sum
 #'
 #' Add description 
 #' 
-#' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
+#' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight
+#' @param fun The function to use to calculate central tendency, e.g. mean, median or sum
+#' @param stats_function The name of the function, for audit trail 
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
 #' Stats functions:
 #' \itemize{
+#' \item \code{\link{stats_median}}
+#' \item \code{\link{stats_sum}}
 #' \item \code{\link{stats_bin}} 
 #' \item \code{\link{stats_rank}} 
 #' \item \code{\link{stats_net_score}}
@@ -327,7 +402,7 @@ stats_sum <- function(surveyor_code){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @export
-stats_mean <- function(surveyor_code){
+stats_mean <- function(surveyor_code, fun="mean", stats_method="stats_mean"){
   stopifnot(is.surveyor_code(surveyor_code))
   x <- surveyor_code$data
   if(is.null(x)){
@@ -365,7 +440,7 @@ stats_mean <- function(surveyor_code){
       surveyor_code,
       ylabel="Value",
 			formatter="format",
-			stats_method="stats_mean",
+			stats_method=stats_method,
 			scale_breaks=scale_breaks)
 }
 

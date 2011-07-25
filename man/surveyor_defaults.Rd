@@ -1,24 +1,56 @@
 \name{surveyor_defaults}
 \alias{surveyor_defaults}
 \title{Initialises surveyor object defaults.}
-\usage{surveyor_defaults(output_to_latex=TRUE, default_theme_size=9,
-    question_pattern="_[[:digit:]]*$", subquestion_append=TRUE,
-    subquestion_prepend=!subquestion_append, fastgraphics=FALSE,
-    add_plot_title=FALSE, default_colour_area=rgb(127, 201, 127, 255,
-    maxColorValue = 255), default_colour_point=rgb(27, 158, 119, 255,
-    maxColorValue = 255), print_table=TRUE)}
-\description{Initialises surveyor object defaults.}
-\seealso{\code{\link{as.surveyor}}, \code{\link{surveyor_update_defaults}}}
-\arguments{\item{output_to_latex}{TRUE or FALSE, determines if latex commands is output}
-\item{default_theme_size}{Text size in points, passed to ggplot}
-\item{question_pattern}{A text pattern passed to grep() to distinguish 
-between single and array questions}
-\item{subquestion_append}{Indicates whether subquestion text is appended to question text}
-\item{subquestion_prepend}{Indicates whether subquestion text is prepended to question text}
-\item{fastgraphics}{Uses lattice graphics if true, otherwise ggplot}
-\item{add_plot_title}{If true, adds question text as plot title}
-\item{default_colour_area}{Default RGB colour for areas in graphs (e.g. bars)}
-\item{default_colour_point}{Default RGB colour for points in graphs (e.g. points)}
-\item{print_table}{If TRUE will print the table as part of the report}}
-\examples{s <- surveyor_defaults()
-s <- surveyor_defaults(output_to_latex=TRUE)}
+\usage{
+  surveyor_defaults(output_to_latex = TRUE,
+  default_theme_size = 9, question_pattern =
+  "_[[:digit:]]*$", subquestion_append = TRUE,
+  subquestion_prepend = !subquestion_append, fastgraphics =
+  FALSE, add_plot_title = FALSE, default_colour_area =
+  rgb(127, 201, 127, 255, maxColorValue = 255),
+  default_colour_point = rgb(27, 158, 119, 255,
+  maxColorValue = 255), print_table = TRUE)
+}
+\arguments{
+  \item{output_to_latex}{TRUE or FALSE, determines if latex
+  commands is output}
+
+  \item{default_theme_size}{Text size in points, passed to
+  ggplot}
+
+  \item{question_pattern}{A text pattern passed to grep()
+  to distinguish between single and array questions}
+
+  \item{subquestion_append}{Indicates whether subquestion
+  text is appended to question text}
+
+  \item{subquestion_prepend}{Indicates whether subquestion
+  text is prepended to question text}
+
+  \item{fastgraphics}{Uses lattice graphics if true,
+  otherwise ggplot}
+
+  \item{add_plot_title}{If true, adds question text as plot
+  title}
+
+  \item{default_colour_area}{Default RGB colour for areas
+  in graphs (e.g. bars)}
+
+  \item{default_colour_point}{Default RGB colour for points
+  in graphs (e.g. points)}
+
+  \item{print_table}{If TRUE will print the table as part
+  of the report}
+}
+\description{
+  Initialises surveyor object defaults.
+}
+\examples{
+s <- surveyor_defaults()
+s <- surveyor_defaults(output_to_latex=TRUE)
+}
+\seealso{
+  \code{\link{as.surveyor}},
+  \code{\link{surveyor_update_defaults}}
+}
+

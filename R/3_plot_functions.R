@@ -1,4 +1,5 @@
-# TODO: Surveyor: Move plot vertical sizing into plot itself
+# TODO: Surveyor: Plot_bar with crossbreak and multiple questions doesn't have correct colours
+
 
 
 #' Creates surveyor_plot object.
@@ -188,7 +189,7 @@ plot_bar <- function(s, plot_function="plot_bar", ...){
 
     ### Deal with too many colours ###
     if(length(unique(f$response)) > 8) p <- p + scale_fill_hue()
-		if (qtype %in% c("singleQ_multiResponse", "gridQ_multiResponse")){
+		if (qtype %in% c("singleQ_multiResponse", "gridQ_multiResponse", "gridQ_singleResponse")){
 			p <- p + opts(
 					axis.text.x=theme_text(size=s$surveyor$defaults$default_theme_size*0.5, angle=90)
 			)
@@ -284,25 +285,10 @@ plot_column <- function(s, plot_function="plot_column", ...){
         gridQ_singleResponse = 
             ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(cbreak)")),
         gridQ_multiResponse = 
-            ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(response)")),
+            ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(cbreak)")),
         stop("plot_bar: Invalid value of qtype.  This should never happen")
     )    
     
-#		if (is.null(f$question)){
-#			# Plot single question
-#			p <- ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(cbreak)"))
-#			
-#		} else {
-#			if (is.null(f$response)) {
-#				# Plot array of single values per question
-#				p <- ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(cbreak)"))
-#			} else {
-#				# Plot array question as stacked bar
-#			p <- ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(response)"))
-#			}
-#    }
-  
-  
     p <- p + geom_bar(stat="identity")
   
     ### Add plot options ###
@@ -333,30 +319,17 @@ plot_column <- function(s, plot_function="plot_column", ...){
     
     ### Deal with too many colours ###
     if(length(unique(f$response)) > 8) p <- p + scale_fill_hue()
-    if (qtype %in% c("singleQ_multiResponse", "gridQ_multiResponse")){
+    if (qtype == "singleQ_multiResponse"){
+      p <- p + opts(
+          axis.text.x=theme_text(size=s$surveyor$defaults$default_theme_size*0.9, angle=0)
+      )
+    }  
+    if (qtype == "gridQ_multiResponse"){
       p <- p + opts(
           axis.text.x=theme_text(size=s$surveyor$defaults$default_theme_size*0.5, angle=90)
       )
     }  
-      
     
-#		if (is.null(f$question)){
-#			# Plot single question
-#			if(length(unique(f$response)) > 8){p <- p + scale_fill_hue()}
-#		} else {
-#			# Plot array of single values per question
-#			# Plot array question as stacked bar
-#			p <- p + facet_grid(question~., scales="free") +
-#					opts(
-#							strip.text.y = theme_text(size = surveyor$defaults$default_theme_size * 0.8)
-##							axis.text.y = theme_text(size = surveyor$defaults$default_theme_size * 0.5)
-#					)
-#			p <- p + geom_text(aes_string(label="signif(value, 3)"), vjust=0.5, size=3)
-#			if(length(unique(f$question)) > 8){p <- p + scale_fill_hue()}
-#			if (!is.null(f$response) & nlevels(f$response[drop=TRUE]==1)){ 
-#				p <- p + opts(legend.position="right")
-#			}	
-#		}
 	}
 	
   ifelse(s$surveyor$defaults$fastgraphics,

@@ -32,7 +32,7 @@ as.surveyor <- function(
 		defaults   = surveyor_defaults(),
     braid = as.braid()
 	){
-	if (!identical(names(q_data), names(q_text))){
+  if (!identical(names(q_data), names(q_text))){
 		stop("Surveyor object: The names of q_data and q_text must match")
 	}
 	
@@ -56,6 +56,7 @@ as.surveyor <- function(
 	if (!is.numeric(weight)){
 		stop("Surveyor object: Weight must be numeric")
 	}
+#  browser()
 	structure(
 			list(
 					q_data     = q_data, 
