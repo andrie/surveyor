@@ -2,7 +2,7 @@
 \alias{is.surveyor}
 \title{Tests that object is of class surveyor object.}
 \usage{
-  \method{is}{surveyor} (x)
+  is.surveyor(x)
 }
 \arguments{
   \item{x}{Object to be tested}

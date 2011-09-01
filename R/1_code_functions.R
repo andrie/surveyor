@@ -38,14 +38,8 @@ is.surveyor_code <- function(x){
 #' @param wrap_length Position where labels will be wrapped (in character count)
 #' @param ... Not used
 #' @seealso
-#' Other coding functions: 
-#' \code{\link{code_single}},  
-#' \code{\link{code_array}}, 
-#' \code{\link{code_text}}, 
-#' \code{\link{code_guess}}
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
-#' 
+#' @family code_functions
 #' @return data frame
 #' @keywords code
 #' @export
@@ -87,14 +81,8 @@ code_single <- function(surveyor, q_id,	wrap_length=50, ...){
 #' @param remove_other If true, will remove last column
 #' @param wrap_length Position where labels will be wrapped (in character count)
 #' @seealso
-#' Other coding functions: 
-#' \code{\link{code_single}},  
-#' \code{\link{code_array}}, 
-#' \code{\link{code_text}}, 
-#' \code{\link{code_guess}}
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
-#' 
+#' @family code_functions
 #' @return data frame
 #' @keywords code
 #' @export
@@ -154,14 +142,8 @@ code_array <- function(surveyor, q_id, remove_other=FALSE, wrap_length=50){
 #' @param q_id Question id
 #' @param ... Other parameters passed on to downstream code_* functions
 #' @seealso
-#' Other coding functions: 
-#' \code{\link{code_single}},  
-#' \code{\link{code_array}}, 
-#' \code{\link{code_text}}, 
-#' \code{\link{code_guess}}
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
-#' 
+#' @family code_functions
 #' @return data frame
 #' @keywords code
 #' @export
@@ -197,14 +179,8 @@ filter_nocomment <- function(x, remove="^(No|no|NO|Nope|None|none|n.a.|NA|n/a).?
 #' @param out string passed to latexTranslate()
 #' @param filter_responses Indicates whether responses should be filtered first
 #' @seealso
-#' Other coding functions: 
-#' \code{\link{code_single}},  
-#' \code{\link{code_array}}, 
-#' \code{\link{code_text}}, 
-#' \code{\link{code_guess}}
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
-#' 
+#' @family code_functions
 #' @return data frame
 #' @keywords code
 #' @export

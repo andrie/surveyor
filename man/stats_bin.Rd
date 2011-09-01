@@ -33,12 +33,14 @@
   "response" is already an ordered factor).
 }
 \seealso{
-  Stats functions: \itemize{ \item \code{\link{stats_bin}}
-  \item \code{\link{stats_rank}} \item
-  \code{\link{stats_net_score}} }
-
   For an overview of the surveyor package
   \code{\link{surveyor}}
+
+  Other stats_functions: \code{\link{stats_bin_percent}},
+  \code{\link{stats_guess}}, \code{\link{stats_mean}},
+  \code{\link{stats_median}},
+  \code{\link{stats_net_score}}, \code{\link{stats_rank}},
+  \code{\link{stats_sum}}, \code{\link{stats_text}}
 }
 \keyword{stats}
 

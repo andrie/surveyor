@@ -42,8 +42,8 @@
 #' \item \code{\link{plot_net_score}} 
 #' }
 #' 
-#' @name package-surveyor
-#' @aliases surveyor package-surveyor
+#' @name surveyor-package
+#' @aliases surveyor surveyor-package
 #' @docType package
 #' @title Tools for analysing and reporting on survey objects.
 #' @author Andrie de Vries \email{andrie.de.vries@@pentalibra.com}

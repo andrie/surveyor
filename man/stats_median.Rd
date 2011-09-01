@@ -1,9 +1,9 @@
-\name{stats_mean}
-\alias{stats_mean}
-\title{Calculates numeric sum}
+\name{stats_median}
+\alias{stats_median}
+\title{Calculates median}
 \usage{
-  stats_mean(surveyor_code, fun = "mean", stats_method =
-  "stats_mean")
+  stats_median(surveyor_code, fun = "weighted_median",
+  stats_method = "stats_median", yLabel = "Median value")
 }
 \arguments{
   \item{surveyor_code}{An object of class "surveyor_code".
@@ -15,6 +15,8 @@
 
   \item{stats_method}{The name of the function, for audit
   trail}
+
+  \item{yLabel}{y axis label}
 }
 \value{
   A data frame with three columns: cbreak, variable, value
@@ -28,7 +30,7 @@
 
   Other stats_functions: \code{\link{stats_bin}},
   \code{\link{stats_bin_percent}},
-  \code{\link{stats_guess}}, \code{\link{stats_median}},
+  \code{\link{stats_guess}}, \code{\link{stats_mean}},
   \code{\link{stats_net_score}}, \code{\link{stats_rank}},
   \code{\link{stats_sum}}, \code{\link{stats_text}}
 }

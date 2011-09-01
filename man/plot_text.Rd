@@ -17,14 +17,13 @@
   \code{\link{stats_text}}.
 }
 \seealso{
-  Plot functions: \itemize{ \item \code{\link{plot_bar}}
-  \item \code{\link{plot_bar_sum}} \item
-  \code{\link{plot_column}} \item \code{\link{plot_point}}
-  \item \code{\link{plot_text}} \item
-  \code{\link{plot_net_score}} }
-
   For an overview of the surveyor package
   \code{\link{surveyor}}
+
+  Other plot_functions: \code{\link{plot_bar}},
+  \code{\link{plot_bar_sum}}, \code{\link{plot_column}},
+  \code{\link{plot_guess}}, \code{\link{plot_net_score}},
+  \code{\link{plot_point}}
 }
 \keyword{plot}
 

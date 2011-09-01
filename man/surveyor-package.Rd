@@ -1,8 +1,8 @@
 \docType{package}
-\name{package-surveyor}
-\alias{"package-surveyor"}
-\alias{package-surveyor}
+\name{surveyor-package}
+\alias{"surveyor-package"}
 \alias{surveyor}
+\alias{surveyor-package}
 \title{Tools for analysing and reporting on survey objects.}
 \description{
   Tools for analysing and reporting on survey objects.

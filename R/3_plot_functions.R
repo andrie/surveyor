@@ -54,17 +54,8 @@ is.surveyor_plot <- function(x){
 #' @param s A surveyor_stats object
 #' @param ... Other parameters passed to specific plot function
 #' @seealso 
-#' Plot functions: 
-#' \itemize{
-#' \item \code{\link{plot_bar}} 
-#' \item \code{\link{plot_bar_sum}} 
-#' \item \code{\link{plot_column}} 
-#' \item \code{\link{plot_point}} 
-#' \item \code{\link{plot_text}} 
-#' \item \code{\link{plot_net_score}} 
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
+#' @family plot_functions
 #' @keywords plot
 #' @export
 plot_guess <- function(s, ...){
@@ -106,17 +97,8 @@ plot_guess <- function(s, ...){
 #' @param plot_function Character vector: Identifies the name of the plot function used to create the plot
 #' @param ... ignored
 #' @seealso 
-#' Plot functions: 
-#' \itemize{
-#' \item \code{\link{plot_bar}} 
-#' \item \code{\link{plot_bar_sum}} 
-#' \item \code{\link{plot_column}} 
-#' \item \code{\link{plot_point}} 
-#' \item \code{\link{plot_text}} 
-#' \item \code{\link{plot_net_score}} 
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
+#' @family plot_functions
 #' @keywords plot
 #' @export
 plot_bar <- function(s, plot_function="plot_bar", ...){
@@ -211,17 +193,8 @@ plot_bar <- function(s, plot_function="plot_bar", ...){
 #' @param plot_function Character vector: Identifies the name of the plot function used to create the plot
 #' @param ... Ignored
 #' @seealso 
-#' Plot functions: 
-#' \itemize{
-#' \item \code{\link{plot_bar}} 
-#' \item \code{\link{plot_bar_sum}} 
-#' \item \code{\link{plot_column}} 
-#' \item \code{\link{plot_point}} 
-#' \item \code{\link{plot_text}} 
-#' \item \code{\link{plot_net_score}} 
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
+#' @family plot_functions
 #' @keywords plot
 #' @export
 plot_bar_sum <- function(s, plot_function="plot_bar_sum", ...){
@@ -235,17 +208,8 @@ plot_bar_sum <- function(s, plot_function="plot_bar_sum", ...){
 #' @param plot_function Character vector: Identifies the name of the plot function used to create the plot
 #' @param ... Ignored
 #' @seealso 
-#' Plot functions: 
-#' \itemize{
-#' \item \code{\link{plot_bar}} 
-#' \item \code{\link{plot_bar_sum}} 
-#' \item \code{\link{plot_column}} 
-#' \item \code{\link{plot_point}} 
-#' \item \code{\link{plot_text}} 
-#' \item \code{\link{plot_net_score}} 
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
+#' @family plot_functions
 #' @keywords plot
 #' @export
 plot_column <- function(s, plot_function="plot_column", ...){
@@ -349,17 +313,8 @@ plot_column <- function(s, plot_function="plot_column", ...){
 #' @param plot_function Character vector: Identifies the name of the plot function used to create the plot
 #' @param ... Ignored
 #' @seealso 
-#' Plot functions: 
-#' \itemize{
-#' \item \code{\link{plot_bar}} 
-#' \item \code{\link{plot_bar_sum}} 
-#' \item \code{\link{plot_column}} 
-#' \item \code{\link{plot_point}} 
-#' \item \code{\link{plot_text}} 
-#' \item \code{\link{plot_net_score}} 
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
+#' @family plot_functions
 #' @keywords plot
 #' @export
 plot_point <- function(s, plot_function="plot_point", ...){
@@ -410,17 +365,8 @@ plot_point <- function(s, plot_function="plot_point", ...){
 #' @param plot_function Character vector: Identifies the name of the plot function used to create the plot
 #' @param ... Ignored
 #' @seealso
-#' Plot functions: 
-#' \itemize{
-#' \item \code{\link{plot_bar}} 
-#' \item \code{\link{plot_bar_sum}} 
-#' \item \code{\link{plot_column}} 
-#' \item \code{\link{plot_point}} 
-#' \item \code{\link{plot_text}} 
-#' \item \code{\link{plot_net_score}} 
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
+#' @family plot_functions
 #' @keywords plot
 #' @export
 plot_text <- function(s, plot_function="plot_text", ...){
@@ -462,20 +408,11 @@ plot_text <- function(s, plot_function="plot_text", ...){
 #' @param s A surveyor_stats object
 #' @param plot_function Character vector: Identifies the name of the plot function used to create the plot
 #' @param ... Ignored
-#' @export
 #' @seealso
-#' Plot functions: 
-#' \itemize{
-#' \item \code{\link{plot_bar}} 
-#' \item \code{\link{plot_bar_sum}} 
-#' \item \code{\link{plot_column}} 
-#' \item \code{\link{plot_point}} 
-#' \item \code{\link{plot_text}} 
-#' \item \code{\link{plot_net_score}} 
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
+#' @family plot_functions
 #' @keywords plot
+#' @export
 plot_net_score <- function(s, plot_function="plot_net_score", ...){
   stopifnot(is.surveyor_stats(s))
   f <- s$data

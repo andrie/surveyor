@@ -23,12 +23,11 @@
   subquestions)
 }
 \seealso{
-  Other coding functions: \code{\link{code_single}},
-  \code{\link{code_array}}, \code{\link{code_text}},
-  \code{\link{code_guess}}
-
   For an overview of the surveyor package
   \code{\link{surveyor}}
+
+  Other code_functions: \code{\link{code_guess}},
+  \code{\link{code_single}}, \code{\link{code_text}}
 }
 \keyword{code}
 

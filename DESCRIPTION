@@ -10,15 +10,15 @@ Description: This is a set of tools to analyse, report and
     plot survey data
 Author@R: person("Andrie", "de Vries",
     email="apdevries@gmail.com")
-Version: 0.1-06
+Version: 0.1-08
 URL: www.pentalibra.com
-Date: 2011-07-01
+Date: 2011-09-01
 Depends:
     plyr,
     stringr,
-    reshape2,
     braid,
     ggplot2,
+    reshape2,
     lattice
 Collate:
     '1_code_functions.R'

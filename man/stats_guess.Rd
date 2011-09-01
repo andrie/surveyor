@@ -2,12 +2,14 @@
 \alias{stats_guess}
 \title{Inspects data and guesses what type of analysis to do.}
 \usage{
-  stats_guess(surveyor_code)
+  stats_guess(surveyor_code, ...)
 }
 \arguments{
   \item{surveyor_code}{An object of class "surveyor_code".
   This is a list with the first element being a data frame
   with four columns: cbreak, question, response, weight}
+
+  \item{...}{Passed to relevant stats function}
 }
 \value{
   A data frame with three columns: cbreak, variable, value
@@ -17,12 +19,14 @@
   stats_sum
 }
 \seealso{
-  Stats functions: \itemize{ \item \code{\link{stats_bin}}
-  \item \code{\link{stats_rank}} \item
-  \code{\link{stats_net_score}} }
-
   For an overview of the surveyor package
   \code{\link{surveyor}}
+
+  Other stats_functions: \code{\link{stats_bin}},
+  \code{\link{stats_bin_percent}},
+  \code{\link{stats_mean}}, \code{\link{stats_median}},
+  \code{\link{stats_net_score}}, \code{\link{stats_rank}},
+  \code{\link{stats_sum}}, \code{\link{stats_text}}
 }
 \keyword{stats}
 

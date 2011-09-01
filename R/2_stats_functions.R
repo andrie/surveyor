@@ -97,17 +97,12 @@ identify_net_score <- function(x, match_words = NULL){
 #' If data is categorical stats_bin, if data is metric then stats_sum
 #' 
 #' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
+#' @param ... Passed to relevant stats function
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
-#' Stats functions:
-#' \itemize{
-#' \item \code{\link{stats_bin}} 
-#' \item \code{\link{stats_rank}} 
-#' \item \code{\link{stats_net_score}}
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
+#' @family stats_functions
 #' @export
 stats_guess <- function(surveyor_code, ...){
   stopifnot(is.surveyor_code(surveyor_code))
@@ -145,15 +140,9 @@ stats_guess <- function(surveyor_code, ...){
 #' @param convert_to_percent If true, will express results as fractions, rather than counts
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
-#' Stats functions:
-#' \itemize{
-#' \item \code{\link{stats_bin}} 
-#' \item \code{\link{stats_rank}} 
-#' \item \code{\link{stats_net_score}}
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
+#' @family stats_functions
 #' @export
 stats_bin <- function(surveyor_code, ylabel="Respondents", stats_method="stats_bin", convert_to_percent=FALSE){
   stopifnot(is.surveyor_code(surveyor_code))
@@ -231,15 +220,9 @@ stats_bin <- function(surveyor_code, ylabel="Respondents", stats_method="stats_b
 #' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
-#' Stats functions:
-#' \itemize{
-#' \item \code{\link{stats_bin}} 
-#' \item \code{\link{stats_rank}} 
-#' \item \code{\link{stats_net_score}}
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
+#' @family stats_functions
 #' @export
 stats_bin_percent <- function(surveyor_code){
   stopifnot(is.surveyor_code(surveyor_code))
@@ -258,23 +241,15 @@ stats_bin_percent <- function(surveyor_code){
 #' 
 #' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
 #' @param fun The function to use to calculate central tendency, e.g. mean, median or sum
-#' @param stats_function The name of the function, for audit trail 
+#' @param stats_method The name of the function, for audit trail 
 #' @param yLabel y axis label
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
-#' Stats functions:
-#' \itemize{
-#' \item \code{\link{stats_mean}}
-#' \item \code{\link{stats_sum}}
-#' \item \code{\link{stats_bin}} 
-#' \item \code{\link{stats_rank}} 
-#' \item \code{\link{stats_net_score}}
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
+#' @family stats_functions
 #' @export
-stats_median <- function(surveyor_code, fun="weightedMedian", stats_method="stats_median", yLabel="Median value"){
+stats_median <- function(surveyor_code, fun="weighted_median", stats_method="stats_median", yLabel="Median value"){
   stopifnot(is.surveyor_code(surveyor_code))
   x <- surveyor_code$data
   if(is.null(x)){
@@ -291,14 +266,14 @@ stats_median <- function(surveyor_code, fun="weightedMedian", stats_method="stat
     # code single
     df <- ddply(x, c("cbreak"), 
         summarise, 
-        value = weightedMedian(response, weight, na.rm=TRUE)
+        value = weighted_median("response", "weight", na.rm=TRUE)
     )
     
   } else {
     # code array
     df <- ddply(x, c("cbreak", "question"), 
         summarise, 
-        value = weightedMedian(response, weight, na.rm=TRUE)
+        value = weighted_median("response", "weight", na.rm=TRUE)
     )
   }
   
@@ -324,20 +299,11 @@ stats_median <- function(surveyor_code, fun="weightedMedian", stats_method="stat
 #' Add description 
 #' 
 #' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
-#' @param fun The function to use to calculate central tendency, e.g. mean, median or sum
-#' @param stats_function The name of the function, for audit trail 
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
-#' Stats functions:
-#' \itemize{
-#' \item \code{\link{stats_mean}}
-#' \item \code{\link{stats_bin}} 
-#' \item \code{\link{stats_rank}} 
-#' \item \code{\link{stats_net_score}}
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
+#' @family stats_functions
 #' @export
 stats_sum <- function(surveyor_code){
   stopifnot(is.surveyor_code(surveyor_code))
@@ -387,20 +353,12 @@ stats_sum <- function(surveyor_code){
 #' 
 #' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight
 #' @param fun The function to use to calculate central tendency, e.g. mean, median or sum
-#' @param stats_function The name of the function, for audit trail 
+#' @param stats_method The name of the function, for audit trail 
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
-#' Stats functions:
-#' \itemize{
-#' \item \code{\link{stats_median}}
-#' \item \code{\link{stats_sum}}
-#' \item \code{\link{stats_bin}} 
-#' \item \code{\link{stats_rank}} 
-#' \item \code{\link{stats_net_score}}
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
+#' @family stats_functions
 #' @export
 stats_mean <- function(surveyor_code, fun="mean", stats_method="stats_mean"){
   stopifnot(is.surveyor_code(surveyor_code))
@@ -454,15 +412,9 @@ stats_mean <- function(surveyor_code, fun="mean", stats_method="stats_mean"){
 #' @param top_n Numeric, indicates how the ranking is summarised
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
-#' Stats functions:
-#' \itemize{
-#' \item \code{\link{stats_bin}} 
-#' \item \code{\link{stats_rank}} 
-#' \item \code{\link{stats_net_score}}
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
+#' @family stats_functions
 #' @export
 stats_rank <- function(surveyor_code, top_n=3){
   stopifnot(is.surveyor_code(surveyor_code))
@@ -545,15 +497,9 @@ net_score <- function(x){
 #' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
 #' @return data frame
 #' @seealso
-#' Stats functions:
-#' \itemize{
-#' \item \code{\link{stats_bin}} 
-#' \item \code{\link{stats_rank}} 
-#' \item \code{\link{stats_net_score}}
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
+#' @family stats_functions
 #' @export
 stats_net_score <- function(surveyor_code){
   stopifnot(is.surveyor_code(surveyor_code))
@@ -590,15 +536,9 @@ stats_net_score <- function(surveyor_code){
 #' @param surveyor_code An object of class "surveyor_code".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
 #' @return data frame
 #' @seealso
-#' Stats functions:
-#' \itemize{
-#' \item \code{\link{stats_bin}} 
-#' \item \code{\link{stats_rank}} 
-#' \item \code{\link{stats_net_score}}
-#' }
-#' 
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
+#' @family stats_functions
 #' @export
 stats_text <- function(surveyor_code){
   stopifnot(is.surveyor_code(surveyor_code))

@@ -1,3 +1,3 @@
-# UK postcodes
+# Surveyor
 
-Contains UK postal code data and geographical locations, as well as function to plot data on a map.
+Tools to analyse survey data
