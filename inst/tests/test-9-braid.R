@@ -1,0 +1,77 @@
+# TODO: Add comment
+# 
+# Author: Andrie
+###############################################################################
+
+
+path <- file.path("f:","git","surveyor","test")
+latexPath <- file.path(path, "latex")
+graphPath <- file.path(latexPath, "graphics")
+sinkfile   <- "surveyor_test.tex"
+
+
+
+q_data <- data.frame(
+    Q1=c("Yes", "No", "Yes", "Yes"),
+    Q4_1 = c(1, 2, 1, 2), 
+    Q4_3=c(3, 4, 4, 3), 
+    Q4_2=c(5, 5, 6, 6), 
+    crossbreak=c("A", "A", "B", "B"), 
+    crossbreak2=c("D", "E", "D", "E"),
+    weight=c(0.9, 1.1, 0.8, 1.2)
+)
+q_text <- c("Question 1", 
+    "Question 4: red", "Question 4: blue", "Question 4: green", 
+    "crossbreak",
+    "crossbreak2",
+    "weight")
+names(q_text) <- names(q_data)
+
+q_data <- as.surveydata(q_data)
+
+names_cqrw <- c("cbreak", "question", "response", "weight")
+
+sbraid <- as.braid(
+    pathLatex    = latexPath,
+    pathGraphics = graphPath
+)
+
+
+context("Test output to Latex")
+
+test_that("working folders are empty", {
+      if(!identical(list.files(graphPath), "")){
+        lapply(list.files(graphPath), function(x)file.remove(file.path(graphPath, x)))
+      }          
+      if (file.exists(file.path(latexPath, sinkfile))){
+        file.remove(file.path(latexPath, sinkfile))
+      }
+      expect_false(file.exists(file.path(graphPath, "fig0001.pdf")))
+      expect_false(file.exists(file.path(graphPath, "fig0002.pdf")))
+      
+    })
+
+test_that("surveyorPlot works in Latex", {
+      tbraid <- as.braid(
+          pathLatex    = latexPath,
+          pathGraphics = graphPath,
+          outputFilename = sinkfile
+      )
+      
+      t_defaults <- surveyorDefaults(
+          outputToLatex = TRUE
+      )
+      
+      t <- as.surveyor(q_data, q_data$crossbreak, q_data$weight, t_defaults, braid=tbraid)
+      
+      braidHeading(tbraid, "Test")
+      surveyorPlot(t, "Q1", codeSingle, statsBin, plotBar)
+      surveyorPlot(t, "Q4", codeArray, statsBin, plotBar)
+      braidSave(tbraid)
+      
+      expect_true(file.exists(sinkfile))
+      expect_true(file.exists(file.path(graphPath, "fig0001.pdf")))
+      expect_true(file.exists(file.path(graphPath, "fig0002.pdf")))
+      
+    })
+

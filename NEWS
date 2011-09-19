@@ -1,0 +1,11 @@
+surveyor 0.1-08
+===============
+
+New features:
+* Converted all functions and arguments to use camelCase
+* Integrated surveydata package.  surveyor data type must be of class surveydata
+
+surveyor 0.1-0
+==============
+
+First alpha.

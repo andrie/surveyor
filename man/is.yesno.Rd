@@ -5,7 +5,7 @@
   is.yesno(s)
 }
 \arguments{
-  \item{s}{A surveyor_stats object}
+  \item{s}{A surveyorStats object}
 }
 \description{
   Checks if question has response of yes/no.

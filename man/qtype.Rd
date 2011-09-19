@@ -1,11 +1,11 @@
-\name{qtype}
-\alias{qtype}
+\name{qType}
+\alias{qType}
 \title{Determines question type as single/grid question and single/multi response.}
 \usage{
-  qtype(s)
+  qType(s)
 }
 \arguments{
-  \item{s}{A surveyor_stats object}
+  \item{s}{A surveyorStats object}
 }
 \description{
   Determines question type as single/grid question and

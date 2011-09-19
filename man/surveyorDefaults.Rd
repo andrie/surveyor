@@ -1,17 +1,16 @@
-\name{surveyor_update_defaults}
-\alias{surveyor_update_defaults}
-\title{Selectively updates surveyor defaults.}
+\name{surveyorDefaults}
+\alias{surveyorDefaults}
+\title{Initialises surveyor object defaults.}
 \usage{
-  surveyor_update_defaults(surveyor, outputToLatex = NULL,
-  defaultThemeSize = NULL, questionPattern = NULL,
-  subquestionAppend = NULL, subquestionPrepend = NULL,
-  fastgraphics = NULL, add_plot_title = NULL,
-  default_colour_area = NULL, default_colour_point = NULL,
-  print_table = NULL)
+  surveyorDefaults(outputToLatex = TRUE, defaultThemeSize =
+  9, questionPattern = "_[[:digit:]]*$", subquestionAppend
+  = TRUE, subquestionPrepend = !subquestionAppend,
+  fastgraphics = FALSE, add_plot_title = FALSE,
+  default_colour_area = rgb(127, 201, 127, 255,
+  maxColorValue = 255), default_colour_point = rgb(27, 158,
+  119, 255, maxColorValue = 255), print_table = TRUE)
 }
 \arguments{
-  \item{surveyor}{Surveyor object}
-
   \item{outputToLatex}{TRUE or FALSE, determines if latex
   commands is output}
 
@@ -43,9 +42,14 @@
   of the report}
 }
 \description{
-  Selectively updates surveyor defaults.
+  Initialises surveyor object defaults.
+}
+\examples{
+s <- surveyorDefaults()
+s <- surveyorDefaults(outputToLatex=TRUE)
 }
 \seealso{
-  \code{\link{as.surveyor}}, \code{\link{surveyorDefaults}}
+  \code{\link{as.surveyor}},
+  \code{\link{surveyor_update_defaults}}
 }
 

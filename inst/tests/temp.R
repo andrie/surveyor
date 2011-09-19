@@ -18,4 +18,4 @@ q_text <- c(
 
 names(q_text) <- names(q_data)
 
-get_q_text_unique(q_data, "Q4", q_text)
+qTextUnique(q_data, "Q4", q_text)

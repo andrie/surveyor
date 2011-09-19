@@ -10,26 +10,24 @@ Description: This is a set of tools to analyse, report and
     plot survey data
 Author@R: person("Andrie", "de Vries",
     email="apdevries@gmail.com")
-Version: 0.1-08
+Version: 0.1-09
 URL: www.pentalibra.com
-Date: 2011-09-01
+Date: 2011-09-19
 Depends:
-    plyr,
+    surveydata,
     stringr,
     braid,
     ggplot2,
-    reshape2,
     lattice
 Collate:
-    '1_code_functions.R'
-    '2_stats_functions.R'
-    '2_stats_helpers.R'
-    '3_plot_functions.R'
-    '3_plot_helpers.R'
-    '4_table_functions.R'
     'formatters.R'
-    'question_handling.R'
     'redefine.R'
-    'strings.R'
     'surveyor-object.R'
     'surveyor-package.R'
+    '1codeFunctions.R'
+    '2statsFunctions.R'
+    '2statsHelpers.R'
+    '3plotFunctions.R'
+    '4tableFunctions.R'
+    '3plotHelpers.R'
+    'surveyorPlot.R'

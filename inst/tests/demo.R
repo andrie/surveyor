@@ -41,9 +41,9 @@ if (file.exists(file.path(latex_path, sinkfile))){
 }
 
 
-s_defaults <- surveyor_defaults(
-		path_latex    = latex_path,
-		path_graphics = graph_path,
+s_defaults <- surveyorDefaults(
+		pathLatex    = latex_path,
+		pathGraphics = graph_path,
 		output_to_latex = FALSE
 )
 
@@ -56,13 +56,13 @@ print(s)
 ###############################################################################
 
 
-r <- code_single(s, "Q1")
+r <- codeSingle(s, "Q1")
 print(r)
 
-f <- code_single(s, "Q5")
+f <- codeSingle(s, "Q5")
 print(f)
 
-ddply(f, .(crossbreak, variable), value=net_score(value))
+ddply(f, .(crossbreak, variable), value=netScore(value))
 
 
 
