@@ -37,23 +37,33 @@
 }
 
 
+#------------------------------------------------------------------------------
+
 context("Stats functions")
 
-test_that("stat functions work with codeSingle", {
+test_that("statBin works as expected", {
       
-      scode <- codeSingle(s, "Q1")
+      test <- statsBin(codeQuickArray(s, "Q1"))
+      rest <- structure(list(cbreak = structure(1:2, .Label = c("A", "B"), class = "factor"), 
+              response = structure(c(1L, 1L), .Label = c("Yes", "No"), class = c("ordered", 
+                      "factor")), value = c(0.9, 2)), .Names = c("cbreak", "response", 
+              "value"), row.names = 1:2, class = "data.frame")
       
-      p <- statsBin(scode)
-      expect_is(p, "surveyorStats")
-
+      expect_is(test, "surveyorStats")
+      expect_equal(test$data, rest)
+      
+      
+      test <- statsBin(codeQuickArray(s, "Q4"))
+      rest <- structure(list(cbreak = structure(c(1L, 1L, 1L, 1L, 1L, 2L, 2L, 
+                      2L, 2L, 2L), .Label = c("A", "B"), class = "factor"), question = structure(c(2L, 
+                      2L, 3L, 1L, 1L, 2L, 2L, 3L, 1L, 1L), .Label = c("red", "blue", 
+                      "green"), class = c("ordered", "factor")), response = c(3, 4, 
+                  5, 1, 2, 3, 4, 6, 1, 2), value = c(0.9, 1.1, 2, 0.9, 1.1, 1.2, 
+                  0.8, 2, 0.8, 1.2)), .Names = c("cbreak", "question", "response", 
+              "value"), row.names = c(NA, 10L), class = "data.frame")
+      
+      expect_is(test, "surveyorStats")
+      expect_equal(test$data, rest)
+      
     })
-
-test_that("stat functions work with codeArray", {
-			
-      scode <- codeArray(s, "Q4")
-      
-      p <- statsBin(scode)
-      expect_is(p, "surveyorStats")
-      
-		})
 

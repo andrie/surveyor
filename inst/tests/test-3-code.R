@@ -60,11 +60,11 @@ test_that("codeArray works", {
 
 test_that("codeGuess works", {
       test <- codeGuess(s, "Q1")
-      rest <- codeSingle(s, "Q1")
+      rest <- codeQuickArray(s, "Q1")
       expect_equal(test, rest)
 
       test <- codeGuess(s, "Q4")
-      rest <- codeArray(s, "Q4")
+      rest <- codeQuickArray(s, "Q4")
       expect_equal(test, rest)
     })
 

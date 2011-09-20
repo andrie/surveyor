@@ -39,33 +39,27 @@
 
 context("Plot functions")
 
-test_that("plot functions work with codeSingle", {
+test_that("plotBar works as expected", {
       
-      scode <- codeSingle(s, "Q1")
-      plotcode <- statsBin(scode)
-
-      p <- plotBar(plotcode)
+      p <- plotBar(statsBin(codeQuickArray(s, "Q1")))
       expect_is(p, "surveyorPlot")
       expect_is(p$plot, "ggplot")
 
-      p <- plotPoint(plotcode)
+      p <- plotBar(statsBin(codeQuickArray(s, "Q4")))
       expect_is(p, "surveyorPlot")
       expect_is(p$plot, "ggplot")
       
     })
 
-test_that("plot functions work with codeArray", {
-			
-      scode <- codeArray(s, "Q4")
-      plotcode <- statsBin(scode)
+test_that("plotPoint works as expected", {
       
-      p <- plotBar(plotcode)
+      p <- plotPoint(statsBin(codeQuickArray(s, "Q1")))
       expect_is(p, "surveyorPlot")
       expect_is(p$plot, "ggplot")
       
-      p <- plotPoint(plotcode)
+      p <- plotPoint(statsBin(codeQuickArray(s, "Q4")))
       expect_is(p, "surveyorPlot")
       expect_is(p$plot, "ggplot")
       
-		})
+    })
 

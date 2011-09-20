@@ -8,7 +8,6 @@
   latex_path <- file.path(path, "latex")
   graph_path <- file.path(latex_path, "graphics")
   
-  
   q_data <- data.frame(
       Q1=c("Yes", "No", "Yes", "Yes"),
       Q4_1 = c(1, 2, 1, 2), 
