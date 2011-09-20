@@ -13,7 +13,7 @@ as.surveyorCode <- function(x, surveyor, qid, ...){
   surveyor$sdata <- NULL
   ret <- list(
       data = x,
-      surveyor = surveyor,
+      surveyorDefaults = surveyor$defaults,
       qid = qid
   )
   class(ret) <- "surveyorCode"
@@ -131,7 +131,7 @@ codeArray <- function(surveyor, q_id, remove_other=FALSE, wrapWidth=50, ...){
   
 }
 
-#-{79}
+#------------------------------------------------------------------------------
 
 #' Code survey data in single or array question form.
 #'
@@ -147,12 +147,12 @@ codeArray <- function(surveyor, q_id, remove_other=FALSE, wrapWidth=50, ...){
 #' @keywords code
 #' @export
 codeGuess <- function(surveyor, q_id, ...){
-	if (length(which.q(surveyor$sdata, q_id))==1){
-		dat <- codeSingle(surveyor, q_id, ...)
-	} else {
-		dat <- codeArray(surveyor, q_id, ...)
-	}
-  dat
+#	if (length(which.q(surveyor$sdata, q_id))==1){
+#		dat <- codeSingle(surveyor, q_id, ...)
+#	} else {
+#		dat <- codeArray(surveyor, q_id, ...)
+#	}
+  codeQuickArray(surveyor, q_id, ...)
 }
 
 #-------------------------------------------------------------------------------
@@ -202,6 +202,7 @@ codeQuickArray <- function(surveyor, q_id, wrapWidth=50, ...){
       question = rep(question, each=nrows), 
       response = response,
       weight
+#      stringsAsFactors=FALSE
   )
   
   as.surveyorCode(
@@ -249,7 +250,6 @@ codeText <- function(
 		filter_responses=TRUE
 ){
 	q_data <- surveyor$sdata
-	q_text <- surveyor$q_text
 	inn <- c(inn, "\\",   "&",   "@")
 	out <- c(out, "\\\\", "\\&", "\\@")
 	

@@ -1,4 +1,3 @@
-# TODO: Surveyor: plotBar with crossbreak and multiple questions doesn't have correct colours
 
 
 
@@ -19,7 +18,7 @@ as.surveyorPlot <- function(
 ){
   stopifnot(is.surveyorStats(surveyorStats))
   ### Adds plot title ###
-  if(surveyorStats$surveyor$defaults$add_plot_title & inherits(plot, "ggplot")){
+  if(surveyorStats$surveyorDefaults$add_plot_title & inherits(plot, "ggplot")){
       plot <- plot + opts(title=surveyorStats$surveyor$plot_title)
     }
   
@@ -110,7 +109,7 @@ plotBar <- function(s, plotFunction="plotBar", ...){
 		
 	f$cbreak <- f$cbreak[drop=TRUE]
 	
-	if(s$surveyor$defaults$fastgraphics){
+	if(s$surveyorDefaults$fastgraphics){
     ### plot using lattice
 		qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
     q <- switch(qType,
@@ -129,7 +128,7 @@ plotBar <- function(s, plotFunction="plotBar", ...){
     )
   }
     
-  if(!s$surveyor$defaults$fastgraphics){
+  if(!s$surveyorDefaults$fastgraphics){
     ### Set up basic ggplot graphic ###
     p <- switch(qType,
         singleQ_singleResponse =
@@ -152,7 +151,7 @@ plotBar <- function(s, plotFunction="plotBar", ...){
     
     ### Plot options ###
     p <- p + 
-				theme_surveyor(s$surveyor$defaults$defaultThemeSize) +
+				theme_surveyor(s$surveyorDefaults$defaultThemeSize) +
 				coord_flip() + 
 				scale_y_continuous(
 						s$ylabel, 
@@ -173,12 +172,12 @@ plotBar <- function(s, plotFunction="plotBar", ...){
     if(length(unique(f$response)) > 8) p <- p + scale_fill_hue()
 		if (qType %in% c("singleQ_multiResponse", "gridQ_multiResponse", "gridQ_singleResponse")){
 			p <- p + opts(
-					axis.text.x=theme_text(size=s$surveyor$defaults$defaultThemeSize*0.5, angle=90)
+					axis.text.x=theme_text(size=s$surveyorDefaults$defaultThemeSize*0.5, angle=90)
 			)
     }
 	}
 		
-	ifelse(s$surveyor$defaults$fastgraphics,
+	ifelse(s$surveyorDefaults$fastgraphics,
       return(as.surveyorPlot(q, s, plotFunction=plotFunction)), 
       return(as.surveyorPlot(p, s, plotFunction=plotFunction))
   )
@@ -220,7 +219,7 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
   
 	f$cbreak <- f$cbreak[drop=TRUE]
 	
-  if(s$surveyor$defaults$fastgraphics){
+  if(s$surveyorDefaults$fastgraphics){
     ### plot using lattice
     qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
     q <- switch(qType,
@@ -239,7 +238,7 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
     )
   }
   
-  if(!s$surveyor$defaults$fastgraphics){
+  if(!s$surveyorDefaults$fastgraphics){
     ### Set up basic ggplot graphic ###
     p <- switch(qType,
         singleQ_singleResponse =
@@ -257,7 +256,7 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
   
     ### Add plot options ###
     p <- p + 
-				theme_surveyor(s$surveyor$defaults$defaultThemeSize) +
+				theme_surveyor(s$surveyorDefaults$defaultThemeSize) +
 				scale_y_continuous(
 						s$ylabel, 
 						formatter=s$formatter) +
@@ -285,18 +284,18 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
     if(length(unique(f$response)) > 8) p <- p + scale_fill_hue()
     if (qType == "singleQ_multiResponse"){
       p <- p + opts(
-          axis.text.x=theme_text(size=s$surveyor$defaults$defaultThemeSize*0.9, angle=0)
+          axis.text.x=theme_text(size=s$surveyorDefaults$defaultThemeSize*0.9, angle=0)
       )
     }  
     if (qType == "gridQ_multiResponse"){
       p <- p + opts(
-          axis.text.x=theme_text(size=s$surveyor$defaults$defaultThemeSize*0.5, angle=90)
+          axis.text.x=theme_text(size=s$surveyorDefaults$defaultThemeSize*0.5, angle=90)
       )
     }  
     
 	}
 	
-  ifelse(s$surveyor$defaults$fastgraphics,
+  ifelse(s$surveyorDefaults$fastgraphics,
       return(as.surveyorPlot(q, s, plotFunction=plotFunction)), 
       return(as.surveyorPlot(p, s, plotFunction=plotFunction))
   )
@@ -335,7 +334,7 @@ plotPoint <- function(s, plotFunction="plotPoint", ...){
 							colour=factor(cbreak), fill=factor(cbreak)))
 		}
 	p <- p + 
-			theme_surveyor(s$surveyor$defaults$defaultThemeSize) +
+			theme_surveyor(s$surveyorDefaults$defaultThemeSize) +
 			geom_point(stat="sum") +
 			geom_text(aes(label=round(value*100, 0)),
 					size=3, vjust=2) +
@@ -346,7 +345,7 @@ plotPoint <- function(s, plotFunction="plotPoint", ...){
 			opts(
 					panel.grid.minor = theme_blank(), 
 					axis.text.x = theme_text(
-							size=s$surveyor$defaults$defaultThemeSize, 
+							size=s$surveyorDefaults$defaultThemeSize, 
 							angle=90, 
 							hjust=1)
 			)
@@ -424,7 +423,7 @@ plotNetScore <- function(s, plotFunction="plotNetScore", ...){
 	
 	
 	p <- ggplot(f, aes_string(x="question", y="value")) +
-			theme_surveyor(s$surveyor$defaults$defaultThemeSize) +
+			theme_surveyor(s$surveyorDefaults$defaultThemeSize) +
 			geom_bar(
 					aes_string(fill="factor(cbreak)"),
 					stat="identity", 
@@ -453,7 +452,7 @@ plotNetScore <- function(s, plotFunction="plotNetScore", ...){
 	qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
 	q <- lattice::barchart(question~value|cbreak, f, layout=qlayout, origin=0)
 			
-  ifelse(s$surveyor$defaults$fastgraphics, 
+  ifelse(s$surveyorDefaults$fastgraphics, 
       return(as.surveyorPlot(q, s, plotFunction="plotNetScore")), 
       return(as.surveyorPlot(p, s, plotFunction="plotNetScore"))
   )

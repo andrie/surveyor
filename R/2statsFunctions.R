@@ -34,7 +34,7 @@ as.surveyorStats <- function(
 	structure(
 			list(
 				data=quickdf(data), 
-        surveyor = surveyorCode$surveyor,
+        surveyorDefaults = surveyorCode$surveyorDefaults,
         qid = surveyorCode$qid,
 				ylabel=ylabel,
 				formatter=formatter,
