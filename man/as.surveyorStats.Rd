@@ -2,10 +2,10 @@
 \alias{as.surveyorStats}
 \title{Creates surveyorStats object, used as input to plot.}
 \usage{
-  as.surveyorStats(data, surveyorCode, ylabel = 
-  "Fraction of respondents", formatter = "percent", 
-  nquestion = NULL, scale_breaks = NULL, 
-  stats_method = "", plotFunction =  "")
+  as.surveyorStats(data, surveyorCode, ylabel = "Fraction
+  of respondents", formatter = "percent", nquestion = NULL,
+  scale_breaks = NULL, stats_method = "", plotFunction =
+  "")
 }
 \arguments{
   \item{data}{A data frame}

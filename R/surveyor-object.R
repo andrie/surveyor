@@ -116,11 +116,11 @@ is.surveyor <- function(x){
 #' @param subquestionAppend Indicates whether subquestion text is appended to question text
 #' @param subquestionPrepend Indicates whether subquestion text is prepended to question text
 #' @param fastgraphics Uses lattice graphics if true, otherwise ggplot
-#' @param add_plot_title If true, adds question text as plot title 
-#' @param default_colour_area Default RGB colour for areas in graphs (e.g. bars)
-#' @param default_colour_point Default RGB colour for points in graphs (e.g. points)
-#' @param print_table If TRUE will print the table as part of the report
-#' @seealso \code{\link{as.surveyor}}, \code{\link{surveyor_update_defaults}}
+#' @param addPlotTitle If true, adds question text as plot title 
+#' @param defaultColourArea Default RGB colour for areas in graphs (e.g. bars)
+#' @param defaultColourPoint Default RGB colour for points in graphs (e.g. points)
+#' @param printTable If TRUE will print the table as part of the report
+#' @seealso \code{\link{as.surveyor}}, \code{\link{surveyorUpdateDefaults}}
 #' @export
 #' @examples
 #' s <- surveyorDefaults()
@@ -132,10 +132,10 @@ surveyorDefaults <- function(
 		subquestionAppend = TRUE,
 		subquestionPrepend = !subquestionAppend,
 		fastgraphics = FALSE,
-    add_plot_title = FALSE,
-		default_colour_area = rgb(127,201,127, 255, maxColorValue=255),
-		default_colour_point = rgb(27, 158, 119, 255, maxColorValue=255),
-    print_table = TRUE
+    addPlotTitle = FALSE,
+		defaultColourArea = rgb(127,201,127, 255, maxColorValue=255),
+		defaultColourPoint = rgb(27, 158, 119, 255, maxColorValue=255),
+    printTable = TRUE
 ){
 	
 	list(
@@ -145,10 +145,10 @@ surveyorDefaults <- function(
 			subquestionAppend   = subquestionAppend,
 			subquestionPrepend  = subquestionPrepend,
 			fastgraphics         = fastgraphics,
-      add_plot_title       = add_plot_title,
-      default_colour_area  = default_colour_area,
-			default_colour_point = default_colour_point,
-      print_table          = print_table
+      addPlotTitle       = addPlotTitle,
+      defaultColourArea  = defaultColourArea,
+			defaultColourPoint = defaultColourPoint,
+      printTable          = printTable
   
 	)
 }
@@ -164,13 +164,13 @@ surveyorDefaults <- function(
 #' @param subquestionAppend Indicates whether subquestion text is appended to question text
 #' @param subquestionPrepend Indicates whether subquestion text is prepended to question text
 #' @param fastgraphics Uses lattice graphics if true, otherwise ggplot 
-#' @param add_plot_title If true, adds question text as plot title 
-#' @param default_colour_area Default RGB colour for areas in graphs (e.g. bars)
-#' @param default_colour_point Default RGB colour for points in graphs (e.g. points)
-#' @param print_table If TRUE will print the table as part of the report
+#' @param addPlotTitle If true, adds question text as plot title 
+#' @param defaultColourArea Default RGB colour for areas in graphs (e.g. bars)
+#' @param defaultColourPoint Default RGB colour for points in graphs (e.g. points)
+#' @param printTable If TRUE will print the table as part of the report
 #' @seealso \code{\link{as.surveyor}}, \code{\link{surveyorDefaults}}
 #' @export 
-surveyor_update_defaults <- function(
+surveyorUpdateDefaults <- function(
     surveyor,
     outputToLatex = NULL,
     defaultThemeSize = NULL,
@@ -178,10 +178,10 @@ surveyor_update_defaults <- function(
     subquestionAppend = NULL,
     subquestionPrepend = NULL,
     fastgraphics = NULL,
-    add_plot_title = NULL,
-    default_colour_area = NULL,
-    default_colour_point = NULL,
-    print_table = NULL
+    addPlotTitle = NULL,
+    defaultColourArea = NULL,
+    defaultColourPoint = NULL,
+    printTable = NULL
 ){
   if(!missing(outputToLatex))      surveyor$defaults$outputToLatex <- outputToLatex
   if(!missing(defaultThemeSize))   surveyor$defaults$defaultThemeSize <- defaultThemeSize
@@ -189,10 +189,10 @@ surveyor_update_defaults <- function(
   if(!missing(subquestionAppend))   surveyor$defaults$subquestionAppend <- subquestionAppend
   if(!missing(subquestionPrepend))  surveyor$defaults$subquestionPrepend <- subquestionPrepend
   if(!missing(fastgraphics))         surveyor$defaults$fastgraphics <- fastgraphics
-  if(!missing(add_plot_title))       surveyor$defaults$add_plot_title <- add_plot_title
-  if(!missing(default_colour_area))  surveyor$defaults$default_colour_area <- default_colour_area
-  if(!missing(default_colour_point)) surveyor$defaults$default_colour_point <- default_colour_point
-  if(!missing(print_table))          surveyor$defaults$print_table <- print_table
+  if(!missing(addPlotTitle))       surveyor$defaults$addPlotTitle <- addPlotTitle
+  if(!missing(defaultColourArea))  surveyor$defaults$defaultColourArea <- defaultColourArea
+  if(!missing(defaultColourPoint)) surveyor$defaults$defaultColourPoint <- defaultColourPoint
+  if(!missing(printTable))          surveyor$defaults$printTable <- printTable
   surveyor
 }
 

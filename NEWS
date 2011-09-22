@@ -1,11 +1,20 @@
-surveyor 0.1-08
-===============
+surveyor 0.1-11
+---------------
 
 New features:
-* Converted all functions and arguments to use camelCase
-* Integrated surveydata package.  surveyor data type must be of class surveydata
+* surveyorPlot uses the package::braid mechanism to only generate plots when the code or data has changed.
+* codeQuickArray is now the default code function.  It is quicker than codeArray and also handles codeSingle
+* Now exports paste_percent.
+
+
+surveyor 0.1-08
+---------------
+
+New features:
+* Converted all functions and arguments to use camelCase.
+* Integrated surveydata package.  surveyor data type must be of class surveydata.
 
 surveyor 0.1-0
-==============
+--------------
 
 First alpha.

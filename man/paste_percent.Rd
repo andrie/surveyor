@@ -10,6 +10,5 @@
 \description{
   Turns a numeric vector into a character vector
 }
-\keyword{internal}
 \keyword{string}
 

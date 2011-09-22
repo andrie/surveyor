@@ -27,7 +27,7 @@ surveyorPlot <- function(
     outputToLatex = surveyor$defaults$outputToLatex,
 		...){
   
-  #------------------------------------
+  #-------
   
   plotQinternal <- function(){
     
@@ -57,7 +57,7 @@ surveyorPlot <- function(
     }
   }
   
-  #------------------------------------
+  #-------
   
   if(!exists(q_id, surveyor$sdata) & is.null(which.q(surveyor$sdata, q_id))){
     message(paste(q_id,": Question not found.  Processing aborted"))
@@ -85,9 +85,7 @@ surveyorPlot <- function(
   return(invisible(NULL))
 }
 
-#-------------------------------------------------------------------------------
-
-  
+ 
 
 #-------------------------------------------------------------------------------
 
@@ -114,7 +112,7 @@ surveyorPrintQuestion <- function(surveyor, q_id, f, g, h, plotSize){
     
 	# Print plot
 	filename <- braidFilename(surveyor$braid)
-	message(paste("Now saving ", filename, sep=""))
+	#message(paste("Now saving ", filename, sep=""))
 
 	# Adjust vertical size of plot depending on number of questions
 	# Make the assumption that 7 questions can fit on a plot
@@ -128,7 +126,7 @@ surveyorPrintQuestion <- function(surveyor, q_id, f, g, h, plotSize){
 	braidPlot(surveyor$braid, h$plot, filename=filename,
       width=plotSize[1], height=(plotSize[2] * height_multiplier))
 
-	catString <- ifelse(surveyor$defaults$print_table, tableGuess(g), "")
+	catString <- if(surveyor$defaults$printTable) tableGuess(g) else ""
 	
 	return(catString)
 }

@@ -18,7 +18,7 @@ as.surveyorPlot <- function(
 ){
   stopifnot(is.surveyorStats(surveyorStats))
   ### Adds plot title ###
-  if(surveyorStats$surveyorDefaults$add_plot_title & inherits(plot, "ggplot")){
+  if(surveyorStats$surveyorDefaults$addPlotTitle & inherits(plot, "ggplot")){
       plot <- plot + opts(title=surveyorStats$surveyor$plot_title)
     }
   
