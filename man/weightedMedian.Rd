@@ -1,8 +1,8 @@
 \name{weightedMedian}
 \alias{weightedMedian}
-\title{Calculated weighted median.}
+\title{Calculates weighted median.}
 \usage{
-  weightedMedian(x, w, na.rm = NA, interpolate =
+  weightedMedian(x, w, na.rm = TRUE, interpolate =
   is.null(ties), ties = NULL, method = c("quick", "shell"),
   ...)
 }
@@ -41,10 +41,11 @@
   \item{...}{Not used.}
 }
 \description{
-  Computes a weighted median of a numeric vector. This
-  function is a duplicate from
+  Computes a weighted median of a numeric vector.
+}
+\note{
+  This function is a duplicate from
   \code{\link[aroma.light]{weightedMedian}} in the
   aroma.light package
 }
-\keyword{Internal}
 

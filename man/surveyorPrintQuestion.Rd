@@ -9,11 +9,11 @@
 
   \item{q_id}{The question id}
 
-  \item{f}{Results from code* function}
+  \item{f}{surveyorCode object}
 
-  \item{g}{Results from stats* function}
+  \item{g}{surveyorStats object}
 
-  \item{h}{Results from plot* function}
+  \item{h}{surveyorPlot object}
 
   \item{plotSize}{the plot size in inches}
 }

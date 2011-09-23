@@ -52,6 +52,7 @@ round_first_signif <- function(x, f=round){
 #'  
 #' @param x Numeric vector
 #' @param n Number of digits, defaults to 1
+#' @export 
 #' @keywords internal
 format_round <- function(x, n=1){
   round(x, n)

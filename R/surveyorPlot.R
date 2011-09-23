@@ -93,9 +93,9 @@ surveyorPlot <- function(
 #' 
 #' @param surveyor A surveyor object
 #' @param q_id The question id
-#' @param f Results from code* function
-#' @param g Results from stats* function
-#' @param h Results from plot* function
+#' @param f surveyorCode object
+#' @param g surveyorStats object
+#' @param h surveyorPlot object
 #' @param plotSize the plot size in inches
 #' @keywords internal
 surveyorPrintQuestion <- function(surveyor, q_id, f, g, h, plotSize){
@@ -124,7 +124,7 @@ surveyorPrintQuestion <- function(surveyor, q_id, f, g, h, plotSize){
 	)
 	#message(paste("In surveyorPrintQuestion, height_multiplier = ", height_multiplier))
 	braidPlot(surveyor$braid, h$plot, filename=filename,
-      width=plotSize[1], height=(plotSize[2] * height_multiplier))
+      width=plotSize[1], height=(plotSize[2] * height_multiplier), Qid=q_id)
 
 	catString <- if(surveyor$defaults$printTable) tableGuess(g) else ""
 	

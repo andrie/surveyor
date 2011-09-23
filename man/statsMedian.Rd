@@ -1,6 +1,6 @@
 \name{statsMedian}
 \alias{statsMedian}
-\title{Calculates median}
+\title{Calculates median.}
 \usage{
   statsMedian(surveyorCode, stats_method = "statsMedian",
   yLabel = "Median value")

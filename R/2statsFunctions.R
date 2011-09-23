@@ -165,37 +165,37 @@ statsBin <- function(surveyorCode, ylabel="Respondents", stats_method="statsBin"
 	
 	if (length(unique(x$question))==1){
 		# code single
-		df <- ddply(x, c("cbreak", "response"), summarise, value=sum(weight))
-#    df <- x[, list(value=sum(weight)), by=c("cbreak", "response")]
-    #print(str(df))
+		dat <- ddply(x, c("cbreak", "response"), summarise, value=sum(weight))
+#    dat <- x[, list(value=sum(weight)), by=c("cbreak", "response")]
+    #print(str(dat))
     if (is.factor(x$response)){
 			x$response <- x$response[drop=TRUE]
 			if(is.ordered(x$response)){
-				df$response <- factor(df$response, levels=levels(x$response), ordered=TRUE)
+				dat$response <- factor(dat$response, levels=levels(x$response), ordered=TRUE)
 			} else {
-				df <- reorderResponse(df)
+				dat <- reorderResponse(dat)
 			}
 		}		
 		
 	} else {
 		# code array
-		df <- ddply(x, c("cbreak", "question", "response"), summarise, value=sum(weight))
+		dat <- ddply(x, c("cbreak", "question", "response"), summarise, value=sum(weight))
 #    print(str(x))
-#    df <- x[, list(value=sum(weight)), by=c("cbreak", "question", "response")]
-#    print(str(df))
-  df <- reorderQuestion(df, reverse=TRUE)
+#    dat <- x[, list(value=sum(weight)), by=c("cbreak", "question", "response")]
+#    print(str(dat))
+  dat <- reorderQuestion(dat, reverse=TRUE)
 }
 	
 	# Test for yes/no responses
-	if(is.factor(df$response) && all(levels(df$response) %in% c("Yes", "No"))){
-		df <- df[df$response == levels(df$response)[which(levels(df$response) == "Yes")], ]
+	if(is.factor(dat$response) && all(levels(dat$response) %in% c("Yes", "No"))){
+		dat <- dat[dat$response == levels(dat$response)[which(levels(dat$response) == "Yes")], ]
 	}
-	if(is.logical(df$response)){
-		df <- df[df$response == TRUE, ]
+	if(is.logical(dat$response)){
+		dat <- dat[dat$response == TRUE, ]
 	}
 	
 	as.surveyorStats(
-			df,
+			dat,
       surveyorCode,
 			ylabel=ylabel,
 			stats_method=stats_method,
@@ -227,64 +227,6 @@ statsBinPercent <- function(surveyorCode, ...){
 }
 
 
-#' Calculates median
-#'
-#' Add description 
-#' 
-#' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
-#' @param stats_method The name of the function, for audit trail 
-#' @param yLabel y axis label
-#' @return A data frame with three columns: cbreak, variable, value
-#' @seealso
-#' For an overview of the surveyor package \code{\link{surveyor}}
-#' @keywords stats
-#' @family statsFunctions
-#' @export
-statsMedian <- function(surveyorCode, stats_method="statsMedian", yLabel="Median value"){
-  stopifnot(is.surveyorCode(surveyorCode))
-  x <- surveyorCode$data
-  if(is.null(x)){
-    return(NULL)
-  }
-  
-#  x$response <- ifelse(is.factor(x$response),
-#      as.numeric(levels(x$response)[x$response]),
-#      as.numeric(x$response)
-#  )
-#  cat(str(x$response))
-  #browser()
-  if (length(unique(x$question))==1){
-    # code single
-    df <- ddply(x, c("cbreak"), 
-        summarise, 
-        value = weightedMedian("response", "weight", na.rm=TRUE)
-    )
-    
-  } else {
-    # code array
-    df <- ddply(x, c("cbreak", "question"), 
-        summarise, 
-        value = weightedMedian("response", "weight", na.rm=TRUE)
-    )
-  }
-  
-#  df$value <- levels(x$response)[df$value]
-#  df$value <- factor(df$value, levels=levels(x$response))
-  
-  #scale_breaks <- c(min(df$value), 0, max(df$value))
-  #scale_breaks <- round_first_signif(scale_breaks)
-  
-  as.surveyorStats(
-      df,
-      surveyorCode,
-      ylabel=yLabel,
-      formatter="format",
-      stats_method=stats_method
-#      scale_breaks=scale_breaks
-  )
-}
-
-
 #' Calculates numeric sum
 #'
 #' Add description 
@@ -312,24 +254,24 @@ statsSum <- function(surveyorCode, ...){
 	
 	if (length(unique(x$question))==1){
 		# code single
-		df <- ddply(x, c("cbreak"), 
+		dat <- ddply(x, c("cbreak"), 
 				summarise, 
 				value=sum(weight*response, na.rm=TRUE)
 		)
 		
 	} else {
 		# code array
-		df <- ddply(x, c("cbreak", "question"), 
+		dat <- ddply(x, c("cbreak", "question"), 
 				summarise, 
 				value=sum(weight*response, na.rm=TRUE)
 		)
 	}
 	
-	scale_breaks <- c(min(df$value), 0, max(df$value))
+	scale_breaks <- c(min(dat$value), 0, max(dat$value))
 	scale_breaks <- round_first_signif(scale_breaks)
 	
 	as.surveyorStats(
-			df,
+			dat,
       surveyorCode,
 			ylabel="Value",
 			formatter="format_round",
@@ -360,38 +302,77 @@ statsMean <- function(surveyorCode, stats_method="statsMean"){
 	weight <- NULL; rm(weight) # Dummy to trick R CMD check
 	response <- NULL; rm(response) # Dummy to trick R CMD check
 
-	x$response <- as.numeric(x$response)
-	cbweight <- ddply(x, c("cbreak", "question"), summarise, weight=sum(weight))
-	row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
-	x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
-	
+#	x$response <- as.numeric(x$response)
+#	cbweight <- ddply(x, c("cbreak", "question"), summarise, weight=sum(weight))
+#	row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
+#	x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
 	
 	if (length(unique(x$question))==1){
 		# code single
-		df <- ddply(x, c("cbreak"), 
-				summarise, 
-				value = sum(weight*response, na.rm=TRUE)
-		)
-		
+    dat <- ddply(x, .(cbreak), summarise, value=weightedMean(response, weight))
 	} else {
 		# code array
-		df <- ddply(x, c("cbreak", "question"), 
-				summarise, 
-				value = sum(weight*response, na.rm=TRUE)
-		)
+    dat <- ddply(x, .(cbreak, question), summarise, value=weightedMean(response, weight))
 	}
 	
-	scale_breaks <- c(min(df$value), 0, max(df$value))
+	scale_breaks <- c(min(dat$value), 0, max(dat$value))
 	scale_breaks <- round_first_signif(scale_breaks)
 	
 	as.surveyorStats(
-			df,
+			dat,
       surveyorCode,
       ylabel="Value",
 			formatter="format",
 			stats_method=stats_method,
 			scale_breaks=scale_breaks)
 }
+
+#' Calculates median.
+#'
+#' Add description 
+#' 
+#' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
+#' @param stats_method The name of the function, for audit trail 
+#' @param yLabel y axis label
+#' @return A data frame with three columns: cbreak, variable, value
+#' @seealso
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords stats
+#' @family statsFunctions
+#' @export
+statsMedian <- function(surveyorCode, stats_method="statsMedian", yLabel="Median value"){
+  stopifnot(is.surveyorCode(surveyorCode))
+  x <- surveyorCode$data
+  if(is.null(x)){
+    return(NULL)
+  }
+  
+  if (length(unique(x$question))==1){
+    # code single
+    dat <- ddply(x, .(cbreak), summarise, value=weightedMedian(response, weight))
+    #names(dat) <- c("cbreak", "value")
+  } else {
+    # code array
+    dat <- ddply(x, .(cbreak, question), summarise, value=weightedMedian(response, weight))
+    #names(dat) <- c("cbreak", "question", "value")
+  }
+  
+#  dat$value <- levels(x$response)[dat$value]
+#  dat$value <- factor(dat$value, levels=levels(x$response))
+  
+  #scale_breaks <- c(min(dat$value), 0, max(dat$value))
+  #scale_breaks <- round_first_signif(scale_breaks)
+  
+  as.surveyorStats(
+      dat,
+      surveyorCode,
+      ylabel=yLabel,
+      formatter="format",
+      stats_method=stats_method
+#      scale_breaks=scale_breaks
+  )
+}
+
 
 
 #' Calculates summary statistics for ranking type questions
@@ -427,24 +408,24 @@ statsRank <- function(surveyorCode, top_n=3){
 	
 	if (length(unique(x$question))==1){
 		# code single
-		df <- ddply(x, c("cbreak", "response"), 
+		dat <- ddply(x, c("cbreak", "response"), 
 				summarise, 
 				value=sum(weight)
 		)
 		
 	} else {
 		# code array
-		df <- ddply(x, c("cbreak", "question", "response"), 
+		dat <- ddply(x, c("cbreak", "question", "response"), 
 				summarise, 
 				value=sum(weight)
 		)
 	}
 	
-#	df$question <- as.numeric(df$question)
-#	h1 <- df[df$question <= top_n, ]
+#	dat$question <- as.numeric(dat$question)
+#	h1 <- dat[dat$question <= top_n, ]
 #	h2 <- ddply(h1, c("cbreak", "response"), function(xt)summarise(xt, value=sum(xt$value)))
 #	h2 <- reorderResponse(h2)
-	h2 <- ddply(df, c("cbreak", "response"), function(xt)summarise(xt, value=sum(xt$value)))
+	h2 <- ddply(dat, c("cbreak", "response"), function(xt)summarise(xt, value=sum(xt$value)))
 	h2 <- reorderResponse(h2)
 	
 	as.surveyorStats(
@@ -498,21 +479,21 @@ statsNetScore <- function(surveyorCode){
   response <- NULL; rm(response) # Dummy to trick R CMD check
 	if (length(unique(x$question))==0){
 		# code single
-		df <- ddply(x, c("cbreak", "response"), 
+		dat <- ddply(x, c("cbreak", "response"), 
 				summarise,
 				value=netScore(response))
 	} else {
 		# code array
 #		ddply(x, .(cbreak, question, response), 
-		df <- ddply(x, c("cbreak", "question"), 
+		dat <- ddply(x, c("cbreak", "question"), 
 				summarise,
 				value=netScore(response))
-		#quest_levels  <- df[order(df$value, decreasing=TRUE), ]$question
-		#df$question <- factor(df$question, levels=quest_levels, ordered=TRUE)
-    df <- reorderQuestion(df, reverse=FALSE)
+		#quest_levels  <- dat[order(dat$value, decreasing=TRUE), ]$question
+		#dat$question <- factor(dat$question, levels=quest_levels, ordered=TRUE)
+    dat <- reorderQuestion(dat, reverse=FALSE)
   }
 	as.surveyorStats(
-			df,
+			dat,
       surveyorCode,
       ylabel="Net score",
       formatter="format",
