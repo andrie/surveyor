@@ -232,7 +232,6 @@ statsBinPercent <- function(surveyorCode, ...){
 #' Add description 
 #' 
 #' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
-#' @param fun The function to use to calculate central tendency, e.g. mean, median or sum
 #' @param stats_method The name of the function, for audit trail 
 #' @param yLabel y axis label
 #' @return A data frame with three columns: cbreak, variable, value
@@ -241,7 +240,7 @@ statsBinPercent <- function(surveyorCode, ...){
 #' @keywords stats
 #' @family statsFunctions
 #' @export
-statsMedian <- function(surveyorCode, fun="weightedMedian", stats_method="statsMedian", yLabel="Median value"){
+statsMedian <- function(surveyorCode, stats_method="statsMedian", yLabel="Median value"){
   stopifnot(is.surveyorCode(surveyorCode))
   x <- surveyorCode$data
   if(is.null(x)){
@@ -345,7 +344,6 @@ statsSum <- function(surveyorCode, ...){
 #' Add description 
 #' 
 #' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight
-#' @param fun The function to use to calculate central tendency, e.g. mean, median or sum
 #' @param stats_method The name of the function, for audit trail 
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
@@ -353,7 +351,7 @@ statsSum <- function(surveyorCode, ...){
 #' @keywords stats
 #' @family statsFunctions
 #' @export
-statsMean <- function(surveyorCode, fun="mean", stats_method="statsMean"){
+statsMean <- function(surveyorCode, stats_method="statsMean"){
   stopifnot(is.surveyorCode(surveyorCode))
   x <- surveyorCode$data
   if(is.null(x)){

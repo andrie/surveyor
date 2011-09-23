@@ -2,16 +2,12 @@
 \alias{statsMean}
 \title{Calculates numeric sum}
 \usage{
-  statsMean(surveyorCode, fun = "mean", stats_method =
-  "statsMean")
+  statsMean(surveyorCode, stats_method = "statsMean")
 }
 \arguments{
   \item{surveyorCode}{An object of class "surveyorCode".
   This is a list with the first element being a data frame
   with four columns: cbreak, question, response, weight}
-
-  \item{fun}{The function to use to calculate central
-  tendency, e.g. mean, median or sum}
 
   \item{stats_method}{The name of the function, for audit
   trail}

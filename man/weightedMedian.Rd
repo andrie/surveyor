@@ -1,6 +1,6 @@
 \name{weightedMedian}
 \alias{weightedMedian}
-\title{Calculated weighted median}
+\title{Calculated weighted median.}
 \usage{
   weightedMedian(x, w, na.rm = NA, interpolate =
   is.null(ties), ties = NULL, method = c("quick", "shell"),
