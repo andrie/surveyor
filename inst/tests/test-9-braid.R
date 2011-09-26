@@ -10,7 +10,6 @@ graphPath <- file.path(latexPath, "graphics")
 sinkfile   <- "surveyor_test.tex"
 
 
-
 q_data <- data.frame(
     Q1=c("Yes", "No", "Yes", "Yes"),
     Q4_1 = c(1, 2, 1, 2), 
@@ -20,12 +19,11 @@ q_data <- data.frame(
     crossbreak2=c("D", "E", "D", "E"),
     weight=c(0.9, 1.1, 0.8, 1.2)
 )
-q_text <- c("Question 1", 
+varlabels(q_data) <- c("Question 1", 
     "Question 4: red", "Question 4: blue", "Question 4: green", 
     "crossbreak",
     "crossbreak2",
     "weight")
-names(q_text) <- names(q_data)
 
 q_data <- as.surveydata(q_data)
 
@@ -55,7 +53,7 @@ test_that("surveyorPlot works in Latex", {
       tbraid <- as.braid(
           pathLatex    = latexPath,
           pathGraphics = graphPath,
-          outputFilename = sinkfile
+          outputFilename = file.path(latexPath, sinkfile)
       )
       
       t_defaults <- surveyorDefaults(
@@ -69,9 +67,8 @@ test_that("surveyorPlot works in Latex", {
       surveyorPlot(t, "Q4", codeArray, statsBin, plotBar)
       braidSave(tbraid)
       
-      expect_true(file.exists(sinkfile))
+      expect_true(file.exists(file.path(latexPath, sinkfile)))
       expect_true(file.exists(file.path(graphPath, "fig0001.pdf")))
       expect_true(file.exists(file.path(graphPath, "fig0002.pdf")))
       
     })
-

@@ -5,7 +5,7 @@
   as.surveyorStats(data, surveyorCode, ylabel = "Fraction
   of respondents", formatter = "percent", nquestion = NULL,
   scale_breaks = NULL, stats_method = "", plotFunction =
-  "")
+  "", ...)
 }
 \arguments{
   \item{data}{A data frame}

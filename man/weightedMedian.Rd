@@ -48,4 +48,9 @@
   \code{\link[aroma.light]{weightedMedian}} in the
   aroma.light package
 }
+\seealso{
+  Other "central tendency functions":
+  \code{\link{weightedCount}}, \code{\link{weightedMean}},
+  \code{\link{weightedSum}}
+}
 

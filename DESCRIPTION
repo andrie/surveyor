@@ -18,7 +18,8 @@ Depends:
     stringr (>= 0.5),
     braid (>= 0.1-00),
     ggplot2,
-    lattice
+    lattice,
+    data.table
 Collate:
     'formatters.R'
     'redefine.R'

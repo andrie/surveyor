@@ -22,7 +22,8 @@
   \code{\link{surveyor}}
 
   Other statsFunctions: \code{\link{statsBin}},
-  \code{\link{statsBinPercent}}, \code{\link{statsGuess}},
+  \code{\link{statsBinOld}}, \code{\link{statsBinPercent}},
+  \code{\link{statsCentral}}, \code{\link{statsGuess}},
   \code{\link{statsMean}}, \code{\link{statsMedian}},
   \code{\link{statsNetScore}}, \code{\link{statsRank}},
   \code{\link{statsText}}

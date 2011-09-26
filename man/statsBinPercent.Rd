@@ -9,7 +9,7 @@
   This is a list with the first element being a data frame
   with four columns: cbreak, question, response, weight}
 
-  \item{...}{Passed to surveyorPlot}
+  \item{...}{Passed to \code{\link{as.surveyorStats}}}
 }
 \value{
   A data frame with three columns: cbreak, variable, value
@@ -28,6 +28,7 @@
   \code{\link{surveyor}}
 
   Other statsFunctions: \code{\link{statsBin}},
+  \code{\link{statsBinOld}}, \code{\link{statsCentral}},
   \code{\link{statsGuess}}, \code{\link{statsMean}},
   \code{\link{statsMedian}}, \code{\link{statsNetScore}},
   \code{\link{statsRank}}, \code{\link{statsSum}},

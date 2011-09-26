@@ -21,16 +21,12 @@ paste_percent <- function(x){
 #' @param x Numeric vector
 #' @keywords internal
 first_signif <- function(x){
-  sapply(x, function(xt){
-        if(xt==0){
-          0
-        } else {
-          p <- 10:-10
-          upper <- 10^(p)
-          lower <- 10^(p-1)
-          p[which(abs(xt) >=lower & abs(xt)<upper)]
-        }
-      }
+  p <- 10:-10
+  sapply(x, function(xt)
+        ifelse(xt==0, 
+          0,
+          p[which(abs(xt) >= 10^(p-1) & abs(xt)<10^(p))]
+      )
   )
 }
 

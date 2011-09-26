@@ -94,6 +94,134 @@ is.yesno <- function(s){
   ret
 }
 
+
+
+#' Splits a data.frame, applies a function and combines into data.frame.
+#' 
+#' This is a fast implementation of \code{\link[plyr]{ddply}}, optimised for a \code{\link{as.surveyorCode}} object.
+#' 
+#' @param dat a \code{\link{as.surveyorCode}} object
+#' @param statsFunction A function that calculates a weighed statistic, such as \code{\link{weightedMean}}, \code{\link{weightedMedian}}, \code{\link{weightedSum}} or \code{\link{weightedCount}}
+#' @seealso splitBinCombine
+#' @keywords Internal
+splitMeanCombine <- function(dat, statsFunction=weightedMean){
+  single <- identical(unique(dat$question), structure(1L, .Label = "1", class = "factor"))
+  cFunction = match.fun(statsFunction)
+  
+  if(single){
+    
+    pieces <- split(dat, dat$cbreak) 
+    cbreak <- unname(sapply(pieces, function(i)i$cbreak[1], USE.NAMES=FALSE)) 
+    if(!single) question <- unname(sapply(pieces, function(i)i$question[1], USE.NAMES=FALSE))
+    value <- vapply(
+        pieces, function(i)cFunction(i$response, i$weight), 
+        FUN.VALUE=0, USE.NAMES=FALSE)
+  
+    quickdf(list(cbreak = cbreak, value = value))
+    
+  } else {
+    
+    dat <- data.table(dat)
+    as.data.frame(
+        dat[, list(value=cFunction(response, weight)), by=list(cbreak, question)][order(cbreak, question)]
+    )
+    
+  }
+  
+}
+
+#' Splits a data.frame, applies a function and combines into data.frame.
+#' 
+#' This is a fast implementation of \code{\link[plyr]{ddply}}, optimised for a \code{\link{as.surveyorCode}} object.
+#' 
+#' @inheritParams splitMeanCombine
+#' @seealso splitMeanCombine
+#' @keywords Internal
+splitBinCombine <- function(dat, statsFunction=weightedCount){
+  
+  single <- length(unique(dat$question)) == 1
+  cFunction = match.fun(statsFunction)
+  if(single){ 
+    pieces <- split(dat, list(dat$response, dat$cbreak), drop=TRUE)
+  } else { 
+    pieces <- split(dat, list(dat$response, dat$question, dat$cbreak), drop=TRUE)
+  }
+  
+  cbreak <- unname(sapply(
+          pieces, function(i)i$cbreak[1]))
+  
+  if(!single) question <- unname(sapply(
+            pieces, function(i)i$question[1])) 
+  
+  response <- unname(sapply(
+      pieces, function(i)i$response[1]))
+      
+  
+  value <- vapply(
+      pieces, function(i)cFunction(i$response, i$weight), 
+      FUN.VALUE=0, USE.NAMES=FALSE)
+  
+  if(single){
+    quickdf(list(cbreak = cbreak, response=response, value = value))
+  } else {
+    quickdf(list(cbreak = cbreak, question = question, response=response, value = value))
+  }
+}
+
+#' Splits a data.frame, applies a function and combines into data.frame.
+#' 
+#' This is a fast implementation of \code{\link[plyr]{ddply}}, optimised for a \code{\link{as.surveyorCode}} object.
+#' 
+#' @inheritParams splitMeanCombine
+#' @seealso splitMeanCombine
+#' @keywords Internal
+splitPercentCombine <- function(dat, statsFunction=weightedCount){
+  
+  cFunction = match.fun(statsFunction)
+  pieces <- split(dat, list(dat$question, dat$cbreak), drop=TRUE)
+  
+  cbreak <- unname(sapply(
+          pieces, function(i)i$cbreak[1]))
+  
+  question <- unname(sapply(
+            pieces, function(i)i$question[1])) 
+  
+  weight <- vapply(pieces, function(i)sum(i$weight), 
+      FUN.VALUE=0, USE.NAMES=FALSE)
+  
+  quickdf(list(cbreak = cbreak, question=question, weight = weight))
+}
+
+
+#' Calculates weighted count.
+#' 
+#' Computes a weighted count of a numeric vector.
+#' 
+#' @param x a numeric vector containing the values whose weighted sum is to be computed.
+#' @param w a vector of weights the same length as x giving the weights to use for each element of x. Negative weights are treated as zero weights. Default value is equal weight to all values.#
+#' @param na.rm a logical value indicating whether NA values in x should be stripped before the computation proceeds, or not. If NA, no check at all for NAs is done. Default value is NA (for efficiency).
+#' @family "central tendency functions"
+#' @export 
+weightedCount <- function(x, w, na.rm=TRUE){
+  notNA <- !(is.na(x) | is.na(w))
+  sum(w[notNA])
+}
+
+
+#' Calculates weighted sum.
+#' 
+#' Computes a weighted sum of a numeric vector.
+#' 
+#' @param x a numeric vector containing the values whose weighted sum is to be computed.
+#' @param w a vector of weights the same length as x giving the weights to use for each element of x. Negative weights are treated as zero weights. Default value is equal weight to all values.#
+#' @param na.rm a logical value indicating whether NA values in x should be stripped before the computation proceeds, or not. If NA, no check at all for NAs is done. Default value is NA (for efficiency).
+#' @family "central tendency functions"
+#' @export 
+weightedSum <- function(x, w, na.rm=TRUE){
+  notNA <- !(is.na(x) | is.na(w))
+  sum(x[notNA]*w[notNA])
+}
+
 #' Calculates weighted mean.
 #' 
 #' Computes a weighted mean of a numeric vector.
@@ -101,10 +229,11 @@ is.yesno <- function(s){
 #' @param x a numeric vector containing the values whose weighted mean is to be computed.
 #' @param w a vector of weights the same length as x giving the weights to use for each element of x. Negative weights are treated as zero weights. Default value is equal weight to all values.#
 #' @param na.rm a logical value indicating whether NA values in x should be stripped before the computation proceeds, or not. If NA, no check at all for NAs is done. Default value is NA (for efficiency).
+#' @family "central tendency functions"
 #' @export 
 weightedMean <- function(x, w, na.rm=TRUE){
-  notNA <- !is.na(x*w)
-  sum(x*w, na.rm=na.rm) / sum(w[notNA], na.rm=na.rm)
+  notNA <- !(is.na(x) | is.na(w))
+  sum(x[notNA]*w[notNA]) / sum(w[notNA])
 }
 
 
@@ -120,6 +249,7 @@ weightedMean <- function(x, w, na.rm=TRUE){
 #' @param method If "shell", then order() is used and when method="quick", then internal qsort() is used. 
 #' @param ... Not used.
 #' @note This function is a duplicate from \code{\link[aroma.light]{weightedMedian}} in the aroma.light package
+#' @family "central tendency functions"
 #' @export 
 weightedMedian <- function (x, w, na.rm = TRUE, interpolate = is.null(ties), ties = NULL, 
     method = c("quick", "shell"), ...) 

@@ -23,7 +23,8 @@ as.surveyorStats <- function(
 		nquestion=NULL,
 		scale_breaks=NULL,
 		stats_method="",
-    plotFunction=""
+    plotFunction="",
+    ...
 ){
   stopifnot(is.surveyorCode(surveyorCode))
   if(is.null(nquestion)) 
@@ -82,7 +83,6 @@ identify_netScore <- function(x, match_words = NULL){
 	all(sapply(w, function(wx)any(wx %in% tolower(match_words))))
 }
 
-
 #' Inspects data and guesses what type of analysis to do.
 #' 
 #' If data is categorical statsBin, if data is metric then statsSum
@@ -117,6 +117,78 @@ statsGuess <- function(surveyorCode, ...){
 	}
 }
 
+#------------------------------------------------------------------------------
+
+#' Calculates summary statistics.
+#' 
+#' Takes the result of a code_function, e.g. codeSingle(), and calculates summary values, for direct plotting by a plotFunction, e.g. plotBar()
+#' 
+#' The results are sorted in descending order of value, and "response" is coerced into an ordered factor (unless "response" is already an ordered factor).
+#' 
+#' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
+#' @param ylabel The label to print on y-axis of plots; used downstream
+#' @param stats_method A character vector describing name of stats method.  Used for audit trail
+#' @param convert_to_percent If true, will express results as fractions, rather than counts
+#' @param ... Passed to \code{\link{as.surveyorStats}}
+#' @return A data frame with three columns: cbreak, variable, value
+#' @seealso
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords stats
+#' @family statsFunctions
+#' @export
+statsBin <- function(
+    surveyorCode, 
+    ylabel="Respondents", 
+    stats_method="statsBin", 
+    convert_to_percent=FALSE, 
+    ...){
+  stopifnot(is.surveyorCode(surveyorCode))
+  x <- surveyorCode$data
+  
+  if(convert_to_percent){
+    cbweight <- splitPercentCombine(x, statsFunction=weightedCount)
+    row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
+    x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
+  }
+
+  if (is.factor(x$response)){
+    if(nlevels(x$response[drop=TRUE])==1) x$response <- as.character(x$response[drop=TRUE])
+  }
+    
+  dat <- splitBinCombine(x, statsFunction=weightedCount)
+  
+  if (length(unique(x$question))==1){
+    # code single
+    if (is.factor(x$response)){
+      x$response <- x$response[drop=TRUE]
+      if(is.ordered(x$response)){
+        dat$response <- factor(dat$response, levels=levels(x$response), ordered=TRUE)
+      } else {
+        dat <- reorderResponse(dat)
+      }
+    }   
+    
+  } else {
+    # code array
+    dat <- reorderQuestion(dat, reverse=TRUE)
+  }
+  
+  # Test for yes/no responses
+  if(is.factor(dat$response) && all(levels(dat$response) %in% c("Yes", "No"))){
+    dat <- dat[dat$response == levels(dat$response)[which(levels(dat$response) == "Yes")], ]
+  }
+  if(is.logical(dat$response)){
+    dat <- dat[dat$response == TRUE, ]
+  }
+  
+  as.surveyorStats(
+      dat,
+      surveyorCode,
+      ylabel=ylabel,
+      stats_method=stats_method,
+      formatter=ifelse(convert_to_percent, "paste_percent", "format"),
+      ...)
+}
 
 
 #' Calculates summary statistics.
@@ -134,8 +206,7 @@ statsGuess <- function(surveyorCode, ...){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @family statsFunctions
-#' @export
-statsBin <- function(surveyorCode, ylabel="Respondents", stats_method="statsBin", convert_to_percent=FALSE){
+statsBinOld <- function(surveyorCode, ylabel="Respondents", stats_method="statsBin", convert_to_percent=FALSE){
   stopifnot(is.surveyorCode(surveyorCode))
   x <- surveyorCode$data
   
@@ -144,8 +215,6 @@ statsBin <- function(surveyorCode, ylabel="Respondents", stats_method="statsBin"
 	}
 	weight <- NULL; rm(weight) # Dummy to trick R CMD check
 	
-  cbweight <- ddply(x, c("cbreak", "question"), summarise, weight=sum(weight))
-  row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
   
 #  x <- data.table(x)
 #  print(str(x))
@@ -154,7 +223,9 @@ statsBin <- function(surveyorCode, ylabel="Respondents", stats_method="statsBin"
 #  cbweight$names <- paste(cbweight$cbreak, cbweight$question, sep="_")
 	
 	if(convert_to_percent){
-		x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
+    cbweight <- ddply(x, c("cbreak", "question"), summarise, weight=sum(weight))
+    row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
+    x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
 #    x$weight <- x$weight / with(cbweight, weight[match(paste(x$cbreak, x$question, sep="_"), names)])
   }
 	
@@ -208,8 +279,7 @@ statsBin <- function(surveyorCode, ylabel="Respondents", stats_method="statsBin"
 #' 
 #' The results are sorted in descending order of value, and "response" is coerced into an ordered factor (unless "response" is already an ordered factor).
 #' 
-#' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight
-#' @param ... Passed to surveyorPlot
+#' @inheritParams statsBin
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
 #' For an overview of the surveyor package \code{\link{surveyor}}
@@ -223,7 +293,19 @@ statsBinPercent <- function(surveyorCode, ...){
       surveyorCode,
 			ylabel="Fraction of respondents",
 			stats_method="statsBinPercent",
-			convert_to_percent=TRUE)
+			convert_to_percent=TRUE,
+      ...)
+}
+
+statsBinPercentOld <- function(surveyorCode, ...){
+  stopifnot(is.surveyorCode(surveyorCode))
+  #x <- surveyorCode$data
+  statsBinOld(
+      surveyorCode,
+      ylabel="Fraction of respondents",
+      stats_method="statsBinPercent",
+      convert_to_percent=TRUE,
+      ...)
 }
 
 
@@ -279,98 +361,82 @@ statsSum <- function(surveyorCode, ...){
 			scale_breaks=scale_breaks)
 }
 
-
-
-#' Calculates numeric sum
+#' Calculates central tendency.
 #'
 #' Add description 
 #' 
 #' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight
-#' @param stats_method The name of the function, for audit trail 
-#' @return A data frame with three columns: cbreak, variable, value
+#' @param statsFunction The name of a weighted central tendency function, e.g. \code{\link{weightedMean}}, \code{\link{weightedSum}}, \code{\link{weightedMedian}} or \code{\link{weightedCount}}
+#' @param ylabel y-axis label on plot
+#' @param ... Other arguments passed to \code{\link{as.surveyorStats}}
+#' @return A data frame with three columns: cbreak, question, value
 #' @seealso
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @family statsFunctions
 #' @export
-statsMean <- function(surveyorCode, stats_method="statsMean"){
+statsCentral <- function(
+    surveyorCode, 
+    statsFunction=c("weightedMean", "median", "sum", "count"),
+    ylabel="Mean", ...){
   stopifnot(is.surveyorCode(surveyorCode))
-  x <- surveyorCode$data
-  if(is.null(x)){
-		return(NULL)
-	}
-	weight <- NULL; rm(weight) # Dummy to trick R CMD check
-	response <- NULL; rm(response) # Dummy to trick R CMD check
 
-#	x$response <- as.numeric(x$response)
-#	cbweight <- ddply(x, c("cbreak", "question"), summarise, weight=sum(weight))
-#	row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
-#	x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
-	
-	if (length(unique(x$question))==1){
-		# code single
-    dat <- ddply(x, .(cbreak), summarise, value=weightedMean(response, weight))
-	} else {
-		# code array
-    dat <- ddply(x, .(cbreak, question), summarise, value=weightedMean(response, weight))
-	}
-	
-	scale_breaks <- c(min(dat$value), 0, max(dat$value))
-	scale_breaks <- round_first_signif(scale_breaks)
-	
-	as.surveyorStats(
-			dat,
-      surveyorCode,
-      ylabel="Value",
-			formatter="format",
-			stats_method=stats_method,
-			scale_breaks=scale_breaks)
-}
-
-#' Calculates median.
-#'
-#' Add description 
-#' 
-#' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
-#' @param stats_method The name of the function, for audit trail 
-#' @param yLabel y axis label
-#' @return A data frame with three columns: cbreak, variable, value
-#' @seealso
-#' For an overview of the surveyor package \code{\link{surveyor}}
-#' @keywords stats
-#' @family statsFunctions
-#' @export
-statsMedian <- function(surveyorCode, stats_method="statsMedian", yLabel="Median value"){
-  stopifnot(is.surveyorCode(surveyorCode))
   x <- surveyorCode$data
   if(is.null(x)){
     return(NULL)
   }
   
-  if (length(unique(x$question))==1){
-    # code single
-    dat <- ddply(x, .(cbreak), summarise, value=weightedMedian(response, weight))
-    #names(dat) <- c("cbreak", "value")
-  } else {
-    # code array
-    dat <- ddply(x, .(cbreak, question), summarise, value=weightedMedian(response, weight))
-    #names(dat) <- c("cbreak", "question", "value")
-  }
+  cFunction <- switch(statsFunction[1],
+      mean = weightedMean,
+      median = weighedMedian, 
+      sum = weightedSum,
+      count= weighedCount)
+  cFunction <- match.fun(statsFunction[1])
+  dat <- splitMeanCombine(x, cFunction)
   
-#  dat$value <- levels(x$response)[dat$value]
-#  dat$value <- factor(dat$value, levels=levels(x$response))
-  
-  #scale_breaks <- c(min(dat$value), 0, max(dat$value))
-  #scale_breaks <- round_first_signif(scale_breaks)
+  scale_breaks <- c(min(dat$value), 0, max(dat$value))
+  scale_breaks <- round_first_signif(scale_breaks)
   
   as.surveyorStats(
       dat,
       surveyorCode,
-      ylabel=yLabel,
+      ylabel=ylabel,
       formatter="format",
-      stats_method=stats_method
-#      scale_breaks=scale_breaks
-  )
+      stats_method=statsFunction,
+      scale_breaks=scale_breaks)
+}
+
+
+#' Calculates numeric mean.
+#'
+#' Add description 
+#' 
+#' @inheritParams statsCentral
+#' @return A data frame with three columns: cbreak, variable, value
+#' @seealso
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords stats
+#' @family statsFunctions
+#' @export
+statsMean <- function(surveyorCode, ylabel="Mean", ...){
+  statsCentral(surveyorCode, statsFunction="weightedMean", ylabel=ylabel, ...)
+}
+
+
+
+#' Calculates numeric median.
+#'
+#' Add description 
+#' 
+#' @inheritParams statsCentral
+#' @return A data frame with three columns: cbreak, variable, value
+#' @seealso
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords stats
+#' @family statsFunctions
+#' @export
+statsMedian <- function(surveyorCode, ylabel="Median", ...){
+  statsCentral(surveyorCode, statsFunction="weightedMedian", ylabel=ylabel, ...)
 }
 
 
