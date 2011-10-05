@@ -29,8 +29,7 @@
   \code{\link{surveyor}}
 
   Other codeFunctions: \code{\link{codeGuess}},
-  \code{\link{codeQuickArray}}, \code{\link{codeSingle}},
-  \code{\link{codeText}}
+  \code{\link{codeQuickArray}}, \code{\link{codeSingle}}
 }
 \keyword{code}
 

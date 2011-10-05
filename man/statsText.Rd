@@ -2,12 +2,15 @@
 \alias{statsText}
 \title{Code survey data as text.}
 \usage{
-  statsText(surveyorCode)
+  statsText(surveyorCode, ...)
 }
 \arguments{
   \item{surveyorCode}{An object of class "surveyorCode".
   This is a list with the first element being a data frame
   with four columns: cbreak, question, response, weight}
+
+  \item{...}{Other arguments passed to
+  \code{\link{as.surveyorStats}}}
 }
 \value{
   data frame
@@ -21,10 +24,10 @@
 
   Other statsFunctions: \code{\link{statsBin}},
   \code{\link{statsBinOld}}, \code{\link{statsBinPercent}},
-  \code{\link{statsCentral}}, \code{\link{statsGuess}},
-  \code{\link{statsMean}}, \code{\link{statsMedian}},
-  \code{\link{statsNetScore}}, \code{\link{statsRank}},
-  \code{\link{statsSum}}
+  \code{\link{statsCentral}}, \code{\link{statsCount}},
+  \code{\link{statsGuess}}, \code{\link{statsMean}},
+  \code{\link{statsMedian}}, \code{\link{statsNetScore}},
+  \code{\link{statsRank}}, \code{\link{statsSum}}
 }
 \keyword{stats}
 

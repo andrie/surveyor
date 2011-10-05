@@ -14,6 +14,7 @@
 #' @param plotFunction A reference to a function that plots the summarized data
 #' @param plotSize Size in inches of plot output, e.g. c(4,3)
 #' @param outputToLatex If TRUE, wraps output in latex code, otherwise print to console
+#' @param onlyBreaks Numeric vector that limits crossbreak processing
 #' @param ... Other parameters passed to codeFunction
 #' @export
 #' @seealso \code{\link{as.surveyor}}
@@ -25,6 +26,7 @@ surveyorPlot <- function(
 		plotFunction = plotGuess,
 		plotSize = surveyor$braid$defaultPlotSize,
     outputToLatex = surveyor$defaults$outputToLatex,
+    onlyBreaks=seq_along(surveyor$crossbreak),
 		...){
   
   #-------
@@ -75,8 +77,9 @@ surveyorPlot <- function(
 	}
 		
 	if (is.list(surveyor$crossbreak)) {
-		for (i in seq_along(surveyor$crossbreak)) {
+		for (i in onlyBreaks) {
 			surveyor$cbreak <- unlist(surveyor$crossbreak[i])
+      surveyor$cbreakname <- names(surveyor$crossbreak[i])
 			plotQinternal()
 		}		
 	} else {
@@ -112,7 +115,8 @@ surveyorPrintQuestion <- function(surveyor, q_id, f, g, h, plotSize){
     
 	# Print plot
 	filename <- braidFilename(surveyor$braid)
-	#message(paste("Now saving ", filename, sep=""))
+  filename <- paste(q_id, "_", surveyor$cbreakname, ".pdf", sep="")
+  message(paste(" --", filename))
 
 	# Adjust vertical size of plot depending on number of questions
 	# Make the assumption that 7 questions can fit on a plot

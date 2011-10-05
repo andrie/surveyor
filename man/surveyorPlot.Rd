@@ -5,7 +5,8 @@
   surveyorPlot(surveyor, q_id, codeFunction =
   codeQuickArray, statsFunction = statsGuess, plotFunction
   = plotGuess, plotSize = surveyor$braid$defaultPlotSize,
-  outputToLatex = surveyor$defaults$outputToLatex, ...)
+  outputToLatex = surveyor$defaults$outputToLatex,
+  onlyBreaks = seq_along(surveyor$crossbreak), ...)
 }
 \arguments{
   \item{surveyor}{Surveyor object}
@@ -26,6 +27,9 @@
 
   \item{outputToLatex}{If TRUE, wraps output in latex code,
   otherwise print to console}
+
+  \item{onlyBreaks}{Numeric vector that limits crossbreak
+  processing}
 
   \item{...}{Other parameters passed to codeFunction}
 }

@@ -18,9 +18,15 @@ as.surveyorPlot <- function(
 ){
   stopifnot(is.surveyorStats(surveyorStats))
   ### Adds plot title ###
-  if(surveyorStats$surveyorDefaults$addPlotTitle & inherits(plot, "ggplot")){
-      plot <- plot + opts(title=surveyorStats$surveyor$plot_title)
+  if(surveyorStats$surveyorDefaults$addPlotTitle){
+    if(inherits(plot, "ggplot")){
+      plot <- plot + opts(title=surveyorStats$plotTitle)
     }
+    if(inherits(plot, "trellis")){
+      plot <- update(plot, main=surveyorStats$plotTitle)
+    }
+  }
+    
   
   ### Create list ###
   structure(
@@ -90,6 +96,81 @@ plotGuess <- function(s, ...){
 }
 
 
+basic.bar.lattice <- function(f, qType){
+  qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
+  q <- switch(qType,
+      singleQ_singleResponse = 
+          lattice::barchart(value~cbreak, 
+              f, layout=qlayout,  box.ratio=1.5, origin=0, groups=cbreak, stack=TRUE),
+      singleQ_multiResponse = 
+          lattice::barchart(response~value|cbreak, 
+              f, layout=qlayout, box.ratio=1.5, origin=0, groups=cbreak, stack=TRUE),
+      gridQ_singleResponse = 
+          lattice::barchart(question~value|cbreak, 
+              f, layout=qlayout,  box.ratio=1.5, origin=0, groups=f$cbreak, stack=TRUE),
+      gridQ_multiResponse = 
+          lattice::barchart(question~value|cbreak, 
+              f, layout=qlayout,  box.ratio=1.5, origin=0, groups=f$response, stack=TRUE, 
+              auto.key=list(space="right")),
+      stop("plotBar: Invalid value of qType.  This should never happen")
+  )
+  q
+}
+
+basic.column.lattice <- function(f, qType){
+  qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
+  q <- switch(qType,
+      singleQ_singleResponse = 
+          lattice::barchart(value~factor(cbreak), 
+              f, layout=qlayout,  box.ratio=1.5, groups=value, origin=0, stack=TRUE),
+      singleQ_multiResponse = 
+          lattice::barchart(value~factor(response)|cbreak, 
+              f, layout=qlayout, box.ratio=1.5, origin=0, groups=value, stack=TRUE),
+      gridQ_singleResponse = 
+          lattice::barchart(value~question|cbreak, 
+              f, layout=qlayout,  box.ratio=1.5, origin=0, groups=cbreak, stack=TRUE),
+      gridQ_multiResponse = 
+          lattice::barchart(value~question|cbreak, 
+              f, layout=qlayout,  box.ratio=1.5, origin=0, groups=response, stack=TRUE, 
+              auto.key=list(space="right")),
+      stop("plotColumn: Invalid value of qType.  This should never happen")
+  )
+  q
+}
+
+
+basic.bar.ggplot <- function(f, qType){
+  p <- switch(qType,
+      singleQ_singleResponse =
+          ggplot(f, aes_string(x="1", y="value", fill="factor(cbreak)")),
+      singleQ_multiResponse =
+          ggplot(f, aes_string(x="response", y="value", fill="factor(cbreak)")),
+      gridQ_singleResponse = 
+          ggplot(f, aes_string(x="question", y="value", fill="factor(cbreak)")),
+      gridQ_multiResponse = 
+          ggplot(f, aes_string(x="question", y="value", fill="factor(response)")),
+      stop("plotBar: Invalid value of qType.  This should never happen")
+  )    
+  p
+}
+
+
+basic.column.ggplot <- function(f, qType){
+  p <- switch(qType,
+    singleQ_singleResponse =
+        ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(value)")),
+    singleQ_multiResponse =
+        ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(value)")),
+    gridQ_singleResponse = 
+        ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(value)")),
+    gridQ_multiResponse = 
+        ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(value)")),
+    stop("plotBar: Invalid value of qType.  This should never happen")
+  )    
+  p
+}
+
+
 #' Plot data in bar chart format
 #'
 #' @param s A surveyorStats object
@@ -110,46 +191,30 @@ plotBar <- function(s, plotFunction="plotBar", ...){
 	f$cbreak <- f$cbreak[drop=TRUE]
 	
 	if(s$surveyorDefaults$fastgraphics){
-    ### plot using lattice
-		qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
-    q <- switch(qType,
-        singleQ_singleResponse = 
-            lattice::barchart(value~cbreak, f, layout=qlayout,  box.ratio=1.5, origin=0),
-        singleQ_multiResponse = 
-            lattice::barchart(response~value|cbreak, f, layout=qlayout,	box.ratio=1.5, origin=0),
-        gridQ_singleResponse = 
-            lattice::barchart(question~value|cbreak, 
-						    f, layout=qlayout,	box.ratio=1.5, origin=0, groups=f$cbreak, stack=TRUE),
-        gridQ_multiResponse = 
-            lattice::barchart(question~value|cbreak, 
-						  f, layout=qlayout,	box.ratio=1.5, origin=0, groups=f$response, stack=TRUE, 
-						  auto.key=list(space="right")),
-        stop("plotBar: Invalid value of qType.  This should never happen")
-    )
+    # plot using lattice
+    trellis.par.set(latticeExtra::ggplot2like(n = 4, h.start = 180))
+    q <- basic.bar.lattice(f, qType)
+    # Plot options 
+    q <- update(q, panel=function(...){
+          strip.custom(bg="grey80") 
+          panel.fill(col="grey90", lwd=0)
+          panel.grid(col="white", h=5)
+          panel.barchart(...)
+        })
+    # Add labels
+    if(qType %in% c("singleQ_multiResponse", "gridQ_singleResponse") || is.yesno(s))
+      q <- q + latticeExtra::layer(panel.text(x, y, labels=labelsValue), data=f)
   }
     
   if(!s$surveyorDefaults$fastgraphics){
-    ### Set up basic ggplot graphic ###
-    p <- switch(qType,
-        singleQ_singleResponse =
-            ggplot(f, aes_string(x="1", y="value", fill="factor(cbreak)")),
-        singleQ_multiResponse =
-            ggplot(f, aes_string(x="response", y="value", fill="factor(cbreak)")),
-        gridQ_singleResponse = 
-            ggplot(f, aes_string(x="question", y="value", fill="factor(cbreak)")),
-        gridQ_multiResponse = 
-                ggplot(f, aes_string(x="question", y="value", fill="factor(response)")),
-        stop("plotBar: Invalid value of qType.  This should never happen")
-    )    
-    
+    # plot using ggplot 
+    p <- basic.bar.ggplot(f, qType)
     p <- p + geom_bar(stat="identity") 
-    
-    ### Add labels ###
+    # Add labels
     if(qType %in% c("singleQ_multiResponse", "gridQ_singleResponse") || is.yesno(s))
-#      p <- p + geom_text(aes_string(label="signif(value, 3)"), hjust=1, size=3)
       p <- p + geom_text(aes_string(label="labelsValue", hjust="labelsJust"), size=3)
     
-    ### Plot options ###
+    # Plot options 
     p <- p + 
 				theme_surveyor(s$surveyorDefaults$defaultThemeSize) +
 				coord_flip() + 
@@ -164,11 +229,11 @@ plotBar <- function(s, plotFunction="plotBar", ...){
 				) +
 				labs(fill="Response")
     
-    ### Add legend for multiple response ### 
+    # Add legend for multiple response  
     if(qType=="gridQ_multiResponse"  && !is.yesno(s))
       p <- p + opts(legend.position="right")
 
-    ### Deal with too many colours ###
+    # Deal with too many colours 
     if(length(unique(f$response)) > 8) p <- p + scale_fill_hue()
 		if (qType %in% c("singleQ_multiResponse", "gridQ_multiResponse", "gridQ_singleResponse")){
 			p <- p + opts(
@@ -220,61 +285,44 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
 	f$cbreak <- f$cbreak[drop=TRUE]
 	
   if(s$surveyorDefaults$fastgraphics){
-    ### plot using lattice
-    qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
-    q <- switch(qType,
-        singleQ_singleResponse = 
-            lattice::barchart(value~cbreak, f, layout=qlayout,  box.ratio=1.5, origin=0),
-        singleQ_multiResponse = 
-            lattice::barchart(response~value|cbreak, f, layout=qlayout, box.ratio=1.5, origin=0),
-        gridQ_singleResponse = 
-            lattice::barchart(question~value|cbreak, 
-                f, layout=qlayout,  box.ratio=1.5, origin=0, groups=f$cbreak, stack=TRUE),
-        gridQ_multiResponse = 
-            lattice::barchart(question~value|cbreak, 
-                f, layout=qlayout,  box.ratio=1.5, origin=0, groups=f$response, stack=TRUE, 
-                auto.key=list(space="right")),
-        stop("plotColumn: Invalid value of qType.  This should never happen")
-    )
+    # plot using lattice
+    trellis.par.set(latticeExtra::ggplot2like(n = 4, h.start = 180))
+    q <- basic.column.lattice(f, qType)
+    # Plot options 
+    q <- update(q, 
+        horizontal=FALSE,
+        panel=function(...){
+          strip.custom(bg="grey80") 
+          panel.fill(col="grey90", lwd=0)
+          panel.grid(col="white", h=5)
+          panel.barchart(...)
+        })
+    # Add labels
+    if(qType %in% c("singleQ_multiResponse", "gridQ_singleResponse"))
+      q <- q + latticeExtra::layer(panel.text(x, y, labels=labelsValue), data=f)
   }
   
   if(!s$surveyorDefaults$fastgraphics){
     ### Set up basic ggplot graphic ###
-    p <- switch(qType,
-        singleQ_singleResponse =
-            ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(cbreak)")),
-        singleQ_multiResponse =
-            ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(cbreak)")),
-        gridQ_singleResponse = 
-            ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(cbreak)")),
-        gridQ_multiResponse = 
-            ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(cbreak)")),
-        stop("plotBar: Invalid value of qType.  This should never happen")
-    )    
-    
+    p <- basic.column.ggplot(f, qType)
     p <- p + geom_bar(stat="identity")
-  
     ### Add plot options ###
     p <- p + 
-				theme_surveyor(s$surveyorDefaults$defaultThemeSize) +
-				scale_y_continuous(
-						s$ylabel, 
-						formatter=s$formatter) +
-				opts(
-						legend.position="none",
-						axis.title.x = theme_blank(),
-						strip.text.y=theme_text(angle=0),
-						axis.text.y=theme_blank()
-				) +
-				labs(fill="Response")
-
-    ### Add labels ###
-    if(qType %in% c("singleQ_singleResponse", "singleQ_multiResponse", "gridQ_singleResponse") || 
-        is.yesno(s))
-#      p <- p + geom_text(aes_string(label="signif(value, 3)"), hjust=1, size=3)
-#      p <- p + geom_text(aes_string(label="labelsValue"), vjust=1, size=3)
-      p <- p + geom_text(aes_string(label="labelsValue", vjust="labelsJust"), size=3)
+        theme_surveyor(s$surveyorDefaults$defaultThemeSize) +
+        #coord_flip() + 
+        scale_y_continuous(
+            s$ylabel, 
+            formatter=s$formatter,
+            breaks=s$scale_breaks) +
+        opts(
+            legend.position="none",
+            axis.title.y = theme_blank()
+        ) +
+        labs(fill="Response")
     
+    ### Add labels ###
+    if(qType %in% c("singleQ_multiResponse", "gridQ_singleResponse"))
+      p <- p + geom_text(aes_string(label="labelsValue", vjust="labelsJust"), size=3)
 		
     ### Add legend for multiple response ### 
     if(qType=="gridQ_multiResponse"  && !is.yesno(s))
@@ -305,6 +353,9 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
 
 
 #-------------------------------------------------------------------------------
+
+# TODO: create lattice equivalents for plotPoint
+# TODO: create plotPoint charts for each qType
 
 #' Plot data in bubble chart format
 #'
@@ -373,27 +424,23 @@ plotText <- function(s, plotFunction="plotText", ...){
   ### Only print if cbreak equal to first crossbreak in surveyor
 #  print(is.list(surveyor$crossbreak))
 #  print(all(s$data$cbreak!=surveyor$crossbreak[[1]]))
-  p <- ""
-  flag <- FALSE
-  #browser()
-  if(is.list(s$surveyor$crossbreak)){
-    if(identical(s$surveyor$cbreak, s$surveyor$crossbreak[[1]])) flag <- TRUE
-  }
-  
-  if(!is.list(s$surveyor$crossbreak)) flag <- TRUE
-  
-  if(flag){
+#  p <- ""
+#  flag <- FALSE
+#  #browser()
+#  if(is.list(s$surveyor$crossbreak)){
+#    if(identical(s$surveyor$cbreak, s$surveyor$crossbreak[[1]])) flag <- TRUE
+#  }
+#  
+#  if(!is.list(s$surveyor$crossbreak)) flag <- TRUE
+#  
+#  if(flag){
     #if(s$data$cbreak != surveyor$crossbreak) return(NULL)
     ### Carry on as usual
     unique_resp <- unique(s$data$response)
     items <- paste("\\item", latexTranslate(unique_resp))
-      p <- paste(
-  			"\\begin{itemize}",
-  			items,
-  			"\n\\end{itemize}",
-  			collapse="\n"
-  	  )
-  }
+    items <- paste(items, collapse="\n")
+#  }
+  p <- paste("\\begin{itemize}", items, "\\end{itemize}\\n", collapse="\\n")
   class(p) <- "text"
   as.surveyorPlot(p, s, plotFunction=plotFunction)
 }
@@ -401,7 +448,6 @@ plotText <- function(s, plotFunction="plotText", ...){
 #-------------------------------------------------------------------------------
 
 
-# TODO: Surveyor: Fix plotNetScore to deal with weighting
 #' Plot data in net score format (bar chart, but percentage axis)
 #'
 #' @param s A surveyorStats object

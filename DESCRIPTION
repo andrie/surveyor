@@ -19,6 +19,7 @@ Depends:
     braid (>= 0.1-00),
     ggplot2,
     lattice,
+    latticeExtra,
     data.table
 Collate:
     'formatters.R'

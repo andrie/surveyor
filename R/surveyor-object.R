@@ -1,10 +1,6 @@
 #-------------------------------------------------------------------------------
-### Define surveyor class and methods
+# Define surveyor class and methods
 #-------------------------------------------------------------------------------
-# TODO: Default switch to print graphics
-# TODO: Modify plotq with simpler parameters
-# TODO: Modify surveyor architecture to use environments
-
 
 #' Creates object of class surveyor.
 #' 

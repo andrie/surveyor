@@ -1,10 +1,9 @@
-\name{statsBin}
-\alias{statsBin}
+\name{statsBinOld}
+\alias{statsBinOld}
 \title{Calculates summary statistics.}
 \usage{
-  statsBin(surveyorCode, ylabel = "Respondents",
-  stats_method = "statsBin", convert_to_percent = FALSE,
-  ...)
+  statsBinOld(surveyorCode, ylabel = "Respondents",
+  stats_method = "statsBin", convert_to_percent = FALSE)
 }
 \arguments{
   \item{surveyorCode}{An object of class "surveyorCode".
@@ -19,8 +18,6 @@
 
   \item{convert_to_percent}{If true, will express results
   as fractions, rather than counts}
-
-  \item{...}{Passed to \code{\link{as.surveyorStats}}}
 }
 \value{
   A data frame with three columns: cbreak, variable, value
@@ -39,7 +36,7 @@
   For an overview of the surveyor package
   \code{\link{surveyor}}
 
-  Other statsFunctions: \code{\link{statsBinOld}},
+  Other statsFunctions: \code{\link{statsBin}},
   \code{\link{statsBinPercent}},
   \code{\link{statsCentral}}, \code{\link{statsCount}},
   \code{\link{statsGuess}}, \code{\link{statsMean}},

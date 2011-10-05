@@ -1,15 +1,18 @@
 \name{statsSum}
 \alias{statsSum}
-\title{Calculates numeric sum}
+\title{Calculates numeric sum.}
 \usage{
-  statsSum(surveyorCode, ...)
+  statsSum(surveyorCode, ylabel = "Sum", ...)
 }
 \arguments{
   \item{surveyorCode}{An object of class "surveyorCode".
   This is a list with the first element being a data frame
   with four columns: cbreak, question, response, weight}
 
-  \item{...}{Passed to surveyorPlot}
+  \item{ylabel}{y-axis label on plot}
+
+  \item{...}{Other arguments passed to
+  \code{\link{as.surveyorStats}}}
 }
 \value{
   A data frame with three columns: cbreak, variable, value
@@ -23,10 +26,10 @@
 
   Other statsFunctions: \code{\link{statsBin}},
   \code{\link{statsBinOld}}, \code{\link{statsBinPercent}},
-  \code{\link{statsCentral}}, \code{\link{statsGuess}},
-  \code{\link{statsMean}}, \code{\link{statsMedian}},
-  \code{\link{statsNetScore}}, \code{\link{statsRank}},
-  \code{\link{statsText}}
+  \code{\link{statsCentral}}, \code{\link{statsCount}},
+  \code{\link{statsGuess}}, \code{\link{statsMean}},
+  \code{\link{statsMedian}}, \code{\link{statsNetScore}},
+  \code{\link{statsRank}}, \code{\link{statsText}}
 }
 \keyword{stats}
 

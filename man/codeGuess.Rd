@@ -24,8 +24,7 @@
   \code{\link{surveyor}}
 
   Other codeFunctions: \code{\link{codeArray}},
-  \code{\link{codeQuickArray}}, \code{\link{codeSingle}},
-  \code{\link{codeText}}
+  \code{\link{codeQuickArray}}, \code{\link{codeSingle}}
 }
 \keyword{code}
 

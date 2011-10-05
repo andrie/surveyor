@@ -36,6 +36,7 @@ as.surveyorStats <- function(
 			list(
 				data=quickdf(data), 
         surveyorDefaults = surveyorCode$surveyorDefaults,
+        plotTitle = surveyorCode$plotTitle,
         qid = surveyorCode$qid,
 				ylabel=ylabel,
 				formatter=formatter,
@@ -180,6 +181,10 @@ statsBin <- function(
   if(is.logical(dat$response)){
     dat <- dat[dat$response == TRUE, ]
   }
+  if(is.numeric(dat$response)){
+    dat$response <- as.character(dat$response)
+  }
+  
   
   as.surveyorStats(
       dat,
@@ -309,56 +314,34 @@ statsBinPercentOld <- function(surveyorCode, ...){
 }
 
 
-#' Calculates numeric sum
+#' Calculates numeric sum.
 #'
 #' Add description 
 #' 
-#' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight
-#' @param ... Passed to surveyorPlot
+#' @inheritParams statsCentral
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @family statsFunctions
 #' @export
-statsSum <- function(surveyorCode, ...){
-  stopifnot(is.surveyorCode(surveyorCode))
-  x <- surveyorCode$data
-  if(is.null(x)){
-		return(NULL)
-	}
-	weight <- NULL; rm(weight) # Dummy to trick R CMD check
-	response <- NULL; rm(response) # Dummy to trick R CMD check
-	cbweight <- ddply(x, c("cbreak", "question"), summarise, weight=sum(weight))
-	row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
-	x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
-	
-	
-	if (length(unique(x$question))==1){
-		# code single
-		dat <- ddply(x, c("cbreak"), 
-				summarise, 
-				value=sum(weight*response, na.rm=TRUE)
-		)
-		
-	} else {
-		# code array
-		dat <- ddply(x, c("cbreak", "question"), 
-				summarise, 
-				value=sum(weight*response, na.rm=TRUE)
-		)
-	}
-	
-	scale_breaks <- c(min(dat$value), 0, max(dat$value))
-	scale_breaks <- round_first_signif(scale_breaks)
-	
-	as.surveyorStats(
-			dat,
-      surveyorCode,
-			ylabel="Value",
-			formatter="format_round",
-			stats_method="statsSum",
-			scale_breaks=scale_breaks)
+statsSum <- function(surveyorCode, ylabel="Sum", ...){
+  statsCentral(surveyorCode, statsFunction="weightedSum", ylabel=ylabel, ...)
+}
+
+#' Calculates numeric count.
+#'
+#' Add description 
+#' 
+#' @inheritParams statsCentral
+#' @return A data frame with three columns: cbreak, variable, value
+#' @seealso
+#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @keywords stats
+#' @family statsFunctions
+#' @export
+statsCount <- function(surveyorCode, ylabel="Count", ...){
+  statsCentral(surveyorCode, statsFunction="weightedCount", ylabel=ylabel, ...)
 }
 
 #' Calculates central tendency.
@@ -567,20 +550,47 @@ statsNetScore <- function(surveyorCode){
       plotFunction="plotNetScore")
 }
 
+
+#' Removes a selected range of 'content-free' strings.
+#' 
+#' Removes all strings that match the regular expression.
+#' 
+#' @param x A regular expression in character format
+#' @param remove A character string passed to grep() 
+#' @export
+filter_nocomment <- function(x, remove="^(No|no|NO|Nope|None|none|n.a.|NA|n/a).?$"){
+  # This function strips out some content-free answers
+  z <- x[!is.na(x)]
+  grep(remove, z, invert=TRUE)
+}
+
+
 #' Code survey data as text.
 #'
 #' Code survey data in text form
 #' 
 #' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
+#' @param ... Other arguments passed to \code{\link{as.surveyorStats}}
 #' @return data frame
 #' @seealso
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @family statsFunctions
 #' @export
-statsText <- function(surveyorCode){
+statsText <- function(surveyorCode, ...){
   stopifnot(is.surveyorCode(surveyorCode))
   x <- surveyorCode$data
+  
+  if(is.null(x)){
+    return(NULL)
+  }
+
+  keep1 <- which(!is.na(x$response))
+  keep2 <- filter_nocomment(x$response)
+  
+  x <- x[intersect(keep1, keep2), ]
+  if(nrow(x)==0) x <- surveyorCode$data[1, ]
+  
   as.surveyorStats(
       x,
       surveyorCode,
@@ -589,3 +599,6 @@ statsText <- function(surveyorCode){
       stats_method="statsText",
       plotFunction="plotText")
 }
+
+
+  

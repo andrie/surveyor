@@ -18,9 +18,7 @@
 #' Coding functions:
 #' \itemize{
 #' \item \code{\link{codeGuess}}
-#' \item \code{\link{codeSingle}} 
-#' \item \code{\link{codeArray}}
-#' \item \code{\link{codeText}}
+#' \item \code{\link{codeQuickArray}}
 #' }
 #' 
 #' Summarising functions:

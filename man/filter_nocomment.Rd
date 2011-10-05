@@ -1,6 +1,6 @@
 \name{filter_nocomment}
 \alias{filter_nocomment}
-\title{Removes a selected range of 'content-free' strings from x}
+\title{Removes a selected range of 'content-free' strings.}
 \usage{
   filter_nocomment(x, remove =
   "^(No|no|NO|Nope|None|none|n.a.|NA|n/a).?$")
@@ -11,7 +11,6 @@
   \item{remove}{A character string passed to grep()}
 }
 \description{
-  Removes all strings that removes all strings that match
-  the regular expression "remove" from x
+  Removes all strings that match the regular expression.
 }
 

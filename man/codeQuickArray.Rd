@@ -27,8 +27,7 @@
   \code{\link{surveyor}}
 
   Other codeFunctions: \code{\link{codeArray}},
-  \code{\link{codeGuess}}, \code{\link{codeSingle}},
-  \code{\link{codeText}}
+  \code{\link{codeGuess}}, \code{\link{codeSingle}}
 }
 \keyword{code}
 

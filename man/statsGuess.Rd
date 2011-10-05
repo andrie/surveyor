@@ -24,10 +24,10 @@
 
   Other statsFunctions: \code{\link{statsBin}},
   \code{\link{statsBinOld}}, \code{\link{statsBinPercent}},
-  \code{\link{statsCentral}}, \code{\link{statsMean}},
-  \code{\link{statsMedian}}, \code{\link{statsNetScore}},
-  \code{\link{statsRank}}, \code{\link{statsSum}},
-  \code{\link{statsText}}
+  \code{\link{statsCentral}}, \code{\link{statsCount}},
+  \code{\link{statsMean}}, \code{\link{statsMedian}},
+  \code{\link{statsNetScore}}, \code{\link{statsRank}},
+  \code{\link{statsSum}}, \code{\link{statsText}}
 }
 \keyword{stats}
 

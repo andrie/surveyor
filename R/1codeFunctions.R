@@ -9,11 +9,12 @@
 #' @return An object of class "surveyorCode"
 as.surveyorCode <- function(x, surveyor, qid, ...){
   stopifnot(is.surveyor(surveyor))
-  surveyor$plot_title <- qText(surveyor$sdata, qid) 
+  plotTitle <- qTextCommon(surveyor$sdata, qid) 
   surveyor$sdata <- NULL
   ret <- list(
       data = x,
       surveyorDefaults = surveyor$defaults,
+      plotTitle = plotTitle,
       qid = qid
   )
   class(ret) <- "surveyorCode"
@@ -214,56 +215,7 @@ codeQuickArray <- function(surveyor, q_id, wrapWidth=50, ...){
 }
 
 
-#-------------------------------------------------------------------------------
 
-#' Removes a selected range of 'content-free' strings from x
-#' 
-#' Removes all strings that removes all strings that match the regular 
-#' expression "remove" from x
-#' @param x A regular expression in character format
-#' @param remove A character string passed to grep() 
-#' @export
-filter_nocomment <- function(x, remove="^(No|no|NO|Nope|None|none|n.a.|NA|n/a).?$"){
-	# This function strips out some content-free answers
-	z <- x[!is.na(x)]
-	z[grep(remove, z, invert=TRUE)]
-}
-
-#' Code survey data in text question form (i.e. open-ended text
-#'
-#' @param surveyor Surveyor object
-#' @param q_id Question id
-#' @param inn string passed to latexTranslate()
-#' @param out string passed to latexTranslate()
-#' @param filter_responses Indicates whether responses should be filtered first
-#' @seealso
-#' For an overview of the surveyor package \code{\link{surveyor}}
-#' @family codeFunctions
-#' @return data frame
-#' @keywords code
-#' @export
-codeText <- function(
-		surveyor,
-		q_id,
-		inn = NULL,
-		out = NULL,
-		filter_responses=TRUE
-){
-	q_data <- surveyor$sdata
-	inn <- c(inn, "\\",   "&",   "@")
-	out <- c(out, "\\\\", "\\&", "\\@")
-	
-	tmp <- q_data[, q_id]
-	tmp <- subset(tmp, !is.na(tmp))
-	if (filter_responses==TRUE){
-		tmp <- filter_nocomment(tmp)
-	}
-	tmp <- sapply(tmp, function(x)
-			{paste("\\item", latexTranslate(x,
-								inn=,
-								out=))})
-	paste(tmp, collapse="\n\n")
-}
 
 
 
