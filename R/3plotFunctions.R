@@ -107,10 +107,10 @@ basic.bar.lattice <- function(f, qType){
               f, layout=qlayout, box.ratio=1.5, origin=0, groups=cbreak, stack=TRUE),
       gridQ_singleResponse = 
           lattice::barchart(question~value|cbreak, 
-              f, layout=qlayout,  box.ratio=1.5, origin=0, groups=f$cbreak, stack=TRUE),
+              f, layout=qlayout,  box.ratio=1.5, origin=0, groups=cbreak, stack=TRUE),
       gridQ_multiResponse = 
           lattice::barchart(question~value|cbreak, 
-              f, layout=qlayout,  box.ratio=1.5, origin=0, groups=f$response, stack=TRUE, 
+              f, layout=qlayout,  box.ratio=1.5, origin=0, groups=response, stack=TRUE, 
               auto.key=list(space="right")),
       stop("plotBar: Invalid value of qType.  This should never happen")
   )
@@ -192,10 +192,17 @@ plotBar <- function(s, plotFunction="plotBar", ...){
 	
 	if(s$surveyorDefaults$fastgraphics){
     # plot using lattice
-    trellis.par.set(latticeExtra::ggplot2like(n = 4, h.start = 180))
+    #trellis.par.set(latticeExtra::ggplot2like(n = 4, h.start = 180))
     q <- basic.bar.lattice(f, qType)
     # Plot options 
-    q <- update(q, panel=function(...){
+    q <- update(q, 
+        par.settings=modifyList(
+            latticeExtra::ggplot2like(n = 4, h.start = 180),
+            list(fontsize=list(text=s$surveyorDefaults$defaultThemeSize))
+        ),
+        between=list(x=0.5, y=0.5),
+        xlab=s$ylabel,
+        panel=function(...){
           strip.custom(bg="grey80") 
           panel.fill(col="grey90", lwd=0)
           panel.grid(col="white", h=5)
@@ -286,10 +293,16 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
 	
   if(s$surveyorDefaults$fastgraphics){
     # plot using lattice
-    trellis.par.set(latticeExtra::ggplot2like(n = 4, h.start = 180))
+    #trellis.par.set(latticeExtra::ggplot2like(n = 4, h.start = 180))
     q <- basic.column.lattice(f, qType)
     # Plot options 
     q <- update(q, 
+        par.settings=modifyList(
+            latticeExtra::ggplot2like(n = 4, h.start = 180),
+            list(fontsize=list(text=s$surveyorDefaults$defaultThemeSize))
+        ),
+        between=list(x=0.5, y=0.5),
+        ylab=s$ylabel,
         horizontal=FALSE,
         panel=function(...){
           strip.custom(bg="grey80") 
@@ -452,51 +465,92 @@ plotText <- function(s, plotFunction="plotText", ...){
 #'
 #' @param s A surveyorStats object
 #' @param plotFunction Character vector: Identifies the name of the plot function used to create the plot
+#' @param width Question text gets line-wrapped at width
 #' @param ... Ignored
 #' @seealso
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @family plotFunctions
 #' @keywords plot
 #' @export
-plotNetScore <- function(s, plotFunction="plotNetScore", ...){
+plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
+  
   stopifnot(is.surveyorStats(s))
   f <- s$data
+  f$question <- str_wrap(f$question, width=width)
+  
 	f$hjust <- 0
-	if (max(f$value) > 0)    f[f$value > 0,   ]$hjust <- -0.1  
+	if (max(f$value) > 0)    f[f$value > 0,   ]$hjust <- -0.1
 	if (max(f$value) > 0.5)  f[f$value > 0.5, ]$hjust <-  1.1  
 	if (min(f$value) < 0)    f[f$value < 0,    ]$hjust <-  1.1  
 	if (min(f$value) < -0.5) f[f$value < -0.5, ]$hjust <- -0.1  
+  
+  if(!s$surveyorDefaults$fastgraphics){
+  	p <- ggplot(f, aes_string(x="question", y="value")) +
+  			theme_surveyor(s$surveyorDefaults$defaultThemeSize) +
+  			geom_bar(
+  					aes_string(fill="factor(cbreak)"),
+  					stat="identity", 
+  					position="identity", 
+  					width=0.8) +
+  			geom_text(
+  					aes_string(label="round(value*100, 0)",
+  							hjust="hjust"),
+  					size=3) +
+  			coord_flip(ylim=c(-1,1)) +
+  			opts(
+  					legend.position="none",
+  					axis.title.y = theme_blank()
+  			) +
+  			scale_y_continuous(
+  					s$ylabel, 
+  					formatter = "percent", 
+  					breaks    = c(-1, 0, 1)
+  			) +
+  			facet_grid(~cbreak)  
+  			
+  	if (length(unique(f$cbreak)) > 1){
+  		p <- p + opts(axis.text.x = theme_blank())
+  	}
+  }
 	
-	
-	p <- ggplot(f, aes_string(x="question", y="value")) +
-			theme_surveyor(s$surveyorDefaults$defaultThemeSize) +
-			geom_bar(
-					aes_string(fill="factor(cbreak)"),
-					stat="identity", 
-					position="identity", 
-					width=0.8) +
-			geom_text(
-					aes_string(label="round(value*100, 0)",
-							hjust="hjust"),
-					size=3) +
-			coord_flip(ylim=c(-1,1)) +
-			opts(
-					legend.position="none",
-					axis.title.y = theme_blank()
-			) +
-			scale_y_continuous(
-					s$ylabel, 
-					formatter = "percent", 
-					breaks    = c(-1, 0, 1)
-			) +
-			facet_grid(~cbreak)  
-			
-	if (length(unique(f$cbreak)) > 1){
-		p <- p + opts(axis.text.x = theme_blank())
-	}
-	
-	qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
-	q <- lattice::barchart(question~value|cbreak, f, layout=qlayout, origin=0)
+  if(s$surveyorDefaults$fastgraphics){
+    #trellis.par.set(latticeExtra::ggplot2like(n = 4, h.start = 180))
+    qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
+    q <- switch(qType(s),
+        singleQ_singleResponse = 
+            lattice::barchart(response~value|cbreak, 
+                f, layout=qlayout, groups=cbreak, origin=0, horizontal=TRUE, stack=TRUE),
+        gridQ_singleResponse =
+            lattice::barchart(question~value|cbreak,
+                f, layout=qlayout, groups=cbreak, origin=0, horizontal=TRUE, stack=TRUE),
+        stop("plotBar: Invalid value of qType.  This should never happen")
+    )
+    q <- update(q, 
+        par.settings=modifyList(
+            latticeExtra::ggplot2like(n = 4, h.start = 180),
+            list(fontsize=list(text=s$surveyorDefaults$defaultThemeSize))
+        ),
+        between=list(x=0.5),
+        xlab=s$ylabel,
+        scales=list(
+            x=list(limits=c(-1.1, 1.1),
+            labels=c(NA, "-100%", "-50%", "0", "50%", "100%", NA))
+        ),
+        panel=function(...){
+          args=list(...)
+          strip.custom(bg="grey80") 
+          panel.fill(col="grey90", lwd=0)
+          panel.grid(col="white", h=length(unique(args$y))-1) 
+          panel.barchart(...)
+          for (i in seq_along(args$x)){
+            panel.text(
+                args$x[i], args$y[i], 
+                labels=round(args$x[i]*100, 0), 
+                adj=c((function(x)1L*(x>0.5 | x>-0.5 & x<0))(args$x[i]), 0.5)
+            )
+          }
+        })
+  }
 			
   ifelse(s$surveyorDefaults$fastgraphics, 
       return(as.surveyorPlot(q, s, plotFunction="plotNetScore")), 
