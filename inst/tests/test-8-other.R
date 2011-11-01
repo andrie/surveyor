@@ -26,10 +26,7 @@
   
   names_cqrw <- c("cbreak", "question", "response", "weight")
   
-  sbraid <- as.braid(
-      pathLatex    = latex_path,
-      pathGraphics = graph_path
-  )
+  sbraid <- as.braid(path = latex_path)
   q_data <- as.surveydata(q_data)
   varlabels(q_data) <- q_text
   s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight, braid=sbraid)
@@ -38,12 +35,18 @@
 
 context("Test plumbing of surveyorPlot")
 
-test_that("surveyorPlot works", {
+test_that("surveyorPlot returns NULL", {
 			
+      r <- NULL
 			expect_that(r <- surveyorPlot(s, "Q1", codeSingle, statsBin, plotBar), shows_message("Q1"))
       expect_equal(r, NULL)
+      #print(exists("r"))
+
+      r <- NULL
       expect_that(r <- surveyorPlot(s, "Q4", codeArray, statsBin, plotBar), shows_message("Q4"))
       expect_equal(r, NULL)
+      #expect_false(exists("r"))
+      
       
 		})
 

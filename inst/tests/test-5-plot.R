@@ -27,10 +27,7 @@
   
   names_cqrw <- c("cbreak", "question", "response", "weight")
   
-  sbraid <- as.braid(
-      pathLatex    = latex_path,
-      pathGraphics = graph_path
-  )
+  sbraid <- as.braid(path = latex_path)
   q_data <- as.surveydata(q_data)
   varlabels(q_data) <- q_text
   s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight, braid=sbraid)

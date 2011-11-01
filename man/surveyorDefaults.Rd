@@ -3,12 +3,12 @@
 \title{Initialises surveyor object defaults.}
 \usage{
   surveyorDefaults(outputToLatex = TRUE, defaultThemeSize =
-  9, questionPattern = "_[[:digit:]]*$", subquestionAppend
-  = TRUE, subquestionPrepend = !subquestionAppend,
-  fastgraphics = FALSE, addPlotTitle = FALSE,
-  defaultColourArea = rgb(127, 201, 127, 255, maxColorValue
-  = 255), defaultColourPoint = rgb(27, 158, 119, 255,
-  maxColorValue = 255), printTable = TRUE)
+  9, plotType = c("ggplot", "lattice"), fastgraphics =
+  plotType[1] == "lattice", graphicFormat = c("pdf",
+  "wmf"), addPlotTitle = FALSE, defaultColourArea =
+  rgb(127, 201, 127, 255, maxColorValue = 255),
+  defaultColourPoint = rgb(27, 158, 119, 255, maxColorValue
+  = 255), printTable = TRUE)
 }
 \arguments{
   \item{outputToLatex}{TRUE or FALSE, determines if latex
@@ -17,17 +17,13 @@
   \item{defaultThemeSize}{Text size in points, passed to
   ggplot}
 
-  \item{questionPattern}{A text pattern passed to grep() to
-  distinguish between single and array questions}
-
-  \item{subquestionAppend}{Indicates whether subquestion
-  text is appended to question text}
-
-  \item{subquestionPrepend}{Indicates whether subquestion
-  text is prepended to question text}
+  \item{plotType}{Either \code{ggplot} or \code{lattice}}
 
   \item{fastgraphics}{Uses lattice graphics if true,
   otherwise ggplot}
+
+  \item{graphicFormat}{Device type for saving graphic
+  plots.  Currently only pdf and wmf is supported.}
 
   \item{addPlotTitle}{If true, adds question text as plot
   title}

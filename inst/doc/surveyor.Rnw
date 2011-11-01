@@ -43,6 +43,8 @@ blah
 
 library(surveydata)
 library(surveyor)
+library(ggplot2)
+library(lattice)
 
 qData <- data.frame(
     Q1 = c("Yes", "No", "Yes", "No", "Yes"),

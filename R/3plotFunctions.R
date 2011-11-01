@@ -192,7 +192,7 @@ plotBar <- function(s, plotFunction="plotBar", ...){
 	
 	if(s$surveyorDefaults$fastgraphics){
     # plot using lattice
-    #trellis.par.set(latticeExtra::ggplot2like(n = 4, h.start = 180))
+    #trellis.par.set(ggplot2like(n = 4, h.start = 180))
     q <- basic.bar.lattice(f, qType)
     # Plot options 
     q <- update(q, 
@@ -203,14 +203,21 @@ plotBar <- function(s, plotFunction="plotBar", ...){
         between=list(x=0.5, y=0.5),
         xlab=s$ylabel,
         panel=function(...){
+          args <- list(...)
           strip.custom(bg="grey80") 
           panel.fill(col="grey90", lwd=0)
           panel.grid(col="white", h=5)
           panel.barchart(...)
+          if(qType %in% c("singleQ_multiResponse", "gridQ_singleResponse") || is.yesno(s)){
+            for (i in seq_along(args$x)){
+              ltext(
+                  args$x[i], args$y[i], 
+                  labels=f$labelsValue[i],
+                  adj =c(f$labelsJust[i], 0.5)
+              )
+            }
+          }
         })
-    # Add labels
-    if(qType %in% c("singleQ_multiResponse", "gridQ_singleResponse") || is.yesno(s))
-      q <- q + latticeExtra::layer(panel.text(x, y, labels=labelsValue), data=f)
   }
     
   if(!s$surveyorDefaults$fastgraphics){
@@ -293,7 +300,7 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
 	
   if(s$surveyorDefaults$fastgraphics){
     # plot using lattice
-    #trellis.par.set(latticeExtra::ggplot2like(n = 4, h.start = 180))
+    #trellis.par.set(ggplot2like(n = 4, h.start = 180))
     q <- basic.column.lattice(f, qType)
     # Plot options 
     q <- update(q, 
@@ -305,14 +312,21 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
         ylab=s$ylabel,
         horizontal=FALSE,
         panel=function(...){
+          args <- list(...)
           strip.custom(bg="grey80") 
           panel.fill(col="grey90", lwd=0)
           panel.grid(col="white", h=5)
           panel.barchart(...)
+          if(qType %in% c("singleQ_singleResponse", "singleQ_multiResponse", "gridQ_singleResponse") || is.yesno(s)){
+            for (i in seq_along(args$x)){
+              ltext(
+                  args$x[i], args$y[i], 
+                  labels=f$labelsValue[i],
+                  adj =c(0.5, f$labelsJust[i])
+              )
+            }
+          }
         })
-    # Add labels
-    if(qType %in% c("singleQ_multiResponse", "gridQ_singleResponse"))
-      q <- q + latticeExtra::layer(panel.text(x, y, labels=labelsValue), data=f)
   }
   
   if(!s$surveyorDefaults$fastgraphics){
@@ -460,8 +474,21 @@ plotText <- function(s, plotFunction="plotText", ...){
 
 #-------------------------------------------------------------------------------
 
+#' Cuts values and assign new values to each break.
+#' 
+#' This is useful for creating hjust and vjust positions for text on plots.  this is essentially a wrapper around \code{\link{cut}}
+#' @param x Vector to cut
+#' @param breaks Vector with break points.  Needs to include the min and max of x
+#' @param  newValues Vector with new values. Should be length one less than breaks.
+cutJust <- function(x, breaks, newValues){
+  if(length(unique(breaks)) < breaks)
+    cx <- 1 else
+    cx <- cut(x, breaks=breaks, include.lowest=TRUE)
+  newValues[cx]
+}
 
-#' Plot data in net score format (bar chart, but percentage axis)
+
+#' Plot data in net score format (bar chart, but percentage axis).
 #'
 #' @param s A surveyorStats object
 #' @param plotFunction Character vector: Identifies the name of the plot function used to create the plot
@@ -478,11 +505,7 @@ plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
   f <- s$data
   f$question <- str_wrap(f$question, width=width)
   
-	f$hjust <- 0
-	if (max(f$value) > 0)    f[f$value > 0,   ]$hjust <- -0.1
-	if (max(f$value) > 0.5)  f[f$value > 0.5, ]$hjust <-  1.1  
-	if (min(f$value) < 0)    f[f$value < 0,    ]$hjust <-  1.1  
-	if (min(f$value) < -0.5) f[f$value < -0.5, ]$hjust <- -0.1  
+  f$hjust <- cutJust(f$value, breaks=seq(-1, 1, 0.5), newValues=c(-0.1, 1.1, -0.1, 1.1))
   
   if(!s$surveyorDefaults$fastgraphics){
   	p <- ggplot(f, aes_string(x="question", y="value")) +
@@ -514,7 +537,7 @@ plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
   }
 	
   if(s$surveyorDefaults$fastgraphics){
-    #trellis.par.set(latticeExtra::ggplot2like(n = 4, h.start = 180))
+    #trellis.par.set(ggplot2like(n = 4, h.start = 180))
     qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
     q <- switch(qType(s),
         singleQ_singleResponse = 
@@ -546,7 +569,9 @@ plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
             panel.text(
                 args$x[i], args$y[i], 
                 labels=round(args$x[i]*100, 0), 
-                adj=c((function(x)1L*(x>0.5 | x>-0.5 & x<0))(args$x[i]), 0.5)
+                adj=c(
+                    cutJust(args$x[i], breaks=seq(-1, 1, 0.5), newValues=c(-0.1, 1.1, -0.1, 1.1)),
+                    0.5)
             )
           }
         })

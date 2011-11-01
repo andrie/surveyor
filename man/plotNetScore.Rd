@@ -1,8 +1,9 @@
 \name{plotNetScore}
 \alias{plotNetScore}
-\title{Plot data in net score format (bar chart, but percentage axis)}
+\title{Plot data in net score format (bar chart, but percentage axis).}
 \usage{
-  plotNetScore(s, plotFunction = "plotNetScore", ...)
+  plotNetScore(s, plotFunction = "plotNetScore", width =
+  50, ...)
 }
 \arguments{
   \item{s}{A surveyorStats object}
@@ -10,11 +11,13 @@
   \item{plotFunction}{Character vector: Identifies the name
   of the plot function used to create the plot}
 
+  \item{width}{Question text gets line-wrapped at width}
+
   \item{...}{Ignored}
 }
 \description{
   Plot data in net score format (bar chart, but percentage
-  axis)
+  axis).
 }
 \seealso{
   For an overview of the surveyor package

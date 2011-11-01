@@ -3,32 +3,25 @@
 \title{Selectively updates surveyor defaults.}
 \usage{
   surveyorUpdateDefaults(surveyor, outputToLatex = NULL,
-  defaultThemeSize = NULL, questionPattern = NULL,
-  subquestionAppend = NULL, subquestionPrepend = NULL,
-  fastgraphics = NULL, addPlotTitle = NULL,
+  defaultThemeSize = NULL, plotType = NULL, fastgraphics =
+  NULL, graphicFormat = NULL, addPlotTitle = NULL,
   defaultColourArea = NULL, defaultColourPoint = NULL,
   printTable = NULL)
 }
 \arguments{
-  \item{surveyor}{Surveyor object}
-
   \item{outputToLatex}{TRUE or FALSE, determines if latex
   commands is output}
 
   \item{defaultThemeSize}{Text size in points, passed to
   ggplot}
 
-  \item{questionPattern}{A text pattern passed to grep() to
-  distinguish between single and array questions}
-
-  \item{subquestionAppend}{Indicates whether subquestion
-  text is appended to question text}
-
-  \item{subquestionPrepend}{Indicates whether subquestion
-  text is prepended to question text}
+  \item{plotType}{Either \code{ggplot} or \code{lattice}}
 
   \item{fastgraphics}{Uses lattice graphics if true,
   otherwise ggplot}
+
+  \item{graphicFormat}{Device type for saving graphic
+  plots.  Currently only pdf and wmf is supported.}
 
   \item{addPlotTitle}{If true, adds question text as plot
   title}

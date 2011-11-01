@@ -115,7 +115,7 @@ surveyorPrintQuestion <- function(surveyor, q_id, f, g, h, plotSize){
     
 	# Print plot
 	filename <- braidFilename(surveyor$braid)
-  filename <- paste(q_id, "_", surveyor$cbreakname, ".pdf", sep="")
+  filename <- paste(q_id, "_", surveyor$cbreakname, ".", surveyor$defaults$graphicFormat, sep="")
   message(paste(" --", filename))
 
 	# Adjust vertical size of plot depending on number of questions

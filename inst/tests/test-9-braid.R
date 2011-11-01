@@ -28,11 +28,7 @@ q_data <- as.surveydata(q_data)
 
 names_cqrw <- c("cbreak", "question", "response", "weight")
 
-sbraid <- as.braid(
-    pathLatex    = latexPath,
-    pathGraphics = graphPath
-)
-
+sbraid <- as.braid(path = latexPath)
 
 context("Test output to Latex")
 
@@ -49,15 +45,9 @@ test_that("working folders are empty", {
     })
 
 test_that("surveyorPlot works in Latex", {
-      tbraid <- as.braid(
-          pathLatex    = latexPath,
-          pathGraphics = graphPath,
-          outputFilename = file.path(latexPath, sinkfile)
-      )
+      tbraid <- as.braid(path = latexPath, fileInner=sinkfile)
       
-      t_defaults <- surveyorDefaults(
-          outputToLatex = TRUE
-      )
+      t_defaults <- surveyorDefaults(outputToLatex = TRUE)
       
       t <- as.surveyor(q_data, q_data$crossbreak, q_data$weight, t_defaults, braid=tbraid)
       
@@ -67,7 +57,7 @@ test_that("surveyorPlot works in Latex", {
       braidSave(tbraid)
       
       expect_true(file.exists(file.path(latexPath, sinkfile)))
-      expect_true(file.exists(file.path(graphPath, "fig0001.pdf")))
-      expect_true(file.exists(file.path(graphPath, "fig0002.pdf")))
+      expect_true(file.exists(file.path(graphPath, "Q1_.pdf")))
+      expect_true(file.exists(file.path(graphPath, "Q4_.pdf")))
       
     })
