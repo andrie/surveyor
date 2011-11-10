@@ -2,14 +2,14 @@
 \alias{surveyorUpdateDefaults}
 \title{Selectively updates surveyor defaults.}
 \usage{
-  surveyorUpdateDefaults(surveyor, outputToLatex = NULL,
+  surveyorUpdateDefaults(surveyor, outputType = NULL,
   defaultThemeSize = NULL, plotType = NULL, fastgraphics =
   NULL, graphicFormat = NULL, addPlotTitle = NULL,
   defaultColourArea = NULL, defaultColourPoint = NULL,
   printTable = NULL)
 }
 \arguments{
-  \item{outputToLatex}{TRUE or FALSE, determines if latex
+  \item{outputType}{TRUE or FALSE, determines if latex
   commands is output}
 
   \item{defaultThemeSize}{Text size in points, passed to

@@ -106,12 +106,12 @@ is.surveyor <- function(x){
 
 #' Initialises surveyor object defaults.
 #' 
-#' @param outputToLatex TRUE or FALSE, determines if latex commands is output
+#' @param outputType Character string specifying the destination of output: "latex", "ppt" or "device".  If "device", graphs are sent to the default device (typically the RGgui plot terminal)
 #' @param defaultThemeSize Text size in points, passed to ggplot
 #' @param plotType Either \code{ggplot} or \code{lattice}
 #' @param fastgraphics Uses lattice graphics if true, otherwise ggplot
 #' @param graphicFormat Device type for saving graphic plots.  Currently only pdf and wmf is supported.
-#' @param addPlotTitle If true, adds question text as plot title 
+#' @param addPlotTitle If true, adds question text as plot title. Defaults to TRUE if \code{ouputType} is either "ppt" or "device"}
 #' @param defaultColourArea Default RGB colour for areas in graphs (e.g. bars)
 #' @param defaultColourPoint Default RGB colour for points in graphs (e.g. points)
 #' @param printTable If TRUE will print the table as part of the report
@@ -119,21 +119,24 @@ is.surveyor <- function(x){
 #' @export
 #' @examples
 #' s <- surveyorDefaults()
-#' s <- surveyorDefaults(outputToLatex=TRUE) 					
+#' s <- surveyorDefaults(outputType="latex") 					
 surveyorDefaults <- function(
-    outputToLatex = TRUE,
+    outputType = c("latex", "ppt", "device"),
 		defaultThemeSize = 9,
 		plotType = c("ggplot", "lattice"),
     fastgraphics = plotType[1]=="lattice",
     graphicFormat = c("pdf", "wmf"),
-    addPlotTitle = FALSE,
+    addPlotTitle = outputType %in% c("ppt", "device"),
 		defaultColourArea = rgb(127,201,127, 255, maxColorValue=255),
 		defaultColourPoint = rgb(27, 158, 119, 255, maxColorValue=255),
     printTable = TRUE
 ){
 	
+  outputType <- outputType[1]
+  if(outputType=="ppt") graphicFormat <- "wmf"
+  
 	list(
-			outputToLatex      = outputToLatex,
+      outputType         = outputType,
       defaultThemeSize   = defaultThemeSize,
 			fastgraphics       = fastgraphics,
       graphicFormat      = graphicFormat[1],
@@ -152,7 +155,7 @@ surveyorDefaults <- function(
 #' @export 
 surveyorUpdateDefaults <- function(
     surveyor,
-    outputToLatex = NULL,
+    outputType = NULL,
     defaultThemeSize = NULL,
     plotType = NULL,
     fastgraphics = NULL,
@@ -162,7 +165,11 @@ surveyorUpdateDefaults <- function(
     defaultColourPoint = NULL,
     printTable = NULL
 ){
-  if(!missing(outputToLatex))      surveyor$defaults$outputToLatex <- outputToLatex
+  if(outputType=="ppt") graphicFormat <- "wmf"
+  if(outputType %in% c("ppt", "device")) addPlotTitle <- TRUE
+  
+
+  if(!missing(outputType))         surveyor$defaults$outputType <- outputType
   if(!missing(defaultThemeSize))   surveyor$defaults$defaultThemeSize <- defaultThemeSize
   if(!missing(plotType))           surveyor$defaults$fastgraphics <- plotType[1]=="lattice"
   if(!missing(fastgraphics))       surveyor$defaults$fastgraphics <- fastgraphics

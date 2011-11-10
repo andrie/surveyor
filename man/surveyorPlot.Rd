@@ -5,8 +5,8 @@
   surveyorPlot(surveyor, q_id, codeFunction =
   codeQuickArray, statsFunction = statsGuess, plotFunction
   = plotGuess, plotSize = surveyor$braid$defaultPlotSize,
-  outputToLatex = surveyor$defaults$outputToLatex,
-  onlyBreaks = seq_along(surveyor$crossbreak), ...)
+  outputType = surveyor$defaults$outputType, onlyBreaks =
+  seq_along(surveyor$crossbreak), ...)
 }
 \arguments{
   \item{surveyor}{Surveyor object}
@@ -25,8 +25,8 @@
   \item{plotSize}{Size in inches of plot output, e.g.
   c(4,3)}
 
-  \item{outputToLatex}{If TRUE, wraps output in latex code,
-  otherwise print to console}
+  \item{outputType}{"latex", "ppt" or "device": Specifies
+  destination of ouput}
 
   \item{onlyBreaks}{Numeric vector that limits crossbreak
   processing}

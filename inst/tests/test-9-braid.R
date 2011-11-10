@@ -47,7 +47,7 @@ test_that("working folders are empty", {
 test_that("surveyorPlot works in Latex", {
       tbraid <- as.braid(path = latexPath, fileInner=sinkfile)
       
-      t_defaults <- surveyorDefaults(outputToLatex = TRUE)
+      t_defaults <- surveyorDefaults(outputType = "latex")
       
       t <- as.surveyor(q_data, q_data$crossbreak, q_data$weight, t_defaults, braid=tbraid)
       

@@ -10,9 +10,9 @@ Description: This is a set of tools to analyse, report and
     plot survey data
 Author@R: person("Andrie", "de Vries",
     email="apdevries@gmail.com")
-Version: 0.1-13
+Version: 0.1-14
 URL: www.pentalibra.com
-Date: 2011-11-01
+Date: 2011-11-09
 Depends:
     surveydata (>= 0.1.03),
     braid (>= 0.1-04)
@@ -23,6 +23,8 @@ Imports:
     latticeExtra,
     data.table,
     ggplot2
+Suggests:
+    braidppt
 Collate:
     '1codeFunctions.R'
     '2statsFunctions.R'

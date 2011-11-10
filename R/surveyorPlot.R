@@ -13,7 +13,7 @@
 #' @param statsFunction A reference to a function that summarizes the coded data
 #' @param plotFunction A reference to a function that plots the summarized data
 #' @param plotSize Size in inches of plot output, e.g. c(4,3)
-#' @param outputToLatex If TRUE, wraps output in latex code, otherwise print to console
+#' @param outputType "latex", "ppt" or "device": Specifies destination of ouput
 #' @param onlyBreaks Numeric vector that limits crossbreak processing
 #' @param ... Other parameters passed to codeFunction
 #' @export
@@ -25,13 +25,13 @@ surveyorPlot <- function(
 		statsFunction = statsGuess,
 		plotFunction = plotGuess,
 		plotSize = surveyor$braid$defaultPlotSize,
-    outputToLatex = surveyor$defaults$outputToLatex,
+    outputType = surveyor$defaults$outputType,
     onlyBreaks=seq_along(surveyor$crossbreak),
 		...){
   
   #-------
   
-  plotQinternal <- function(){
+  plotQone <- function(){
     
     stopifnot(is.surveyor(surveyor))
     
@@ -44,22 +44,33 @@ surveyorPlot <- function(
       g <- match.fun(statsFunction)(f, ...)
       g$data <- subset(g$data, subset=!is.na("value")) # Remove NA values from g
       h <- match.fun(plotFunction)(g, ...)
-      if (outputToLatex){
+      if(outputType %in% c("latex", "ppt")){
+        if(outputType=="ppt"){
+          braidpptNewSlide(
+              surveyor$braid,
+              title=q_id,
+              text=plot_title
+          )
+        }
+          
         catString <- surveyorPrintQuestion(
             surveyor,
             q_id,
             f,
             g,
             h, 
-            plotSize)
-        braidWrite(surveyor$braid, catString)
-      } else {
-        print(h$plot)
-      }
+            plotSize,
+            outputType=outputType
+          )
+        }
+        if(outputType=="latex") braidWrite(surveyor$braid, catString)
+        if(outputType=="device") print(h$plot)
     }
   }
   
   #-------
+  
+  if(outputType=="ppt") if(!require(braidppt)) stop("Unable to load package braidppt")
   
   if(!exists(q_id, surveyor$sdata) & is.null(which.q(surveyor$sdata, q_id))){
     message(paste(q_id,": Question not found.  Processing aborted"))
@@ -68,22 +79,23 @@ surveyorPlot <- function(
   message(q_id)
   plot_title <- qTextCommon(surveyor$sdata, q_id)
   surveyor$plot_title <- plot_title
-  if (outputToLatex){
-		braidHeading(
-				surveyor$braid, 
-				paste(q_id, plot_title), 
-				headinglevel= "section",
-				pagebreak=FALSE)
-	}
+  if(outputType=="latex"){
+        braidHeading(
+    				surveyor$braid, 
+    				paste(q_id, plot_title), 
+    				headinglevel= "section",
+    				pagebreak=FALSE)
+      }
+	
 		
 	if (is.list(surveyor$crossbreak)) {
 		for (i in onlyBreaks) {
 			surveyor$cbreak <- unlist(surveyor$crossbreak[i])
       surveyor$cbreakname <- names(surveyor$crossbreak[i])
-			plotQinternal()
+			plotQone()
 		}		
 	} else {
-		plotQinternal()
+		plotQone()
 	}
   return(invisible(NULL))
 }
@@ -100,8 +112,9 @@ surveyorPlot <- function(
 #' @param g surveyorStats object
 #' @param h surveyorPlot object
 #' @param plotSize the plot size in inches
+#' @inheritParams surveyorDefaults  
 #' @keywords internal
-surveyorPrintQuestion <- function(surveyor, q_id, f, g, h, plotSize){
+surveyorPrintQuestion <- function(surveyor, q_id, f, g, h, plotSize, outputType){
 					
 	if (is.null(f)){
 		catString <- "\nNo data\n\n"
@@ -127,8 +140,16 @@ surveyorPrintQuestion <- function(surveyor, q_id, f, g, h, plotSize){
 			1
 	)
 	#message(paste("In surveyorPrintQuestion, height_multiplier = ", height_multiplier))
-	braidPlot(surveyor$braid, h$plot, filename=filename,
-      width=plotSize[1], height=(plotSize[2] * height_multiplier), Qid=q_id)
+  switch(outputType,
+      latex = {
+      	braidPlot(surveyor$braid, h$plot, filename=filename,
+            width=plotSize[1], height=(plotSize[2] * height_multiplier), Qid=q_id)
+      },
+      ppt = {
+        braidpptPlot(surveyor$braid, h$plot, filename=filename,
+            width=plotSize[1], height=(plotSize[2] * height_multiplier), Qid=q_id)
+      }
+  )
 
 	catString <- if(surveyor$defaults$printTable) tableGuess(g) else ""
 	
