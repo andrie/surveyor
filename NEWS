@@ -1,3 +1,10 @@
+surveyor 0.1-15 (13/11/2011)
+---------------
+
+Improvements:
+* Fixes to plots, e.g. word-wrap of main title, lattice column plot layout.
+
+
 surveyor 0.1-14 (7/11/2011)
 ---------------
 

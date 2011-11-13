@@ -185,6 +185,26 @@ basic.column.ggplot <- function(f, qType){
 }
 
 
+latticeLabels <- function(x, y, just=0.5, horizontal=TRUE, stack=TRUE, formatter="format"){
+  formatter <- match.fun(formatter)
+  if(horizontal){
+    labels <- formatter(x)
+    hjust <- ifelse(x < mean(x), 0, 1)
+    vjust <- 0.5
+    #if(stack) x <- do.call(c, unname(lapply(split(x, y), function(t)cumsum(t)-t*(1-just))))
+  } else {
+    labels <- formatter(y)
+    vjust <- ifelse(y < mean(y), 0, 1)
+    hjust <- 0.5
+    #if(stack) y <- do.call(c, unname(lapply(split(y, x), function(t)cumsum(t)-t*(1-just))))
+  }
+  for (i in seq_along(x)){
+    ltext(x[i], y[i], labels=labels[i], adj =c(hjust[i], vjust[i]))
+  }
+  
+}
+
+
 #' Plot data in bar chart format
 #'
 #' @param s A surveyorStats object
@@ -217,20 +237,15 @@ plotBar <- function(s, plotFunction="plotBar", ...){
         between=list(x=0.5, y=0.5),
         xlab=s$ylabel,
         #horizontal=TRUE,
-        panel=function(...){
+        panel=function(x, y, ...){
           args <- list(...)
           strip.custom(bg="grey80") 
           panel.fill(col="grey90", lwd=0)
           panel.grid(col="white", h=5)
-          panel.barchart(...)
+          panel.barchart(x, y, ...)
           if(qType %in% c("singleQ_multiResponse", "gridQ_singleResponse") || is.yesno(s)){
-            for (i in seq_along(args$x)){
-              ltext(
-                  args$x[i], args$y[i], 
-                  labels=f$labelsValue[i],
-                  adj =c(f$labelsJust[i], 0.5)
-              )
-            }
+            latticeLabels(x, y, just=0.5, horizontal=args$horizontal, 
+                stack=args$stack, formatter=s$formatter)
           }
         })
   }
@@ -326,20 +341,15 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
         between=list(x=0.5, y=0.5),
         ylab=s$ylabel,
         horizontal=FALSE,
-        panel=function(...){
+        panel=function(x, y, ...){
           args <- list(...)
           strip.custom(bg="grey80") 
           panel.fill(col="grey90", lwd=0)
           panel.grid(col="white", h=5)
-          panel.barchart(...)
+          panel.barchart(x, y, ...)
           if(qType %in% c("singleQ_singleResponse", "singleQ_multiResponse", "gridQ_singleResponse") || is.yesno(s)){
-            for (i in seq_along(args$x)){
-              ltext(
-                  args$x[i], args$y[i], 
-                  labels=f$labelsValue[i],
-                  adj =c(0.5, f$labelsJust[i])
-              )
-            }
+            latticeLabels(x, y, just=0.5, horizontal=args$horizontal, 
+                stack=args$stack, formatter=s$formatter)
           }
         })
   }

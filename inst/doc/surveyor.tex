@@ -86,7 +86,7 @@ Next, set up a surveyor object.  For the sake of illustrating the different opti
 \begin{Schunk}
 \begin{Sinput}
 > s <- as.surveyor(qData, qData$crossbreak, qData$weight)
-> sg <- surveyorUpdateDefaults(s, outputToLatex = FALSE, addPlotTitle = TRUE)
+> sg <- surveyorUpdateDefaults(s, outputType = "device", addPlotTitle = TRUE)
 > sl <- surveyorUpdateDefaults(sg, fastgraphics=TRUE)
 > 
 \end{Sinput}
