@@ -1,7 +1,7 @@
 
 
 
-#' Creates surveyorPlot object.
+#' Creates surveyorPlot object and adds plot title.
 #'  
 #' Creates surveyorPlot object, a container for either ggplot or lattice graphic. 
 #' 
@@ -14,16 +14,26 @@ as.surveyorPlot <- function(
     plot,
     surveyorStats,
     expansion = 1,
-    plotFunction =""
+    plotFunction ="",
+    plotSize  = par("din"),
+    ...
 ){
   stopifnot(is.surveyorStats(surveyorStats))
   ### Adds plot title ###
+  args <- list(...)
+  plotTitle <- surveyorStats$plotTitle
+  plotTitle <- strwrap(
+      plotTitle, 
+      width=0.8 * nchar(plotTitle) * plotSize[1] / strwidth(plotTitle, units="inches")
+  )
+  plotTitle <- paste(plotTitle, collapse="\n")
+  #browser()
   if(surveyorStats$surveyorDefaults$addPlotTitle){
     if(inherits(plot, "ggplot")){
-      plot <- plot + opts(title=surveyorStats$plotTitle)
+      plot <- plot + opts(title=plotTitle)
     }
     if(inherits(plot, "trellis")){
-      plot <- update(plot, main=surveyorStats$plotTitle)
+      plot <- update(plot, main=plotTitle)
     }
   }
     
@@ -99,9 +109,11 @@ plotGuess <- function(s, ...){
 basic.bar.lattice <- function(f, qType){
   qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
   q <- switch(qType,
-      singleQ_singleResponse = 
-          lattice::barchart(value~cbreak, 
-              f, layout=qlayout,  box.ratio=1.5, origin=0, groups=cbreak, stack=TRUE),
+      singleQ_singleResponse = { 
+          qlayout <- c(1, 1)
+          lattice::barchart(value~cbreak,
+              f, layout=qlayout,  box.ratio=1.5, origin=0, groups=cbreak, stack=TRUE)   ####<<<<<<<<<<<
+            }, 
       singleQ_multiResponse = 
           lattice::barchart(response~value|cbreak, 
               f, layout=qlayout, box.ratio=1.5, origin=0, groups=cbreak, stack=TRUE),
@@ -120,9 +132,11 @@ basic.bar.lattice <- function(f, qType){
 basic.column.lattice <- function(f, qType){
   qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
   q <- switch(qType,
-      singleQ_singleResponse = 
+      singleQ_singleResponse = {
+          qlayout <- c(1, 1)
           lattice::barchart(value~factor(cbreak), 
-              f, layout=qlayout,  box.ratio=1.5, groups=value, origin=0, stack=TRUE),
+              f, layout=qlayout,  box.ratio=1.5, groups=value, origin=0, stack=TRUE)
+        },
       singleQ_multiResponse = 
           lattice::barchart(value~factor(response)|cbreak, 
               f, layout=qlayout, box.ratio=1.5, origin=0, groups=value, stack=TRUE),
@@ -202,6 +216,7 @@ plotBar <- function(s, plotFunction="plotBar", ...){
         ),
         between=list(x=0.5, y=0.5),
         xlab=s$ylabel,
+        #horizontal=TRUE,
         panel=function(...){
           args <- list(...)
           strip.custom(bg="grey80") 
@@ -257,8 +272,8 @@ plotBar <- function(s, plotFunction="plotBar", ...){
 	}
 		
 	ifelse(s$surveyorDefaults$fastgraphics,
-      return(as.surveyorPlot(q, s, plotFunction=plotFunction)), 
-      return(as.surveyorPlot(p, s, plotFunction=plotFunction))
+      return(as.surveyorPlot(q, s, plotFunction=plotFunction, ...)), 
+      return(as.surveyorPlot(p, s, plotFunction=plotFunction, ...))
   )
 }
 
@@ -371,8 +386,8 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
 	}
 	
   ifelse(s$surveyorDefaults$fastgraphics,
-      return(as.surveyorPlot(q, s, plotFunction=plotFunction)), 
-      return(as.surveyorPlot(p, s, plotFunction=plotFunction))
+      return(as.surveyorPlot(q, s, plotFunction=plotFunction, ...)), 
+      return(as.surveyorPlot(p, s, plotFunction=plotFunction, ...))
   )
 }
 
@@ -428,7 +443,7 @@ plotPoint <- function(s, plotFunction="plotPoint", ...){
 							hjust=1)
 			)
 	
-	as.surveyorPlot(p, s, plotFunction=plotFunction)
+	as.surveyorPlot(p, s, plotFunction=plotFunction, ...)
 }
 
 #-------------------------------------------------------------------------------
@@ -469,7 +484,7 @@ plotText <- function(s, plotFunction="plotText", ...){
 #  }
   p <- paste("\\begin{itemize}", items, "\\end{itemize}\\n", collapse="\\n")
   class(p) <- "text"
-  as.surveyorPlot(p, s, plotFunction=plotFunction)
+  as.surveyorPlot(p, s, plotFunction=plotFunction, ...)
 }
 
 #-------------------------------------------------------------------------------
@@ -578,8 +593,8 @@ plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
   }
 			
   ifelse(s$surveyorDefaults$fastgraphics, 
-      return(as.surveyorPlot(q, s, plotFunction="plotNetScore")), 
-      return(as.surveyorPlot(p, s, plotFunction="plotNetScore"))
+      return(as.surveyorPlot(q, s, plotFunction="plotNetScore", ...)), 
+      return(as.surveyorPlot(p, s, plotFunction="plotNetScore", ...))
   )
 }
 

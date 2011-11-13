@@ -172,6 +172,7 @@ quickStack <- function(x) unlist(unname(x))
 #' 
 #' @param surveyor Surveyor object
 #' @param q_id Question id
+#' @param crossbreak Crossbreak vector
 #' @param wrapWidth Position where labels will be wrapped.  Passed to \code{\link[stringr]{str_wrap}}
 #' @param ... Other parameters passed on to downstream code* functions
 #' @seealso
@@ -180,12 +181,13 @@ quickStack <- function(x) unlist(unname(x))
 #' @return data frame
 #' @keywords code
 #' @export
-codeQuickArray <- function(surveyor, q_id, wrapWidth=50, ...){
+codeQuickArray <- function(surveyor, q_id, crossbreak=surveyor$cbreak, wrapWidth=50, ...){
   dat <- surveyor$sdata
   reps <- length(which.q(dat, q_id))
   if(reps==0) return(NULL)
   question <- if(reps==1) "1" else qTextUnique(dat, q_id)
-  cbreak <- rep(surveyor$cbreak, reps)
+  #cbreak <- rep(surveyor$cbreak, reps)
+  cbreak <- rep(crossbreak, reps)
   weight <- rep(surveyor$weight, reps)
   dat <- dat[, q_id]
   nrows <- if(reps==1) length(dat) else nrow(dat)

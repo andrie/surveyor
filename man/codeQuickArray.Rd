@@ -2,12 +2,15 @@
 \alias{codeQuickArray}
 \title{Code survey data in single or array question form.}
 \usage{
-  codeQuickArray(surveyor, q_id, wrapWidth = 50, ...)
+  codeQuickArray(surveyor, q_id, crossbreak =
+  surveyor$cbreak, wrapWidth = 50, ...)
 }
 \arguments{
   \item{surveyor}{Surveyor object}
 
   \item{q_id}{Question id}
+
+  \item{crossbreak}{Crossbreak vector}
 
   \item{wrapWidth}{Position where labels will be wrapped.
   Passed to \code{\link[stringr]{str_wrap}}}
