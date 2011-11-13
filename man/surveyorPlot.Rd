@@ -4,9 +4,11 @@
 \usage{
   surveyorPlot(surveyor, q_id, codeFunction =
   codeQuickArray, statsFunction = statsGuess, plotFunction
-  = plotGuess, plotSize = surveyor$braid$defaultPlotSize,
+  = plotGuess, plotSize = if (outputType == "device")
+  par("din") else surveyor$braid$defaultPlotSize,
   outputType = surveyor$defaults$outputType, onlyBreaks =
-  seq_along(surveyor$crossbreak), ...)
+  seq_along(surveyor$crossbreak), plotMultiplierLimits = if
+  (outputType == "ppt") c(0.8, 1.2) else c(0.8, 2.5), ...)
 }
 \arguments{
   \item{surveyor}{Surveyor object}
@@ -30,6 +32,10 @@
 
   \item{onlyBreaks}{Numeric vector that limits crossbreak
   processing}
+
+  \item{plotMultiplierLimits}{Numeric vector of length two,
+  indicating lower and upper limit of vertical plot
+  resizing}
 
   \item{...}{Other parameters passed to codeFunction}
 }

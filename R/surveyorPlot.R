@@ -15,6 +15,7 @@
 #' @param plotSize Size in inches of plot output, e.g. c(4,3)
 #' @param outputType "latex", "ppt" or "device": Specifies destination of ouput
 #' @param onlyBreaks Numeric vector that limits crossbreak processing
+#' @param plotMultiplierLimits Numeric vector of length two, indicating lower and upper limit of vertical plot resizing
 #' @param ... Other parameters passed to codeFunction
 #' @export
 #' @seealso \code{\link{as.surveyor}}
@@ -24,9 +25,10 @@ surveyorPlot <- function(
 		codeFunction = codeQuickArray,
 		statsFunction = statsGuess,
 		plotFunction = plotGuess,
-		plotSize = surveyor$braid$defaultPlotSize,
+		plotSize = if(outputType=="device") par("din") else surveyor$braid$defaultPlotSize,
     outputType = surveyor$defaults$outputType,
     onlyBreaks=seq_along(surveyor$crossbreak),
+    plotMultiplierLimits = if(outputType=="ppt") c(0.8, 1.2) else c(0.8, 2.5),
 		...){
   
   #-------
@@ -43,10 +45,11 @@ surveyorPlot <- function(
       nothing_to_plot <- FALSE
       g <- match.fun(statsFunction)(f, ...)
       g$data <- subset(g$data, subset=!is.na("value")) # Remove NA values from g
-      h <- match.fun(plotFunction)(g, ...)
+      h <- match.fun(plotFunction)(g, plotSize=plotSize, outputType, ...)
+      
       if(outputType %in% c("latex", "ppt")){
         if(outputType=="ppt"){
-          braidpptNewSlide(
+          braidppt::braidpptNewSlide(
               surveyor$braid,
               title=q_id,
               text=plot_title
@@ -60,11 +63,12 @@ surveyorPlot <- function(
             g,
             h, 
             plotSize,
-            outputType=outputType
-          )
-        }
-        if(outputType=="latex") braidWrite(surveyor$braid, catString)
-        if(outputType=="device") print(h$plot)
+            outputType=outputType,
+            plotMultiplierLimits=plotMultiplierLimits
+        )
+      }
+      if(outputType=="latex") braidWrite(surveyor$braid, catString)
+      if(outputType=="device") print(h$plot)
     }
   }
   
@@ -106,15 +110,11 @@ surveyorPlot <- function(
 
 #' Prints surveyor question. 
 #' 
-#' @param surveyor A surveyor object
-#' @param q_id The question id
-#' @param f surveyorCode object
-#' @param g surveyorStats object
-#' @param h surveyorPlot object
-#' @param plotSize the plot size in inches
+#' @inheritParams surveyorPlot  
 #' @inheritParams surveyorDefaults  
 #' @keywords internal
-surveyorPrintQuestion <- function(surveyor, q_id, f, g, h, plotSize, outputType){
+surveyorPrintQuestion <- function(surveyor, q_id, f, g, h, plotSize, outputType, 
+    plotMultiplierLimits=c(1, 1)){
 					
 	if (is.null(f)){
 		catString <- "\nNo data\n\n"
@@ -134,10 +134,13 @@ surveyorPrintQuestion <- function(surveyor, q_id, f, g, h, plotSize, outputType)
 	# Adjust vertical size of plot depending on number of questions
 	# Make the assumption that 7 questions can fit on a plot
 	# Limit vertical size to [1, 3]*size of default
-	height_multiplier <- ifelse(
+  #browser()
+  plotMin <- plotMultiplierLimits[1]
+  plotMax <- plotMultiplierLimits[2]
+  height_multiplier <- ifelse(
 			is.numeric(g$nquestion), 
-			min(3, max(1, g$nquestion / 7)),
-			1
+			min(plotMax, max(plotMin, g$nquestion / 7)),
+			plotMin
 	)
 	#message(paste("In surveyorPrintQuestion, height_multiplier = ", height_multiplier))
   switch(outputType,
@@ -146,7 +149,7 @@ surveyorPrintQuestion <- function(surveyor, q_id, f, g, h, plotSize, outputType)
             width=plotSize[1], height=(plotSize[2] * height_multiplier), Qid=q_id)
       },
       ppt = {
-        braidpptPlot(surveyor$braid, h$plot, filename=filename,
+        braidppt::braidpptPlot(surveyor$braid, h$plot, filename=filename,
             width=plotSize[1], height=(plotSize[2] * height_multiplier), Qid=q_id)
       }
   )

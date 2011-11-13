@@ -1,9 +1,9 @@
 \name{as.surveyorPlot}
 \alias{as.surveyorPlot}
-\title{Creates surveyorPlot object.}
+\title{Creates surveyorPlot object and adds plot title.}
 \usage{
   as.surveyorPlot(plot, surveyorStats, expansion = 1,
-  plotFunction = "")
+  plotFunction = "", plotSize = par("din"), ...)
 }
 \arguments{
   \item{plot}{A ggplot or lattice object}

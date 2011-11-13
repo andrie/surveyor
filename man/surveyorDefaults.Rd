@@ -5,14 +5,17 @@
   surveyorDefaults(outputType = c("latex", "ppt",
   "device"), defaultThemeSize = 9, plotType = c("ggplot",
   "lattice"), fastgraphics = plotType[1] == "lattice",
-  graphicFormat = c("pdf", "wmf"), addPlotTitle = FALSE,
-  defaultColourArea = rgb(127, 201, 127, 255, maxColorValue
-  = 255), defaultColourPoint = rgb(27, 158, 119, 255,
-  maxColorValue = 255), printTable = TRUE)
+  graphicFormat = c("pdf", "wmf"), addPlotTitle =
+  outputType \%in\% c("ppt", "device"), defaultColourArea =
+  rgb(127, 201, 127, 255, maxColorValue = 255),
+  defaultColourPoint = rgb(27, 158, 119, 255, maxColorValue
+  = 255), printTable = TRUE)
 }
 \arguments{
-  \item{outputType}{TRUE or FALSE, determines if latex
-  commands is output}
+  \item{outputType}{Character string specifying the
+  destination of output: "latex", "ppt" or "device".  If
+  "device", graphs are sent to the default device
+  (typically the RGgui plot terminal)}
 
   \item{defaultThemeSize}{Text size in points, passed to
   ggplot}
@@ -26,7 +29,8 @@
   plots.  Currently only pdf and wmf is supported.}
 
   \item{addPlotTitle}{If true, adds question text as plot
-  title}
+  title. Defaults to TRUE if \code{ouputType} is either
+  "ppt" or "device"}
 
   \item{defaultColourArea}{Default RGB colour for areas in
   graphs (e.g. bars)}

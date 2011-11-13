@@ -111,7 +111,7 @@ is.surveyor <- function(x){
 #' @param plotType Either \code{ggplot} or \code{lattice}
 #' @param fastgraphics Uses lattice graphics if true, otherwise ggplot
 #' @param graphicFormat Device type for saving graphic plots.  Currently only pdf and wmf is supported.
-#' @param addPlotTitle If true, adds question text as plot title. Defaults to TRUE if \code{ouputType} is either "ppt" or "device"}
+#' @param addPlotTitle If true, adds question text as plot title. Defaults to TRUE if \code{ouputType} is either "ppt" or "device"
 #' @param defaultColourArea Default RGB colour for areas in graphs (e.g. bars)
 #' @param defaultColourPoint Default RGB colour for points in graphs (e.g. points)
 #' @param printTable If TRUE will print the table as part of the report
@@ -133,7 +133,7 @@ surveyorDefaults <- function(
 ){
 	
   outputType <- outputType[1]
-  if(outputType=="ppt") graphicFormat <- "wmf"
+  if(!is.null(outputType) && outputType=="ppt") graphicFormat <- "wmf"
   
 	list(
       outputType         = outputType,
@@ -150,6 +150,7 @@ surveyorDefaults <- function(
 #' Selectively updates surveyor defaults.
 #'
 #' Selectively updates surveyor defaults.
+#' 
 #' @inheritParams surveyorDefaults
 #' @seealso \code{\link{as.surveyor}}, \code{\link{surveyorDefaults}}
 #' @export 
@@ -165,8 +166,10 @@ surveyorUpdateDefaults <- function(
     defaultColourPoint = NULL,
     printTable = NULL
 ){
-  if(outputType=="ppt") graphicFormat <- "wmf"
-  if(outputType %in% c("ppt", "device")) addPlotTitle <- TRUE
+  if(!is.null(outputType)){
+      if(outputType=="ppt") graphicFormat <- "wmf"
+      if(outputType %in% c("ppt", "device")) addPlotTitle <- TRUE
+    }
   
 
   if(!missing(outputType))         surveyor$defaults$outputType <- outputType
