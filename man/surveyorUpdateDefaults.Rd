@@ -5,8 +5,8 @@
   surveyorUpdateDefaults(surveyor, outputType = NULL,
   defaultThemeSize = NULL, plotType = NULL, fastgraphics =
   NULL, graphicFormat = NULL, addPlotTitle = NULL,
-  defaultColourArea = NULL, defaultColourPoint = NULL,
-  printTable = NULL)
+  brewerPalette = NULL, revBrewerPal = NULL, printTable =
+  NULL)
 }
 \arguments{
   \item{outputType}{Character string specifying the
@@ -29,11 +29,8 @@
   title. Defaults to TRUE if \code{ouputType} is either
   "ppt" or "device"}
 
-  \item{defaultColourArea}{Default RGB colour for areas in
-  graphs (e.g. bars)}
-
-  \item{defaultColourPoint}{Default RGB colour for points
-  in graphs (e.g. points)}
+  \item{revBrewerPal}{If TRUE, reverse the order of
+  \code{defaultBrewerPal}}
 
   \item{printTable}{If TRUE will print the table as part of
   the report}

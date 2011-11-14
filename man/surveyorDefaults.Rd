@@ -6,10 +6,8 @@
   "device"), defaultThemeSize = 9, plotType = c("ggplot",
   "lattice"), fastgraphics = plotType[1] == "lattice",
   graphicFormat = c("pdf", "wmf"), addPlotTitle =
-  outputType \%in\% c("ppt", "device"), defaultColourArea =
-  rgb(127, 201, 127, 255, maxColorValue = 255),
-  defaultColourPoint = rgb(27, 158, 119, 255, maxColorValue
-  = 255), printTable = TRUE)
+  outputType \%in\% c("ppt", "device"), defaultBrewerPal =
+  "Set2", revBrewerPal = FALSE, printTable = TRUE)
 }
 \arguments{
   \item{outputType}{Character string specifying the
@@ -32,11 +30,11 @@
   title. Defaults to TRUE if \code{ouputType} is either
   "ppt" or "device"}
 
-  \item{defaultColourArea}{Default RGB colour for areas in
-  graphs (e.g. bars)}
+  \item{defaultBrewerPal}{Names of ColorBrewer pallette to
+  use}
 
-  \item{defaultColourPoint}{Default RGB colour for points
-  in graphs (e.g. points)}
+  \item{revBrewerPal}{If TRUE, reverse the order of
+  \code{defaultBrewerPal}}
 
   \item{printTable}{If TRUE will print the table as part of
   the report}

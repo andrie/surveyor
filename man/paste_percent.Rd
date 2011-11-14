@@ -2,7 +2,7 @@
 \alias{paste_percent}
 \title{Appends a percentage sign to numeric vector}
 \usage{
-  paste_percent(x)
+  paste_percent(x, digits = 1)
 }
 \arguments{
   \item{x}{Numeric vector}
