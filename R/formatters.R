@@ -7,8 +7,9 @@
 #' @param x Numeric vector
 #' @export 
 #' @keywords string
-paste_percent <- function(x){
-  xt <- sprintf("%.1f%%", x*100)
+paste_percent <- function(x, digits=1){
+  format <- paste("%.", digits, "f%%", sep="")
+  xt <- sprintf(format, x*100)
   xt[xt=="NA%"] <- ""
   xt
 }
