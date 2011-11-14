@@ -1,3 +1,13 @@
+surveyor 0.1-16 (15/11/2011)
+---------------
+
+Improvements:
+* Fixed plotColumn to have vertical bars in lattice
+* Fixed alignment of labels in lattice plots
+* Fixed formatting of labels in lattice plots
+* Added default surveyor settings to specify Color Brewer palettes
+
+
 surveyor 0.1-15 (13/11/2011)
 ---------------
 
