@@ -19,7 +19,7 @@ as.surveyorStats <- function(
 		data,
     surveyorCode,
 		ylabel = "Fraction of respondents",
-		formatter="percent",
+		formatter="paste_percent",
 		nquestion=NULL,
 		scale_breaks=NULL,
 		stats_method="",
@@ -545,7 +545,7 @@ statsNetScore <- function(surveyorCode){
 			dat,
       surveyorCode,
       ylabel="Net score",
-      formatter="format",
+      formatter="paste_percent",
 			stats_method="statsNetScore",
       plotFunction="plotNetScore")
 }

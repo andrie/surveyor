@@ -112,8 +112,8 @@ is.surveyor <- function(x){
 #' @param fastgraphics Uses lattice graphics if true, otherwise ggplot
 #' @param graphicFormat Device type for saving graphic plots.  Currently only pdf and wmf is supported.
 #' @param addPlotTitle If true, adds question text as plot title. Defaults to TRUE if \code{ouputType} is either "ppt" or "device"
-#' @param defaultColourArea Default RGB colour for areas in graphs (e.g. bars)
-#' @param defaultColourPoint Default RGB colour for points in graphs (e.g. points)
+#' @param defaultBrewerPal Names of ColorBrewer pallette to use 
+#' @param revBrewerPal If TRUE, reverse the order of \code{defaultBrewerPal}
 #' @param printTable If TRUE will print the table as part of the report
 #' @seealso \code{\link{as.surveyor}}, \code{\link{surveyorUpdateDefaults}}
 #' @export
@@ -127,8 +127,8 @@ surveyorDefaults <- function(
     fastgraphics = plotType[1]=="lattice",
     graphicFormat = c("pdf", "wmf"),
     addPlotTitle = outputType %in% c("ppt", "device"),
-		defaultColourArea = rgb(127,201,127, 255, maxColorValue=255),
-		defaultColourPoint = rgb(27, 158, 119, 255, maxColorValue=255),
+		defaultBrewerPal = "Set2",
+    revBrewerPal = FALSE,
     printTable = TRUE
 ){
 	
@@ -141,8 +141,8 @@ surveyorDefaults <- function(
 			fastgraphics       = fastgraphics,
       graphicFormat      = graphicFormat[1],
       addPlotTitle       = addPlotTitle,
-      defaultColourArea  = defaultColourArea,
-			defaultColourPoint = defaultColourPoint,
+      brewerPalette   = defaultBrewerPal,
+      revBrewerPal       = revBrewerPal,
       printTable         = printTable
 	)
 }
@@ -162,8 +162,8 @@ surveyorUpdateDefaults <- function(
     fastgraphics = NULL,
     graphicFormat = NULL,
     addPlotTitle = NULL,
-    defaultColourArea = NULL,
-    defaultColourPoint = NULL,
+    brewerPalette = NULL,
+    revBrewerPal = NULL,
     printTable = NULL
 ){
   if(!is.null(outputType)){
@@ -178,9 +178,9 @@ surveyorUpdateDefaults <- function(
   if(!missing(fastgraphics))       surveyor$defaults$fastgraphics <- fastgraphics
   if(!missing(graphicFormat))      surveyor$defaults$graphicFormat <- graphicFormat
   if(!missing(addPlotTitle))       surveyor$defaults$addPlotTitle <- addPlotTitle
-  if(!missing(defaultColourArea))  surveyor$defaults$defaultColourArea <- defaultColourArea
-  if(!missing(defaultColourPoint)) surveyor$defaults$defaultColourPoint <- defaultColourPoint
-  if(!missing(printTable))          surveyor$defaults$printTable <- printTable
+  if(!missing(brewerPalette))   surveyor$defaults$brewerPalette <- brewerPalette
+  if(!missing(revBrewerPal))       surveyor$defaults$revBrewerPal <- revBrewerPal
+  if(!missing(printTable))         surveyor$defaults$printTable <- printTable
   surveyor
 }
 

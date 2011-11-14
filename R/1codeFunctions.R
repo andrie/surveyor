@@ -6,16 +6,31 @@
 #' @param qid Question identifier, e.g. "Q4"
 #' @param ... Passed to surveyorStats
 #' @export
-#' @return An object of class "surveyorCode"
+#' @return 
+#' An object of class "surveyorCode"
+#' \describe{
+#' \item{data}{A data.frame with four columns: cbreak, question, response and weight}
+#' \item{surveyorDefaults}{A copy of the original surveyor defaults, see \code{\link{surveyorDefaults}}}
+#' \item{plotTitle}{Main title of the plot: defaults to question text}
+#' \item{qid}{Question id, e.g. "Q4"}
+#' \item{sampleSize}{Named vector with weighted sample size for each crossbreak}
+#' }
 as.surveyorCode <- function(x, surveyor, qid, ...){
   stopifnot(is.surveyor(surveyor))
   plotTitle <- qTextCommon(surveyor$sdata, qid) 
   surveyor$sdata <- NULL
+#  sampleSize <- vapply(
+#      split(x, x$cbreak), 
+#      function(x)weightedCount(x$response, x$weight),
+#      FUN.VALUE=1
+#  )
+
   ret <- list(
       data = x,
       surveyorDefaults = surveyor$defaults,
       plotTitle = plotTitle,
       qid = qid
+      #sampleSize = sampleSize
   )
   class(ret) <- "surveyorCode"
   ret

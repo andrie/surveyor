@@ -37,3 +37,5 @@ Collate:
     'surveyor-object.R'
     'surveyor-package.R'
     'surveyorPlot.R'
+    'plotBar.R'
+    'plotColumn.R'
