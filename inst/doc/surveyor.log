@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2011.9.28)  1 NOV 2011 19:47
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2011.9.28)  13 NOV 2011 21:42
 entering extended mode
 **f:/git/surveyor/surveyor/inst/doc/./surveyor.tex
 (f:/git/surveyor/surveyor/inst/doc/./surveyor.tex
@@ -68,7 +68,7 @@ Style option: `fancyvrb' v2.7a, with DG/SPQR fixes, and firstline=lastline fix
 \c@FancyVerbLine=\count89
 \FV@StepNumber=\count90
 \FV@OutFile=\write3
-) ("C:/Program Files/R/R-2.13.2/share/texmf/tex/latex\upquote.sty"
+) (c:/apps/R/R-2.14.0/share/texmf/tex/latex\upquote.sty
 Package: upquote 2003/08/11 v1.1 Covington's upright-quote modification to verb
 atim and verb
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\textcomp.sty"
@@ -213,7 +213,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
 {C:/Users/Andrie/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
 LaTeX Font Info:    Try loading font information for TS1+aer on input line 82.
-("C:/Program Files/R/R-2.13.2/share/texmf/tex/latex\ts1aer.fd"
+(c:/apps/R/R-2.14.0/share/texmf/tex/latex\ts1aer.fd
 File: ts1aer.fd 
 )
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <10> not available
@@ -363,7 +363,7 @@ Package pdftex.def Info: graphics/figure-026.pdf used on input line 315.
 or\surveyor\inst\doc\surveyor.aux) ) 
 Here is how much of TeX's memory you used:
  2489 strings out of 494045
- 35610 string characters out of 3146017
+ 35565 string characters out of 3146017
  77195 words of memory out of 3000000
  5722 multiletter control sequences out of 15000+200000
  25116 words of font info for 59 fonts, out of 3000000 for 9000
@@ -378,7 +378,7 @@ nts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
 pe1/public/amsfonts/cm/cmsltt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/ty
 pe1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type
 1/public/amsfonts/cm/cmtt12.pfb>
-Output written on surveyor.pdf (11 pages, 472413 bytes).
+Output written on surveyor.pdf (11 pages, 205427 bytes).
 PDF statistics:
  231 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
