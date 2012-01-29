@@ -104,72 +104,23 @@ latexTable <- function(x, caption){
 
 
 
-## #' Prints cbreak information in latex format
-## #'
-## #' Prints cbreak information in latex format
-## #' 
-## #' @param f A data frame with coded answers, provided by a code_* function
-## #' @seealso Coding functions:
-## #' \code{\link{codeSingle}}, 
-## #' \code{\link{codeArray}},
-## #' \code{\link{codeText}}
-## #' Summarising functions:
-## #' \code{\link{statsBin}}, 
-## #' \code{\link{statsNetScore}}
-## #' Plot functions: 
-## #' \code{\link{plotBar}}, 
-## #' \code{\link{plotPoint}} 
-## #' @return data frame
-## #' @keywords internal
-#print_cb_code <- function(f){
-#	
-#	if(is.null(f)){
-#		return(NULL)
-#	}
-#	
-#	if (is.null(f$question)){
-#		v <- tapply(f$value, list(f$response, f$cbreak), sum, na.rm=TRUE)
-#		dimtotal1 <- 1
-#		dimtotal2 <- 2
-#	} else {
-#		v <- tapply(f$value, list(f$response, f$question, f$cbreak), sum, na.rm=TRUE)
-#		dimtotal1 <- c(1,2)
-#		dimtotal2 <- c(2,1)
-#	}
-#	
-#	vp1 <- sprop.table(v, dimtotal2, na.rm=TRUE)
-#	p1 <- vp1
-#	#p1 <- paste_percent(vp1)
-#	
-#	vp2 <- sprop.table(v, dimtotal1, na.rm=TRUE)
-#	p2 <- vp2
-#	#p2 <- paste_percent(vp2)
-#	
-#	v <- round(v, 1)
-#	
-##	align <- paste(c("l", rep("r", dim(v)[2])), collapse="")
-#	
-#	tmpv <- latexTable(v)
-#	tmp1 <- latexTable(p1)
-#	tmp2 <- latexTable(p2)
-#	
-#	ret <- paste(
-##			"\\vspace{1 pc}",
-#			"\\\\Weighted totals\\nopagebreak",
-#			tmpv, 
-#			
-##			"\\vspace{2 pc}\n",
-#			"\\\\Percentage of Row\\nopagebreak",
-#			as.character(tmp1), 
-#			
-##			"\\vspace{2 pc}\n",
-#			"\\\\Percentage of Column\\nopagebreak",
-#			as.character(tmp2), 
-#			
-#			sep="", 
-#			collapse="\n")
-#	
-##	ret	<- tmpv
-#	ret
-#}
+#TODO: Create unit test for flatten.pairwise.table
+
+#' Takes pairwise comparison table and flatten it for easy printing.
+#' 
+#' @param x A matrix, typically the result of \code{\link[stats]{pairwise.table}}
+#' @examples
+#' data(airquality)
+#' airquality <- within(airquality, Month <- factor(Month, labels = month.abb[5:9]))
+#' x <- with(airquality, pairwise.t.test(Ozone, Month))
+#' flatten.pairwise.table(x$p.value)
+flatten.pairwise.table <- function(x){
+  f <- matrix(NA, 1, ncol(x))
+  rownames(f) <- colnames(x)[1]
+  g <- matrix(NA, nrow(x)+1, 1)
+  colnames(g) <- rownames(x)[nrow(x)]
+  ans <- cbind(rbind(f, x), g)
+  ans[upper.tri(ans)] <- ans[lower.tri(ans)]
+  ans
+}
 

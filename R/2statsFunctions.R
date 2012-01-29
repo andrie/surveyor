@@ -599,6 +599,3 @@ statsText <- function(surveyorCode, ...){
       stats_method="statsText",
       plotFunction="plotText")
 }
-
-
-  
