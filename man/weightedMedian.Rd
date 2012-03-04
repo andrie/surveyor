@@ -2,9 +2,9 @@
 \alias{weightedMedian}
 \title{Calculates weighted median.}
 \usage{
-  weightedMedian(x, w, na.rm = TRUE, interpolate =
-  is.null(ties), ties = NULL, method = c("quick", "shell"),
-  ...)
+  weightedMedian(x, w, na.rm = TRUE,
+    interpolate = is.null(ties), ties = NULL,
+    method = c("quick", "shell"), ...)
 }
 \arguments{
   \item{x}{a numeric vector containing the values whose

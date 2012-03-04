@@ -181,7 +181,7 @@ plotPoint <- function(s, plotFunction="plotPoint", ...){
 			coord_flip() + 
 			quiet +
 			ylab(s$ylabel) +
-			facet_grid(~cbreak) +
+			facet_grid(.~cbreak) +
 			opts(
 					panel.grid.minor = theme_blank(), 
 					axis.text.x = theme_text(

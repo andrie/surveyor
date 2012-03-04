@@ -3,12 +3,16 @@
 \title{Selectively updates surveyor defaults.}
 \usage{
   surveyorUpdateDefaults(surveyor, outputType = NULL,
-  defaultThemeSize = NULL, plotType = NULL, fastgraphics =
-  NULL, graphicFormat = NULL, addPlotTitle = NULL,
-  brewerPalette = NULL, revBrewerPal = NULL, printTable =
-  NULL)
+    defaultThemeSize = NULL, plotType = NULL,
+    fastgraphics = NULL, graphicFormat = NULL,
+    addPlotTitle = NULL, brewerPalette = NULL,
+    revBrewerPal = NULL, printTable = NULL)
 }
 \arguments{
+  \item{surveyor}{Surveyor object}
+
+  \item{brewerPalette}{Names of ColorBrewer palette to use}
+
   \item{outputType}{Character string specifying the
   destination of output: "latex", "ppt" or "device".  If
   "device", graphs are sent to the default device

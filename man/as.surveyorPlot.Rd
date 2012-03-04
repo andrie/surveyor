@@ -3,7 +3,7 @@
 \title{Creates surveyorPlot object and adds plot title.}
 \usage{
   as.surveyorPlot(plot, surveyorStats, expansion = 1,
-  plotFunction = "", plotSize = par("din"), ...)
+    plotFunction = "", plotSize = par("din"), ...)
 }
 \arguments{
   \item{plot}{A ggplot or lattice object}

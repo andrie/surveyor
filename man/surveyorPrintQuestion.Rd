@@ -3,7 +3,7 @@
 \title{Prints surveyor question.}
 \usage{
   surveyorPrintQuestion(surveyor, q_id, f, g, h, plotSize,
-  outputType, plotMultiplierLimits = c(1, 1))
+    outputType, plotMultiplierLimits = c(1, 1))
 }
 \arguments{
   \item{surveyor}{Surveyor object}

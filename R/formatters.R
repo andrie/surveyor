@@ -1,10 +1,11 @@
 
 
-#' Appends a percentage sign to numeric vector
+#' Formats numeric value as percentage.
 #' 
-#' Turns a numeric vector into a character vector
+#' Multiplies value by 100 and appends % sign, e.g. 0.23 -> "23%"
 #'
 #' @param x Numeric vector
+#' @param digits Numeric. Number of digits.
 #' @export 
 #' @keywords string
 paste_percent <- function(x, digits=1){

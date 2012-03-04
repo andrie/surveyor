@@ -2,12 +2,14 @@
 \alias{surveyorDefaults}
 \title{Initialises surveyor object defaults.}
 \usage{
-  surveyorDefaults(outputType = c("latex", "ppt",
-  "device"), defaultThemeSize = 9, plotType = c("ggplot",
-  "lattice"), fastgraphics = plotType[1] == "lattice",
-  graphicFormat = c("pdf", "wmf"), addPlotTitle =
-  outputType \%in\% c("ppt", "device"), defaultBrewerPal =
-  "Set2", revBrewerPal = FALSE, printTable = TRUE)
+  surveyorDefaults(outputType = c("latex", "ppt", "device"),
+    defaultThemeSize = 9,
+    plotType = c("ggplot", "lattice"),
+    fastgraphics = plotType[1] == "lattice",
+    graphicFormat = c("pdf", "wmf"),
+    addPlotTitle = outputType \%in\% c("ppt", "device"),
+    defaultBrewerPal = "Set2", revBrewerPal = FALSE,
+    printTable = TRUE)
 }
 \arguments{
   \item{outputType}{Character string specifying the
@@ -30,7 +32,7 @@
   title. Defaults to TRUE if \code{ouputType} is either
   "ppt" or "device"}
 
-  \item{defaultBrewerPal}{Names of ColorBrewer pallette to
+  \item{defaultBrewerPal}{Names of ColorBrewer palette to
   use}
 
   \item{revBrewerPal}{If TRUE, reverse the order of

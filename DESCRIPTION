@@ -10,22 +10,25 @@ Description: This is a set of tools to analyse, report and
     plot survey data
 Author@R: person("Andrie", "de Vries",
     email="apdevries@gmail.com")
-Version: 0.1-16
+Version: 0.1-17
 URL: www.pentalibra.com
-Date: 2011-11-15
-Depends:
-    surveydata (>= 0.1.03),
-    braid (>= 0.1-04)
+Date: 2012-03-03
 Imports:
+    surveydata (>= 0.1-03),
+    braid,
+    reshape2,
     xtable,
     stringr,
     lattice,
     latticeExtra,
     data.table,
-    ggplot2,
-    RColorBrewer
+    ggplot2 (>= 0.9),
+    RColorBrewer,
+    grid,
+    plyr
 Suggests:
-    braidppt
+    braidppt,
+    surveydata (>= 0.1-03)
 Collate:
     '1codeFunctions.R'
     '2statsFunctions.R'
@@ -34,9 +37,9 @@ Collate:
     '3plotHelpers.R'
     '4tableFunctions.R'
     'formatters.R'
+    'plotBar.R'
+    'plotColumn.R'
     'redefine.R'
     'surveyor-object.R'
     'surveyor-package.R'
     'surveyorPlot.R'
-    'plotBar.R'
-    'plotColumn.R'

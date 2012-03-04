@@ -93,7 +93,8 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
         #coord_flip() + 
         scale_y_continuous(
             s$ylabel, 
-            formatter=s$formatter,
+            #formatter=s$formatter,
+            labels=match.fun(s$formatter),
             breaks=s$scale_breaks) +
         opts(
             legend.position="none",

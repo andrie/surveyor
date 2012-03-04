@@ -1,0 +1,256 @@
+
+% \VignetteIndexEntry{An overview of the plot and stats functions in the surveyor package} 
+% \VignettePackage{surveyor}
+% \VignetteKeyword{surveyor}
+% \VignetteKeyword{surveyor}
+
+
+% Definitions
+\newcommand{\surveyor}{\texttt{surveyor}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\ggplot}{\texttt{ggplot}}
+
+\documentclass[10pt,oneside]{article}
+
+\begin{document}
+\pagestyle{empty}
+
+\setlength{\baselineskip}{1.25em}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0.0em}
+
+\SweaveOpts{engine=R, eps=FALSE, echo=TRUE, prefix.string=graphics/figure, keep.source=TRUE}
+
+%\begin{titlepage}
+\title{An overview of the plot and stats functions in the \surveyor{} package}
+\author{Andrie de Vries}
+%\end{titlepage}
+\maketitle{}
+
+\surveyor{} is a package that makes it easy to create graphical crosstabs from survey data files.  
+
+%==============================================================================
+
+\section{Introduction}
+
+blah
+
+%==============================================================================
+
+\section{Create test data and a surveyor object}
+
+<<initialise, echo=TRUE, keep.source=TRUE>>=
+
+library(surveydata)
+library(surveyor)
+library(ggplot2)
+library(lattice)
+
+qData <- data.frame(
+    Q1 = c("Yes", "No", "Yes", "No", "Yes"),
+    Q2 = c(1, 1, 1, 0, 0),
+    Q3 = c("A", "B", "C", "B", "A"),
+    Q4_1 = c("Yes", "No", "Yes", "No", "Yes"), 
+    Q4_2 = c("Yes", "Yes", "No", "No", "Yes"), 
+    Q5_1 = c(1, 1, 1, 0, 0),
+    Q5_2 = c(0, 0, 1, 1, 1),
+    Q6_1 = c("A", "B", "C", "B", "A"),
+    Q6_2 = c("C", "B", "A", "B", "C"),
+    crossbreak = c("AAA", "AAA", "BBB", "BBB", "BBB"), 
+    crossbreak2 = c("DDD", "EEE", "DDD", "EEE", "DDD"),
+    weight = c(0.9, 1.1, 0.8, 1.2, 1.0)
+)
+varlabels(qData) <- c(
+    "Single question with yes/no input", 
+    "Single question with binary input",
+    "Single question with multiple options",
+    "Multiple question with yes/no input: XX", 
+    "Multiple question with yes/no input: YY", 
+    "Multiple question with binary input: XX",
+    "Multiple question with binary input: YY",
+    "Multiple question with multiple options: XX",
+    "Multiple question with multiple options: YY",
+    "crossbreak",
+    "crossbreak2",
+    "weight")
+qData <- as.surveydata(qData)
+@
+
+Next, set up a surveyor object.  For the sake of illustrating the different options, we create two surveyor objects:
+\begin{itemize}
+\item sg: \surveyor{} object for \ggplot{} graphics
+\item sl: \surveyor{} object for \code{lattice} graphics
+\end{itemize}
+
+<<>>=
+s <- as.surveyor(qData, qData$crossbreak, qData$weight)
+sg <- surveyorUpdateDefaults(s, outputType = "device", addPlotTitle = TRUE)
+sl <- surveyorUpdateDefaults(sg, fastgraphics=TRUE)
+
+@
+
+%==============================================================================
+
+\section{Demonstrating the different plotBar options}
+
+%--- plotBar with ggplot
+
+\subsection{bar plots with ggplot}
+
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotBar(statsBin(codeQuickArray(sg, "Q1")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotBar(statsBin(codeQuickArray(sg, "Q2")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotBar(statsBin(codeQuickArray(sg, "Q3")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotBar(statsBin(codeQuickArray(sg, "Q4")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotBar(statsBin(codeQuickArray(sg, "Q5")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotBar(statsBin(codeQuickArray(sg, "Q6")))
+print(x$plot)
+@
+
+%--- plotBar with lattice
+
+\subsection{bar plots with lattice}
+
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotBar(statsBin(codeQuickArray(sl, "Q1")))
+print(x$plot)
+@
+
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotBar(statsBin(codeQuickArray(sl, "Q2")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotBar(statsBin(codeQuickArray(sl, "Q3")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotBar(statsBin(codeQuickArray(sl, "Q4")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotBar(statsBin(codeQuickArray(sl, "Q5")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotBar(statsBin(codeQuickArray(sl, "Q6")))
+print(x$plot)
+@
+
+%==============================================================================
+
+\section{Demonstrating the different plotColumn options}
+
+%--- plotColumn with ggplot
+
+\subsection{Column plots with ggplot}
+
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotColumn(statsBin(codeQuickArray(sg, "Q1")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotColumn(statsBin(codeQuickArray(sg, "Q2")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotColumn(statsBin(codeQuickArray(sg, "Q3")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotColumn(statsBin(codeQuickArray(sg, "Q4")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotColumn(statsBin(codeQuickArray(sg, "Q5")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotColumn(statsBin(codeQuickArray(sg, "Q6")))
+print(x$plot)
+@
+
+%--- plotColumn with lattice
+
+\subsection{Column plots with lattice}
+
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotColumn(statsBin(codeQuickArray(sl, "Q1")))
+print(x$plot)
+@
+
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotColumn(statsBin(codeQuickArray(sl, "Q2")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotColumn(statsBin(codeQuickArray(sl, "Q3")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotColumn(statsBin(codeQuickArray(sl, "Q4")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotColumn(statsBin(codeQuickArray(sl, "Q5")))
+print(x$plot)
+@
+
+<<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
+x <- plotColumn(statsBin(codeQuickArray(sl, "Q6")))
+print(x$plot)
+@
+
+
+\section{Conclusion}
+
+The \surveyor{} packages makes it easy to analyse survey data files.
+
+% Start a new page
+% Not echoed, not evaluated
+% ONLY here for checkVignettes so that all output doesn't
+% end up on one enormous page
+
+\end{document}
+
+
+
+

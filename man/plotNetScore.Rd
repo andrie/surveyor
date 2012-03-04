@@ -2,8 +2,8 @@
 \alias{plotNetScore}
 \title{Plot data in net score format (bar chart, but percentage axis).}
 \usage{
-  plotNetScore(s, plotFunction = "plotNetScore", width =
-  50, ...)
+  plotNetScore(s, plotFunction = "plotNetScore",
+    width = 50, ...)
 }
 \arguments{
   \item{s}{A surveyorStats object}

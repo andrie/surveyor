@@ -14,10 +14,12 @@
 #' @return A list object of class surveyor
 #' @export
 #' @examples
+#' library(surveydata)
 #' sdata <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
 #' qtext <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
 #' varlabels(sdata) <- qtext
 #' sdata <- as.surveydata(sdata)
+#' library(braid)
 #' b <- as.braid()
 #' s <- as.surveyor(sdata, crossbreak=c("aa", "bb"), weight=c(1,1), braid=b) 					
 as.surveyor <- function(
@@ -74,9 +76,11 @@ as.surveyor <- function(
 #' @param x Object to be tested
 #' @export
 #' @examples 
+#' library(surveydata)
 #' sdata <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
 #' varlabels(sdata) <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
 #' sdata <- as.surveydata(sdata)
+#' library(braid)
 #' b <- as.braid()
 #' s <- as.surveyor(sdata, crossbreak=c("aa", "bb"), weight=c(1,1), b)
 #' is.surveyor(s) # TRUE
@@ -112,7 +116,7 @@ is.surveyor <- function(x){
 #' @param fastgraphics Uses lattice graphics if true, otherwise ggplot
 #' @param graphicFormat Device type for saving graphic plots.  Currently only pdf and wmf is supported.
 #' @param addPlotTitle If true, adds question text as plot title. Defaults to TRUE if \code{ouputType} is either "ppt" or "device"
-#' @param defaultBrewerPal Names of ColorBrewer pallette to use 
+#' @param defaultBrewerPal Names of ColorBrewer palette to use 
 #' @param revBrewerPal If TRUE, reverse the order of \code{defaultBrewerPal}
 #' @param printTable If TRUE will print the table as part of the report
 #' @seealso \code{\link{as.surveyor}}, \code{\link{surveyorUpdateDefaults}}
@@ -141,7 +145,7 @@ surveyorDefaults <- function(
 			fastgraphics       = fastgraphics,
       graphicFormat      = graphicFormat[1],
       addPlotTitle       = addPlotTitle,
-      brewerPalette   = defaultBrewerPal,
+      brewerPalette      = defaultBrewerPal,
       revBrewerPal       = revBrewerPal,
       printTable         = printTable
 	)
@@ -152,6 +156,8 @@ surveyorDefaults <- function(
 #' Selectively updates surveyor defaults.
 #' 
 #' @inheritParams surveyorDefaults
+#' @param surveyor Surveyor object
+#' @param brewerPalette Names of ColorBrewer palette to use 
 #' @seealso \code{\link{as.surveyor}}, \code{\link{surveyorDefaults}}
 #' @export 
 surveyorUpdateDefaults <- function(
@@ -178,7 +184,7 @@ surveyorUpdateDefaults <- function(
   if(!missing(fastgraphics))       surveyor$defaults$fastgraphics <- fastgraphics
   if(!missing(graphicFormat))      surveyor$defaults$graphicFormat <- graphicFormat
   if(!missing(addPlotTitle))       surveyor$defaults$addPlotTitle <- addPlotTitle
-  if(!missing(brewerPalette))   surveyor$defaults$brewerPalette <- brewerPalette
+  if(!missing(brewerPalette))      surveyor$defaults$brewerPalette <- brewerPalette
   if(!missing(revBrewerPal))       surveyor$defaults$revBrewerPal <- revBrewerPal
   if(!missing(printTable))         surveyor$defaults$printTable <- printTable
   surveyor

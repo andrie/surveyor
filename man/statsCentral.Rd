@@ -2,9 +2,9 @@
 \alias{statsCentral}
 \title{Calculates central tendency.}
 \usage{
-  statsCentral(surveyorCode, statsFunction =
-  c("weightedMean", "median", "sum", "count"), ylabel =
-  "Mean", ...)
+  statsCentral(surveyorCode,
+    statsFunction = c("weightedMean", "median", "sum", "count"),
+    ylabel = "Mean", ...)
 }
 \arguments{
   \item{surveyorCode}{An object of class "surveyorCode".

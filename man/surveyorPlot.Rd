@@ -2,13 +2,14 @@
 \alias{surveyorPlot}
 \title{Codes and plots a survey question.}
 \usage{
-  surveyorPlot(surveyor, q_id, codeFunction =
-  codeQuickArray, statsFunction = statsGuess, plotFunction
-  = plotGuess, plotSize = if (outputType == "device")
-  par("din") else surveyor$braid$defaultPlotSize,
-  outputType = surveyor$defaults$outputType, onlyBreaks =
-  seq_along(surveyor$crossbreak), plotMultiplierLimits = if
-  (outputType == "ppt") c(0.8, 1.2) else c(0.8, 2.5), ...)
+  surveyorPlot(surveyor, q_id,
+    codeFunction = codeQuickArray,
+    statsFunction = statsGuess, plotFunction = plotGuess,
+    plotSize = if (outputType == "device") par("din") else surveyor$braid$defaultPlotSize,
+    outputType = surveyor$defaults$outputType,
+    onlyBreaks = seq_along(surveyor$crossbreak),
+    plotMultiplierLimits = if (outputType == "ppt") c(0.8, 1.2) else c(0.8, 2.5),
+    ...)
 }
 \arguments{
   \item{surveyor}{Surveyor object}

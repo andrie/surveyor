@@ -92,14 +92,15 @@ plotBar <- function(s, plotFunction="plotBar", ...){
       p <- p + geom_text(aes_string(label="labelsValue", hjust="labelsJust"), size=3)
     
     # Plot options 
-    p <- p + 
+  p <- p + 
 				theme_surveyor(s$surveyorDefaults$defaultThemeSize) +
 				coord_flip() + 
 				scale_y_continuous(
 						s$ylabel, 
-						formatter=s$formatter,
+						#formatter=s$formatter,
+            labels=match.fun(s$formatter),
 						breaks=s$scale_breaks) +
-				facet_grid(~cbreak) + 
+				facet_grid(.~cbreak) + 
 				opts(
 						legend.position="none",
 						axis.title.y = theme_blank()

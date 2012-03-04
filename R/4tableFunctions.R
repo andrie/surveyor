@@ -113,7 +113,7 @@ latexTable <- function(x, caption){
 #' data(airquality)
 #' airquality <- within(airquality, Month <- factor(Month, labels = month.abb[5:9]))
 #' x <- with(airquality, pairwise.t.test(Ozone, Month))
-#' flatten.pairwise.table(x$p.value)
+#' surveyor:::flatten.pairwise.table(x$p.value)
 flatten.pairwise.table <- function(x){
   f <- matrix(NA, 1, ncol(x))
   rownames(f) <- colnames(x)[1]

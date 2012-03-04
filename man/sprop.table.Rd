@@ -16,9 +16,9 @@
   Redefines prop.table to deal with NA values
 }
 \examples{
-##  m <- matrix(1:4,2)
-##  surveyor:::sprop.table(m,1)
-##  surveyor:::sprop.table(m,2)
+##m <- matrix(1:4,2)
+##surveyor:::sprop.table(m,1)
+##surveyor:::sprop.table(m,2)
 }
 \keyword{##}
 \keyword{internal}

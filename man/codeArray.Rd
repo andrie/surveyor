@@ -2,8 +2,8 @@
 \alias{codeArray}
 \title{Code survey data in array question form}
 \usage{
-  codeArray(surveyor, q_id, remove_other = FALSE, wrapWidth
-  = 50, ...)
+  codeArray(surveyor, q_id, remove_other = FALSE,
+    wrapWidth = 50, ...)
 }
 \arguments{
   \item{surveyor}{Surveyor object}

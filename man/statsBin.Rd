@@ -3,8 +3,8 @@
 \title{Calculates summary statistics.}
 \usage{
   statsBin(surveyorCode, ylabel = "Respondents",
-  stats_method = "statsBin", convert_to_percent = FALSE,
-  ...)
+    stats_method = "statsBin", convert_to_percent = FALSE,
+    ...)
 }
 \arguments{
   \item{surveyorCode}{An object of class "surveyorCode".

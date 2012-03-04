@@ -1,3 +1,9 @@
+surveyor 0.1-17 (2012-03-03)
+---------------
+
+Improvements:
+* Updated plot functions to work with ggplot 0.9
+
 surveyor 0.1-16 (15/11/2011)
 ---------------
 

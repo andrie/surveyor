@@ -43,7 +43,7 @@
 #' @name surveyor-package
 #' @aliases surveyor surveyor-package
 #' @docType package
-#' @import  stringr lattice latticeExtra data.table ggplot2 RColorBrewer
+#' @import  surveydata braid reshape2 xtable stringr lattice latticeExtra data.table ggplot2 RColorBrewer grid plyr
 #' @title Tools for analysing and reporting on survey objects.
 #' @author Andrie de Vries \email{andrie.de.vries@@pentalibra.com}
 #' @keywords package

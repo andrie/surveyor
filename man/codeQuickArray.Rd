@@ -2,8 +2,8 @@
 \alias{codeQuickArray}
 \title{Code survey data in single or array question form.}
 \usage{
-  codeQuickArray(surveyor, q_id, crossbreak =
-  surveyor$cbreak, wrapWidth = 50, ...)
+  codeQuickArray(surveyor, q_id,
+    crossbreak = surveyor$cbreak, wrapWidth = 50, ...)
 }
 \arguments{
   \item{surveyor}{Surveyor object}
