@@ -150,18 +150,16 @@ plotColours <- function(s, colours=3,
 #'
 #' @param s A surveyorStats object
 #' @param plotFunction Character vector: Identifies the name of the plot function used to create the plot
+#' @param formatter A formatting function used to format labels
 #' @param ... Ignored
 #' @seealso 
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @family plotFunctions
 #' @keywords plot
 #' @export
-plotPoint <- function(s, plotFunction="plotPoint", ...){
+plotPoint <- function(s, plotFunction="plotPoint", formatter="formatPercent", ...){
   stopifnot(is.surveyorStats(s))
-  question <- NULL; rm(question) # Dummy to trick R CMD check
-	response <- NULL; rm(response) # Dummy to trick R CMD check
-	value <- NULL; rm(value) # Dummy to trick R CMD check
-	cbreak <- NULL; rm(cbreak) # Dummy to trick R CMD check
+  question <- response <- value <- cbreak <- NULL  # Dummy to trick R CMD check
 
 	f <- s$data
 	if (is.null(f$question)){
@@ -170,14 +168,19 @@ plotPoint <- function(s, plotFunction="plotPoint", ...){
 								colour=factor(cbreak), fill=factor(cbreak)))
 	} else {
 	# Plot array question 
-	p <- ggplot(f, aes(x=question, y=response, size=value, 
-							colour=factor(cbreak), fill=factor(cbreak)))
-		}
+    if(is.null(f$response)) {
+      p <- ggplot(f, aes(x=question, y=value,  
+              colour=factor(cbreak), fill=factor(cbreak)))
+    } else {
+    	p <- ggplot(f, aes(x=question, y=response, size=value, 
+  							colour=factor(cbreak), fill=factor(cbreak)))
+    }
+	}
+  labeldata <- within(f, label <- formatValues(f$value, formatter))
 	p <- p + 
 			theme_surveyor(s$surveyorDefaults$defaultThemeSize) +
 			geom_point(stat="sum") +
-			geom_text(aes(label=round(value*100, 0)),
-					size=3, vjust=2) +
+			geom_text(data=labeldata, aes_string(label="label"), size=3, vjust=2) +
 			coord_flip() + 
 			quiet +
 			ylab(s$ylabel) +
@@ -226,6 +229,7 @@ plotText <- function(s, plotFunction="plotText", ...){
     #if(s$data$cbreak != surveyor$crossbreak) return(NULL)
     ### Carry on as usual
     unique_resp <- unique(s$data$response)
+    unique_resp <- levels(s$data$response)
     items <- paste("\\item", latexTranslate(unique_resp))
     items <- paste(items, collapse="\n")
 #  }
@@ -290,8 +294,8 @@ plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
   			) +
   			scale_y_continuous(
   					s$ylabel, 
-  					formatter = "percent", 
-  					breaks    = c(-1, 0, 1)
+  					labels = scales::percent, 
+  					breaks = c(-1, 0, 1)
   			) +
   			facet_grid(~cbreak)  
   			
@@ -315,7 +319,10 @@ plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
     q <- update(q, 
         par.settings=modifyList(
             latticeExtra::ggplot2like(n = 4, h.start = 180),
-            list(fontsize=list(text=s$surveyorDefaults$defaultThemeSize))
+            list(
+                fontsize=list(text=s$surveyorDefaults$defaultThemeSize),
+                axis.text = list(col = "black")
+            )
         ),
         between=list(x=0.5),
         col=plotColours(s, colours=length(q$panel.args)),
@@ -337,7 +344,7 @@ plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
           for (i in seq_along(x)){
             ltext(
                 x[i], y[i], 
-                labels=paste_percent(x[i], digits=0), 
+                labels=formatPercent(x[i], digits=0), 
                 adj=c(
                     cutJust(x[i], breaks=seq(-1, 1, 0.5), newValues=c(-0.1, 1.1, -0.1, 1.1)),
                     0.5)

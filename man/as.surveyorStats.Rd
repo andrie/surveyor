@@ -4,7 +4,7 @@
 \usage{
   as.surveyorStats(data, surveyorCode,
     ylabel = "Fraction of respondents",
-    formatter = "paste_percent", nquestion = NULL,
+    formatter = "formatPercent", nquestion = NULL,
     scale_breaks = NULL, stats_method = "",
     plotFunction = "", ...)
 }

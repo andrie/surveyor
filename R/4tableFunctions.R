@@ -39,7 +39,7 @@ tableGuess <- function(g){
 		}
 	}
 	
-	if(g_orig$formatter=="percent") v <- apply(v, c(1, 2), paste_percent)
+	if(g_orig$formatter=="percent") v <- apply(v, c(1, 2), formatPercent)
 	
 	paste(latexTable(v, "Weighted totals"), sep="", collapse="\n")
 

@@ -22,9 +22,9 @@
 surveyorPlot <- function(
 		surveyor,
 		q_id,
-		codeFunction = codeQuickArray,
-		statsFunction = statsGuess,
-		plotFunction = plotGuess,
+		codeFunction = "codeQuickArray",
+		statsFunction = "statsGuess",
+		plotFunction = "plotGuess",
 		plotSize = if(outputType=="device") par("din") else surveyor$braid$defaultPlotSize,
     outputType = surveyor$defaults$outputType,
     onlyBreaks=seq_along(surveyor$crossbreak),
@@ -48,13 +48,13 @@ surveyorPlot <- function(
       h <- match.fun(plotFunction)(g, plotSize=plotSize, outputType, ...)
       
       if(outputType %in% c("latex", "ppt")){
-        if(outputType=="ppt"){
-          braidppt::braidpptNewSlide(
-              surveyor$braid,
-              title=q_id,
-              text=plot_title
-          )
-        }
+#        if(outputType=="ppt"){
+#          braidppt::braidpptNewSlide(
+#              surveyor$braid,
+#              title=q_id,
+#              text=plot_title
+#          )
+#        }
           
         catString <- surveyorPrintQuestion(
             surveyor,
@@ -149,6 +149,7 @@ surveyorPrintQuestion <- function(surveyor, q_id, f, g, h, plotSize, outputType,
             width=plotSize[1], height=(plotSize[2] * height_multiplier), Qid=q_id)
       },
       ppt = {
+        stopifnot(require(braidppt))
         braidppt::braidpptPlot(surveyor$braid, h$plot, filename=filename,
             width=plotSize[1], height=(plotSize[2] * height_multiplier), Qid=q_id)
       }

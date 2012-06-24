@@ -119,7 +119,7 @@ codeArray <- function(surveyor, q_id, remove_other=FALSE, wrapWidth=50, ...){
 	x <- as.list(q_data[, q_id])
 	x[x=="NA"] <- NA
 	
-  if (all_na(x)){
+  if (allNA(x)){
 		return(NULL)
 	}
 	
@@ -189,6 +189,7 @@ quickStack <- function(x) unlist(unname(x))
 #' @param q_id Question id
 #' @param crossbreak Crossbreak vector
 #' @param wrapWidth Position where labels will be wrapped.  Passed to \code{\link[stringr]{str_wrap}}
+#' @param autosortQuestion Logical. If TRUE, sorts questions in order of response
 #' @param ... Other parameters passed on to downstream code* functions
 #' @seealso
 #' For an overview of the surveyor package \code{\link{surveyor}}
@@ -196,35 +197,55 @@ quickStack <- function(x) unlist(unname(x))
 #' @return data frame
 #' @keywords code
 #' @export
-codeQuickArray <- function(surveyor, q_id, crossbreak=surveyor$cbreak, wrapWidth=50, ...){
-  dat <- surveyor$sdata
-  reps <- length(which.q(dat, q_id))
+codeQuickArray <- function(surveyor, q_id, crossbreak=surveyor$cbreak, wrapWidth=50,
+    autosortQuestion=FALSE, ...){
+  dat <- surveyor$sdata[, q_id]
+  if(is.data.frame(dat)) reps <- ncol(dat) else reps <- 1
+  #reps <- length(dat)
   if(reps==0) return(NULL)
-  question <- if(reps==1) "1" else qTextUnique(dat, q_id)
+  questionText <- if(reps==1) qTextCommon(surveyor$sdata, q_id) else qTextUnique(surveyor$sdata, q_id)
+  question <- if(reps==1) "1" else questionText
   #cbreak <- rep(surveyor$cbreak, reps)
   cbreak <- rep(crossbreak, reps)
   weight <- rep(surveyor$weight, reps)
-  dat <- dat[, q_id]
+  #dat <- dat[, q_id]
+  if(reps==1){
+    to.order <- is.ordered(dat)
+    order.levels <- levels(dat)
+  } else {
+    to.order <- is.ordered(dat$response)
+    order.levels <- levels(dat$response)
+  }
+  
   nrows <- if(reps==1) length(dat) else nrow(dat)
-  #browser()
   if (reps==1) {
     class(dat) <- class(dat)[-1]
     response <- dat
-    if(!is.numeric(response)) response <- str_wrap(as.character(response), width=wrapWidth)
+    if(!is.numeric(response)) {
+      response <- str_wrap(as.character(response), width=wrapWidth)
+      order.levels <- str_wrap(as.character(order.levels), width=wrapWidth)
+    }
   } else {
     response <- quickStack(dat)
   }
   
-  x1 <- data.frame(
+#  browser()
+  if(to.order) response <- factor(response, levels=order.levels, ordered=TRUE)
+  
+  ret <- data.frame(
       cbreak,
-      question = rep(question, each=nrows), 
+      question = if(!autosortQuestion){
+        factor(rep(question, each=nrows), levels=question, ordered=TRUE)
+      } else {
+        rep(questionText, each=nrows)
+      },
       response = response,
       weight
 #      stringsAsFactors=FALSE
   )
   
   as.surveyorCode(
-      x1[!is.na(x1$response), ],
+      ret[!is.na(ret$response), ],
       surveyor,
       q_id,
       ...)

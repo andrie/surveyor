@@ -1,8 +1,8 @@
-\name{all_na}
-\alias{all_na}
+\name{allNA}
+\alias{allNA}
 \title{Tests for all NA values.}
 \usage{
-  all_na(x)
+  allNA(x)
 }
 \arguments{
   \item{x}{A list, data frame or vector}

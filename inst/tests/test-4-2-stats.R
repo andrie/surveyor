@@ -4,10 +4,11 @@
 #------------------------------------------------------------------------------
 
 {
-  path <- file.path("f:","git","surveyor","test")
-  latex_path <- file.path(path, "latex")
-  graph_path <- file.path(latex_path, "graphics")
-  
+  path <- tempdir()
+  latexPath <- file.path(path, "latex")
+  dir.create(latexPath, recursive=TRUE)
+  graphPath <- file.path(latexPath, "graphics")
+  dir.create(graphPath, recursive=TRUE)  
   
   q_data <- data.frame(
       Q1=c("Yes", "No", "Yes", "Yes"),
@@ -27,7 +28,7 @@
   
   names_cqrw <- c("cbreak", "question", "response", "weight")
   
-  sbraid <- as.braid(path = latex_path)
+  sbraid <- as.braid(path = latexPath)
   q_data <- as.surveydata(q_data)
   varlabels(q_data) <- q_text
   s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight, braid=sbraid)
@@ -67,17 +68,18 @@ test_that("statsBin works with array question", {
       rest <- structure(
           list(
               cbreak = structure(
-                  c(1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L), 
+                  c(1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L),
                   .Label = c("A", "B"), 
                   class = "factor"), 
-              question = structure(c(2L,2L, 3L, 1L, 1L, 2L, 2L, 3L, 1L, 1L), 
-                  .Label = c("red", "blue", "green"),
+              question = structure(c(2L, 2L, 1L, 1L, 3L, 2L, 2L, 1L, 1L, 3L), 
+                  .Label = c("blue", "red", "green"), 
                   class = c("ordered", "factor")), 
-              response = c(3, 4, 5, 1, 2, 3, 4, 6, 1, 2), 
-              value = c(0.9, 1.1, 2, 0.9, 1.1, 1.2, 0.8, 2, 0.8, 1.2)), 
-          .Names = c("cbreak", "question", "response", "value"), 
-          row.names = c(NA, 10L), 
-          class = "data.frame")
+              response = c("1", "2", "3", "4", "5", "1", "2", "3", "4", "6"), 
+              value = c(0.9, 1.1, 0.9, 1.1, 2, 0.8, 1.2, 1.2, 0.8, 2)
+          ), 
+        .Names = c("cbreak", "question", "response", "value"), 
+        row.names = c(NA, 10L), 
+        class = "data.frame")
       
       expect_is(test, "surveyorStats")
       expect_equal(test$data, rest)
@@ -93,13 +95,11 @@ test_that("statsCentral works with single question", {
       test <- statsCentral(codeQuickArray(s, "Q4_1"))
       rest <- structure(
           list(
-              cbreak = structure(
-                  1:2, 
-                  .Label = c("A", "B"), 
-                  class = "factor"), 
-              value = c(1.55, 1.60)), 
-          row.names = 1:2, 
-          class = "data.frame")
+              cbreak = structure(1:2, .Label = c("A", "B"), class = "factor"), 
+              question = structure(c(1L, 1L), .Label = "1", class = c("ordered", "factor")
+          ), 
+        value = c(1.55, 1.6)), .Names = c("cbreak", "question", "value"), 
+        class = "data.frame", row.names = 1:2)
       
       
       expect_is(test, "surveyorStats")
@@ -116,9 +116,9 @@ test_that("statsCentral works with array question", {
                   .Label = c("A", "B"), 
                   class = "factor"), 
               question = structure(c(1L, 2L, 3L, 1L, 2L, 3L), 
-                  .Label = c("blue", "green", "red"),
-                  class = c("factor")), 
-              value = c(3.55, 5, 1.55, 3.4, 6, 1.6)), 
+                  .Label = c("red", "blue", "green"),
+                  class = c("ordered", "factor")), 
+              value = c(1.55, 3.55, 5, 1.6, 3.4, 6)), 
           .Names = c("cbreak", "question", "value"), 
           row.names = c(NA, 6L), 
           class = "data.frame")
@@ -142,7 +142,11 @@ test_that("statsMean works with single question", {
               cbreak = structure(
                   1:2, 
                   .Label = c("A", "B"), 
-                  class = "factor"), 
+                  class = c("factor")), 
+              question = structure(
+                  c(1L, 1L), 
+                  .Label = "1", 
+                  class = c("ordered", "factor")),
               value = c(1.55, 1.60)), 
           row.names = 1:2, 
           class = "data.frame")
@@ -162,9 +166,9 @@ test_that("statsMean works with array question", {
                   .Label = c("A", "B"), 
                   class = "factor"), 
               question = structure(c(1L, 2L, 3L, 1L, 2L, 3L), 
-                  .Label = c("blue", "green", "red"),
-                  class = c("factor")), 
-              value = c(3.55, 5, 1.55, 3.4, 6, 1.6)), 
+                  .Label = c("red", "blue", "green"),
+                  class = c("ordered", "factor")), 
+              value = c(1.55, 3.55, 5, 1.6, 3.4, 6)), 
           .Names = c("cbreak", "question", "value"), 
           row.names = c(NA, 6L), 
           class = "data.frame")
@@ -184,10 +188,8 @@ test_that("statsMedian works with single question", {
       test <- statsMedian(codeQuickArray(s, "Q1"))
       rest <- structure(
           list(
-              cbreak = structure(
-                  1:2, 
-                  .Label = c("A", "B"), 
-                  class = "factor"), 
+              cbreak = structure(1:2, .Label = c("A", "B"), class = "factor"), 
+              question = structure(c(1L, 1L), .Label = "1", class = c("ordered", "factor")),
               value = c(1.45, 2.00)), 
           row.names = 1:2, 
           class = "data.frame")
@@ -206,10 +208,11 @@ test_that("statsMedian works with array question", {
                   c(1L, 1L, 1L, 2L, 2L, 2L), 
                   .Label = c("A", "B"), 
                   class = "factor"), 
-              question = structure(c(1L, 2L, 3L, 1L, 2L, 3L), 
-                  .Label = c("blue", "green", "red"),
-                  class = c("factor")), 
-              value = c(3.55, 5, 1.55, 3.4, 6, 1.6)), 
+              question = structure(
+                  c(1L, 2L, 3L, 1L,  2L, 3L), 
+                  .Label = c("red", "blue", "green"), 
+                  class = c("ordered", "factor")),  
+              value = c(1.55, 3.55, 5, 1.6, 3.4, 6)), 
           .Names = c("cbreak", "question", "value"), 
           row.names = c(NA, 6L), 
           class = "data.frame")
@@ -219,4 +222,4 @@ test_that("statsMedian works with array question", {
       
     })
 
-
+unlink(path, recursive=TRUE)

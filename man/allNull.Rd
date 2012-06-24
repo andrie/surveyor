@@ -1,8 +1,8 @@
-\name{all_null}
-\alias{all_null}
+\name{allNull}
+\alias{allNull}
 \title{Tests for all NULL values}
 \usage{
-  all_null(x)
+  allNull(x)
 }
 \arguments{
   \item{x}{A list, data frame or vector}

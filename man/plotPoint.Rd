@@ -2,13 +2,17 @@
 \alias{plotPoint}
 \title{Plot data in bubble chart format}
 \usage{
-  plotPoint(s, plotFunction = "plotPoint", ...)
+  plotPoint(s, plotFunction = "plotPoint",
+    formatter = "formatPercent", ...)
 }
 \arguments{
   \item{s}{A surveyorStats object}
 
   \item{plotFunction}{Character vector: Identifies the name
   of the plot function used to create the plot}
+
+  \item{formatter}{A formatting function used to format
+  labels}
 
   \item{...}{Ignored}
 }

@@ -3,7 +3,8 @@
 \title{Code survey data in single or array question form.}
 \usage{
   codeQuickArray(surveyor, q_id,
-    crossbreak = surveyor$cbreak, wrapWidth = 50, ...)
+    crossbreak = surveyor$cbreak, wrapWidth = 50,
+    autosortQuestion = TRUE, ...)
 }
 \arguments{
   \item{surveyor}{Surveyor object}
@@ -14,6 +15,9 @@
 
   \item{wrapWidth}{Position where labels will be wrapped.
   Passed to \code{\link[stringr]{str_wrap}}}
+
+  \item{autosortQuestion}{Logical. If TRUE, sorts questions
+  in order of response}
 
   \item{...}{Other parameters passed on to downstream code*
   functions}

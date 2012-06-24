@@ -19,7 +19,7 @@ as.surveyorStats <- function(
 		data,
     surveyorCode,
 		ylabel = "Fraction of respondents",
-		formatter="paste_percent",
+		formatter="formatPercent",
 		nquestion=NULL,
 		scale_breaks=NULL,
 		stats_method="",
@@ -142,10 +142,12 @@ statsBin <- function(
     ylabel="Respondents", 
     stats_method="statsBin", 
     convert_to_percent=FALSE, 
+#    autosort = TRUE,
     ...){
   stopifnot(is.surveyorCode(surveyorCode))
   x <- surveyorCode$data
   
+#  browser()
   if(convert_to_percent){
     cbweight <- splitPercentCombine(x, statsFunction=weightedCount)
     row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
@@ -171,7 +173,7 @@ statsBin <- function(
     
   } else {
     # code array
-    dat <- reorderQuestion(dat, reverse=TRUE)
+    if(!is.ordered(dat$question)) dat <- reorderQuestion(dat, reverse=TRUE)
   }
   
   # Test for yes/no responses
@@ -191,7 +193,7 @@ statsBin <- function(
       surveyorCode,
       ylabel=ylabel,
       stats_method=stats_method,
-      formatter=ifelse(convert_to_percent, "paste_percent", "format"),
+      formatter=ifelse(convert_to_percent, "formatPercent", "format"),
       ...)
 }
 
@@ -275,7 +277,7 @@ statsBinOld <- function(surveyorCode, ylabel="Respondents", stats_method="statsB
       surveyorCode,
 			ylabel=ylabel,
 			stats_method=stats_method,
-			formatter=ifelse(convert_to_percent, "paste_percent", "format"))
+			formatter=ifelse(convert_to_percent, "formatPercent", "format"))
 }
 
 #' Calculates summary statistics
@@ -378,7 +380,7 @@ statsCentral <- function(
   dat <- splitMeanCombine(x, cFunction)
   
   scale_breaks <- c(min(dat$value), 0, max(dat$value))
-  scale_breaks <- round_first_signif(scale_breaks)
+  scale_breaks <- roundFirstSignif(scale_breaks)
   
   as.surveyorStats(
       dat,
@@ -545,7 +547,7 @@ statsNetScore <- function(surveyorCode){
 			dat,
       surveyorCode,
       ylabel="Net score",
-      formatter="paste_percent",
+      formatter="formatPercent",
 			stats_method="statsNetScore",
       plotFunction="plotNetScore")
 }

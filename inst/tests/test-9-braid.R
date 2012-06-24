@@ -3,9 +3,12 @@
 #------------------------------------------------------------------------------
 
 
-path <- file.path("f:","git","surveyor","test")
+path <- tempdir()
 latexPath <- file.path(path, "latex")
+dir.create(latexPath, recursive=TRUE)
 graphPath <- file.path(latexPath, "graphics")
+dir.create(graphPath, recursive=TRUE)
+
 sinkfile   <- "surveyor_test.tex"
 
 
@@ -61,3 +64,5 @@ test_that("surveyorPlot works in Latex", {
       expect_true(file.exists(file.path(graphPath, "Q4_.pdf")))
       
     })
+
+unlink(path, recursive=TRUE)

@@ -190,9 +190,10 @@ theme_surveyor <- function (base_size = 12, base_family = ""){
 #' 
 #' @param x Character vector
 #' @param formatter Formatting function
+#' @param ... Passed to formatting function
 #' @keywords internal
-format_values <- function(x, formatter){
-  match.fun(formatter)(x)
+formatValues <- function(x, formatter, ...){
+  match.fun(formatter)(x, ...)
 }
 
 #-------------------------------------------------------------------------------

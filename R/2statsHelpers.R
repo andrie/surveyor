@@ -40,7 +40,7 @@ reorderQuestion <- function(df, reverse=FALSE){
 #' @param x A list, data frame or vector 
 #' @return TRUE if all values are NA, FALSE otherwise
 #' @keywords internal
-all_na <- function(x){
+allNA <- function(x){
   if (inherits(x, "list") || inherits(x, "data.frame")){
     return(all(as.logical(sapply(x, function(y) all(is.na(y))))))
   }
@@ -54,7 +54,7 @@ all_na <- function(x){
 #' @param x A list, data frame or vector 
 #' @return TRUE if all values are NULL, FALSE otherwise
 #' @keywords internal
-all_null <- function(x){
+allNull <- function(x){
   if (inherits(x, "list") || inherits(x, "data.frame")){
     return(all(as.logical(sapply(x, function(y) all(is.null(y))))))
   }
@@ -106,13 +106,17 @@ is.yesno <- function(s){
 #' @keywords Internal
 splitMeanCombine <- function(dat, statsFunction=weightedMean){
   single <- identical(unique(dat$question), structure(1L, .Label = "1", class = "factor"))
+  question <- response <- value <- cbreak <- NULL  # Dummy to trick R CMD check
   cFunction = match.fun(statsFunction)
   
   if(single){
     
     pieces <- split(dat, dat$cbreak) 
     cbreak <- unname(sapply(pieces, function(i)i$cbreak[1], USE.NAMES=FALSE)) 
-    if(!single) question <- unname(sapply(pieces, function(i)i$question[1], USE.NAMES=FALSE))
+    if(!single) {
+      question <- unname(sapply(pieces, function(i)i$question[1], USE.NAMES=FALSE))
+      if(is.ordered(dat$question)) question <- ordered(question)
+    }
     value <- vapply(
         pieces, function(i)cFunction(i$response, i$weight), 
         FUN.VALUE=0, USE.NAMES=FALSE)
@@ -150,8 +154,11 @@ splitBinCombine <- function(dat, statsFunction=weightedCount){
   cbreak <- unname(sapply(
           pieces, function(i)i$cbreak[1]))
   
-  if(!single) question <- unname(sapply(
-            pieces, function(i)i$question[1])) 
+  if(!single) {
+    question <- unname(sapply(pieces, function(i)i$question[1]))
+    if(is.ordered(dat$question)) question <- ordered(question)
+  }    
+    
   
   response <- unname(sapply(
       pieces, function(i)i$response[1]))
@@ -184,7 +191,8 @@ splitPercentCombine <- function(dat, statsFunction=weightedCount){
           pieces, function(i)i$cbreak[1]))
   
   question <- unname(sapply(
-            pieces, function(i)i$question[1])) 
+            pieces, function(i)i$question[1]))
+  if(is.ordered(dat$question)) question <- ordered(question)
   
   weight <- vapply(pieces, function(i)sum(i$weight), 
       FUN.VALUE=0, USE.NAMES=FALSE)

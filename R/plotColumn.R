@@ -1,4 +1,5 @@
 basic.column.lattice <- function(f, qType){
+  question <- response <- value <- cbreak <- NULL  # Dummy to trick R CMD check
   qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
   q <- switch(qType,
       singleQ_singleResponse = {
@@ -64,7 +65,10 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
     q <- update(q, 
         par.settings=modifyList(
             latticeExtra::ggplot2like(n = 4, h.start = 180),
-            list(fontsize=list(text=s$surveyorDefaults$defaultThemeSize))
+            list(
+                fontsize=list(text=s$surveyorDefaults$defaultThemeSize),
+                axis.text = list(col = "black")
+            )
         ),
         between=list(x=0.5, y=0.5),
         col=plotColours(s, colours=length(q$panel.args)),

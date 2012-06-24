@@ -7,8 +7,8 @@
 #' @param x Numeric vector
 #' @param digits Numeric. Number of digits.
 #' @export 
-#' @keywords string
-paste_percent <- function(x, digits=1){
+#' @family Formatting functions
+formatPercent <- function(x, digits=1){
   format <- paste("%.", digits, "f%%", sep="")
   xt <- sprintf(format, x*100)
   xt[xt=="NA%"] <- ""
@@ -21,8 +21,8 @@ paste_percent <- function(x, digits=1){
 #' Finds first significant digit
 #' 
 #' @param x Numeric vector
-#' @keywords internal
-first_signif <- function(x){
+#' @family Formatting functions
+firstSignif <- function(x){
   p <- 10:-10
   sapply(x, function(xt)
         ifelse(xt==0, 
@@ -38,9 +38,9 @@ first_signif <- function(x){
 #'  
 #' @param x Numeric vector
 #' @param f Rounding function, e.g. round, trunc, floor or ceiling
-#' @keywords internal
-round_first_signif <- function(x, f=round){
-  round_any(x, 10^(first_signif(x)-1), f)
+#' @family Formatting functions
+roundFirstSignif <- function(x, f=round){
+  round_any(x, 10^(firstSignif(x)-1), f)
 }
 
 
@@ -49,9 +49,22 @@ round_first_signif <- function(x, f=round){
 #' By default, rounds to one digit.
 #'  
 #' @param x Numeric vector
-#' @param n Number of digits, defaults to 1
+#' @param digits Number of digits, defaults to 1
+#' @export 
+#' @family Formatting functions
+formatRound <- function(x, digits=1){
+  round(x, digits)
+}
+
+#' Rounds to specified level of precision and prefixes a currency symbol.
+#'
+#' @param x Numeric vector
+#' @param digits Passed to format
+#' @param nsmall Passed to format
+#' @param symbol Prepended to formatted string
 #' @export 
 #' @keywords internal
-format_round <- function(x, n=1){
-  round(x, n)
+#' @family Formatting functions
+formatPound <- function(x, digits=2, nsmall=2, symbol="$"){
+  paste(symbol, format(x, digits=digits, nsmall=nsmall))
 }

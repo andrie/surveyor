@@ -39,7 +39,7 @@ surveyor 0.1-11
 New features:
 * surveyorPlot uses the package::braid mechanism to only generate plots when the code or data has changed.
 * codeQuickArray is now the default code function.  It is quicker than codeArray and also handles codeSingle
-* Now exports paste_percent.
+* Now exports formatPercent.
 
 
 surveyor 0.1-08

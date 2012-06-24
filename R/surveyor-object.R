@@ -174,7 +174,7 @@ surveyorUpdateDefaults <- function(
 ){
   if(!is.null(outputType)){
       if(outputType=="ppt") graphicFormat <- "wmf"
-      if(outputType %in% c("ppt", "device")) addPlotTitle <- TRUE
+      if(outputType %in% c("ppt", "device") & missing(addPlotTitle)) addPlotTitle <- TRUE
     }
   
 

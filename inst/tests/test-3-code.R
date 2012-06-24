@@ -4,10 +4,11 @@
 #------------------------------------------------------------------------------
 
 {
-  path <- file.path("f:","git","surveyor","test")
-  latex_path <- file.path(path, "latex")
-  graph_path <- file.path(latex_path, "graphics")
-  
+  path <- tempdir()
+  latexPath <- file.path(path, "latex")
+  dir.create(latexPath, recursive=TRUE)
+  graphPath <- file.path(latexPath, "graphics")
+  dir.create(graphPath, recursive=TRUE)  
   
   q_data <- data.frame(
       Q1=c("Yes", "No", "Yes", "Yes"),
@@ -27,7 +28,7 @@
   
   names_cqrw <- c("cbreak", "question", "response", "weight")
   
-  sbraid <- as.braid(path = latex_path)
+  sbraid <- as.braid(path = latexPath)
   q_data <- as.surveydata(q_data)
   varlabels(q_data) <- q_text
   s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight, braid=sbraid)
@@ -68,24 +69,42 @@ test_that("codeGuess works", {
 
 test_that("codeQuickArray works", {
       test <- codeQuickArray(s, "Q1")
-      rest <- structure(list(cbreak = structure(c(1L, 1L, 2L, 2L), .Label = c("A", 
-                      "B"), class = "factor"), question = structure(c(1L, 1L, 1L, 1L
-                  ), .Label = "1", class = "factor"), response = structure(c(2L, 
-                      1L, 2L, 2L), .Label = c("No", "Yes"), class = "factor"), weight = c(0.9, 
-                  1.1, 0.8, 1.2)), .Names = c("cbreak", "question", "response", 
-              "weight"), row.names = c(NA, 4L), class = "data.frame")
+      rest <- structure(
+          list(
+              cbreak = structure(
+                  c(1L, 1L, 2L, 2L), 
+                  .Label = c("A", "B"), 
+                  class = "factor"), 
+              question = structure(c(1L, 1L, 1L, 1L), 
+                  .Label = "1", 
+                  class = c("ordered", "factor")), 
+              response = structure(c(2L,1L, 2L, 2L), 
+                  .Label = c("No", "Yes"), 
+                  class = "factor"), 
+              weight = c(0.9, 1.1, 0.8, 1.2)
+          ), 
+        .Names = c("cbreak", "question", "response", "weight"), 
+        row.names = c(NA, 4L), 
+        class = "data.frame")
       
       expect_is(test, "surveyorCode")
       expect_equal(test$data, rest)
       
       test <- codeQuickArray(s, "Q4")
-      rest <- structure(list(cbreak = structure(c(1L, 1L, 2L, 2L, 1L, 1L, 2L, 
-                      2L, 1L, 1L, 2L, 2L), .Label = c("A", "B"), class = "factor"), 
-              question = structure(c(3L, 3L, 3L, 3L, 1L, 1L, 1L, 1L, 2L, 
-                      2L, 2L, 2L), .Label = c("blue", "green", "red"), class = "factor"), 
-              response = c(1, 2, 1, 2, 3, 4, 4, 3, 5, 5, 6, 6), weight = c(0.9, 
-                  1.1, 0.8, 1.2, 0.9, 1.1, 0.8, 1.2, 0.9, 1.1, 0.8, 1.2)), .Names = c("cbreak", 
-              "question", "response", "weight"), row.names = c(NA, 12L), class = "data.frame")
+      rest <- structure(
+          list(
+              cbreak = structure(
+                  c(1L, 1L, 2L, 2L, 1L, 1L, 2L, 2L, 1L, 1L, 2L, 2L), 
+                  .Label = c("A", "B"), 
+                  class = "factor"), 
+              question = structure(c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L), 
+                  .Label = c("red", "blue", "green"), class = c("ordered", "factor")), 
+              response = c(1, 2, 1, 2, 3, 4, 4, 3, 5, 5, 6, 6), 
+              weight = c(0.9, 1.1, 0.8, 1.2, 0.9, 1.1, 0.8, 1.2, 0.9, 1.1, 0.8, 1.2)
+          ), 
+        .Names = c("cbreak", "question", "response", "weight"), 
+        row.names = c(NA, 12L), 
+        class = "data.frame")
       
       expect_is(test, "surveyorCode")
       expect_equal(test$data, rest)
@@ -93,6 +112,8 @@ test_that("codeQuickArray works", {
       expect_true(is.null(codeQuickArray(s, "Q999")))
       
     })
+
+unlink(path, recursive=TRUE)
 
 
 

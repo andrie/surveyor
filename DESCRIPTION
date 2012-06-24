@@ -23,11 +23,11 @@ Imports:
     latticeExtra,
     data.table,
     ggplot2 (>= 0.9),
+    scales,
     RColorBrewer,
     grid,
     plyr
 Suggests:
-    braidppt,
     surveydata (>= 0.1-03)
 Collate:
     '1codeFunctions.R'
