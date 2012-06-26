@@ -28,27 +28,21 @@
   
   names_cqrw <- c("cbreak", "question", "response", "weight")
   
-  sbraid <- as.braid(path = latexPath)
   q_data <- as.surveydata(q_data)
   varlabels(q_data) <- q_text
-  s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight, braid=sbraid)
+  s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight)
 }
 
 
-context("Test plumbing of surveyorPlot")
+context("Test plumbing of surveyPlot")
 
-test_that("surveyorPlot returns NULL", {
+test_that("surveyPlot returns NULL", {
 			
-      r <- NULL
-			expect_that(r <- surveyorPlot(s, "Q1", codeSingle, statsBin, plotBar), shows_message("Q1"))
-      expect_equal(r, NULL)
-      #print(exists("r"))
+			r <- surveyPlot(s, "Q1", codeSingle, statsBin, plotBar)
+      expect_is(r, "surveyPlot")
 
-      r <- NULL
-      expect_that(r <- surveyorPlot(s, "Q4", codeArray, statsBin, plotBar), shows_message("Q4"))
-      expect_equal(r, NULL)
-      #expect_false(exists("r"))
-      
+      r <- surveyPlot(s, "Q4", codeArray, statsBin, plotBar)
+      expect_is(r, "surveyPlot")
       
 		})
 
@@ -57,11 +51,12 @@ test_that("surveyorPlot returns NULL", {
 context("Test that multiple crossbreaks work")
 
 
-test_that("surveyorPlot works with multiple crossbreaks", {
-      s2 <- as.surveyor(q_data, list(q_data$crossbreak, q_data$crossbreak2), q_data$weight, braid=sbraid)
+test_that("surveyPlot works with multiple crossbreaks", {
+      s2 <- as.surveyor(q_data, list(q_data$crossbreak, q_data$crossbreak2), q_data$weight)
       
-			expect_that(r <- surveyorPlot(s2, "Q1", codeSingle, statsBin, plotBar), shows_message("Q1"))
-      expect_equal(r, NULL)
+			r <- surveyPlot(s2, "Q1", codeSingle, statsBin, plotBar)
+      expect_is(r, "list")
+      expect_is(r[[1]], "surveyPlot")
       
 		})
 

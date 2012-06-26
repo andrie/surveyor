@@ -30,10 +30,9 @@
   
   names_cqrw <- c("cbreak", "question", "response", "weight")
   
-  sbraid <- as.braid(path = latexPath)
   q_data <- as.surveydata(q_data)
   varlabels(q_data) <- q_text
-  s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight, braid=sbraid)
+  s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight)
   
   unlink(path, recursive=TRUE)
 }

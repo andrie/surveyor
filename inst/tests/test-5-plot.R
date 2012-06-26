@@ -28,10 +28,9 @@
   
   names_cqrw <- c("cbreak", "question", "response", "weight")
   
-  sbraid <- as.braid(path = latexPath)
   q_data <- as.surveydata(q_data)
   varlabels(q_data) <- q_text
-  s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight, braid=sbraid)
+  s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight)
 }
 
 
@@ -40,12 +39,12 @@ context("Plot functions - ggplot")
 test_that("plotBar works as expected", {
       
       p <- plotBar(statsBin(codeQuickArray(s, "Q1")))
-      expect_is(p, "surveyorPlot")
+      expect_is(p, "surveyPlot")
       expect_is(p$plot, "ggplot")
       expect_is(print(p$plot)$plot, "ggplot")
       
       p <- plotBar(statsBin(codeQuickArray(s, "Q4")))
-      expect_is(p, "surveyorPlot")
+      expect_is(p, "surveyPlot")
       expect_is(p$plot, "ggplot")
       expect_is(print(p$plot)$plot, "ggplot")
       
@@ -54,12 +53,12 @@ test_that("plotBar works as expected", {
 test_that("plotPoint works as expected", {
       
       p <- plotPoint(statsBin(codeQuickArray(s, "Q1")))
-      expect_is(p, "surveyorPlot")
+      expect_is(p, "surveyPlot")
       expect_is(p$plot, "ggplot")
       expect_is(print(p$plot)$plot, "ggplot")
       
       p <- plotPoint(statsBin(codeQuickArray(s, "Q4")))
-      expect_is(p, "surveyorPlot")
+      expect_is(p, "surveyPlot")
       expect_is(p$plot, "ggplot")
       expect_is(print(p$plot)$plot, "ggplot")
       
@@ -68,12 +67,12 @@ test_that("plotPoint works as expected", {
 test_that("plotColumn works as expected", {
       
       p <- plotColumn(statsBin(codeQuickArray(s, "Q1")))
-      expect_is(p, "surveyorPlot")
+      expect_is(p, "surveyPlot")
       expect_is(p$plot, "ggplot")
       expect_is(print(p$plot)$plot, "ggplot")
       
       p <- plotColumn(statsBin(codeQuickArray(s, "Q4")))
-      expect_is(p, "surveyorPlot")
+      expect_is(p, "surveyPlot")
       expect_is(p$plot, "ggplot")
       expect_is(print(p$plot)$plot, "ggplot")
       
@@ -88,11 +87,11 @@ s <- surveyorUpdateDefaults(s, fastgraphics = TRUE)
 test_that("plotBar works as expected", {
       
       p <- plotBar(statsBin(codeQuickArray(s, "Q1")))
-      expect_is(p, "surveyorPlot")
+      expect_is(p, "surveyPlot")
       expect_is(p$plot, "trellis")
       
       p <- plotBar(statsBin(codeQuickArray(s, "Q4")))
-      expect_is(p, "surveyorPlot")
+      expect_is(p, "surveyPlot")
       expect_is(p$plot, "trellis")
       
     })
@@ -100,11 +99,11 @@ test_that("plotBar works as expected", {
 test_that("plotColumn works as expected", {
       
       p <- plotColumn(statsBin(codeQuickArray(s, "Q1")))
-      expect_is(p, "surveyorPlot")
+      expect_is(p, "surveyPlot")
       expect_is(p$plot, "trellis")
       
       p <- plotColumn(statsBin(codeQuickArray(s, "Q4")))
-      expect_is(p, "surveyorPlot")
+      expect_is(p, "surveyPlot")
       expect_is(p$plot, "trellis")
       
     })

@@ -28,10 +28,9 @@
   
   names_cqrw <- c("cbreak", "question", "response", "weight")
   
-  sbraid <- as.braid(path = latexPath)
   q_data <- as.surveydata(q_data)
   varlabels(q_data) <- q_text
-  s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight, braid=sbraid)
+  s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight)
 }
 
 
@@ -71,8 +70,8 @@ test_that("statsBin works with array question", {
                   c(1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L),
                   .Label = c("A", "B"), 
                   class = "factor"), 
-              question = structure(c(2L, 2L, 1L, 1L, 3L, 2L, 2L, 1L, 1L, 3L), 
-                  .Label = c("blue", "red", "green"), 
+              question = structure(c(1L, 1L, 2L, 2L, 3L, 1L, 1L, 2L, 2L, 3L), 
+                  .Label = c("red", "blue", "green"), 
                   class = c("ordered", "factor")), 
               response = c("1", "2", "3", "4", "5", "1", "2", "3", "4", "6"), 
               value = c(0.9, 1.1, 0.9, 1.1, 2, 0.8, 1.2, 1.2, 0.8, 2)
@@ -80,6 +79,7 @@ test_that("statsBin works with array question", {
         .Names = c("cbreak", "question", "response", "value"), 
         row.names = c(NA, 10L), 
         class = "data.frame")
+    #browser()
       
       expect_is(test, "surveyorStats")
       expect_equal(test$data, rest)
