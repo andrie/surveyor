@@ -1,3 +1,11 @@
+surveyor 0.2-01 (2012-06-25)
+---------------
+
+Changes:
+* Refactored surveyor to cleanly separate braid functionality
+* All surveyor braid functionality now lives in a new downstream package surveybraid
+* Removed import of braid
+
 surveyor 0.1-17 (2012-03-03)
 ---------------
 
@@ -37,7 +45,7 @@ surveyor 0.1-11
 ---------------
 
 New features:
-* surveyorPlot uses the package::braid mechanism to only generate plots when the code or data has changed.
+* surveyPlot uses the package::braid mechanism to only generate plots when the code or data has changed.
 * codeQuickArray is now the default code function.  It is quicker than codeArray and also handles codeSingle
 * Now exports formatPercent.
 

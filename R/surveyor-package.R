@@ -12,7 +12,7 @@
 #' \itemize{
 #' \item Initialise data and create surveyor object: \code{\link{as.surveyor}} 
 #' \item Define default settings : \code{\link{surveyorDefaults}} 
-#' \item Plot question: \code{\link{surveyorPlot}} 
+#' \item Plot question: \code{\link{surveyPlot}} 
 #' }
 #' 
 #' Coding functions:
@@ -43,7 +43,8 @@
 #' @name surveyor-package
 #' @aliases surveyor surveyor-package
 #' @docType package
-#' @import  surveydata braid reshape2 xtable stringr lattice latticeExtra data.table ggplot2 RColorBrewer grid plyr
+#' @import  surveydata reshape2 xtable stringr lattice latticeExtra data.table ggplot2 RColorBrewer grid plyr
+#' @importFrom Hmisc latexTranslate
 #' @title Tools for analysing and reporting on survey objects.
 #' @author Andrie de Vries \email{andrie.de.vries@@pentalibra.com}
 #' @keywords package

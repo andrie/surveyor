@@ -10,12 +10,11 @@ Description: This is a set of tools to analyse, report and
     plot survey data
 Author@R: person("Andrie", "de Vries",
     email="apdevries@gmail.com")
-Version: 0.1-17
+Version: 0.2-01
 URL: www.pentalibra.com
-Date: 2012-03-03
+Date: 2012-06-26
 Imports:
     surveydata (>= 0.1-03),
-    braid,
     reshape2,
     xtable,
     stringr,
@@ -26,7 +25,8 @@ Imports:
     scales,
     RColorBrewer,
     grid,
-    plyr
+    plyr,
+    Hmisc
 Suggests:
     surveydata (>= 0.1-03)
 Collate:
@@ -42,4 +42,4 @@ Collate:
     'redefine.R'
     'surveyor-object.R'
     'surveyor-package.R'
-    'surveyorPlot.R'
+    'surveyPlot.R'
