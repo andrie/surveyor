@@ -13,7 +13,7 @@
   \itemize{ \item Initialise data and create surveyor
   object: \code{\link{as.surveyor}} \item Define default
   settings : \code{\link{surveyorDefaults}} \item Plot
-  question: \code{\link{surveyorPlot}} }
+  question: \code{\link{surveyPlot}} }
 
   Coding functions: \itemize{ \item \code{\link{codeGuess}}
   \item \code{\link{codeQuickArray}} }

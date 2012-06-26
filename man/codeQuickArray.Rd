@@ -4,7 +4,7 @@
 \usage{
   codeQuickArray(surveyor, q_id,
     crossbreak = surveyor$cbreak, wrapWidth = 50,
-    autosortQuestion = TRUE, ...)
+    autosortQuestion = FALSE, ...)
 }
 \arguments{
   \item{surveyor}{Surveyor object}

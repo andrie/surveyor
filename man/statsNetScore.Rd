@@ -2,7 +2,7 @@
 \alias{statsNetScore}
 \title{Code survey data as net score.}
 \usage{
-  statsNetScore(surveyorCode)
+  statsNetScore(surveyorCode, ...)
 }
 \arguments{
   \item{surveyorCode}{An object of class "surveyorCode".

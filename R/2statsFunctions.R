@@ -373,9 +373,9 @@ statsCentral <- function(
   
   cFunction <- switch(statsFunction[1],
       mean = weightedMean,
-      median = weighedMedian, 
+      median = weightedMedian, 
       sum = weightedSum,
-      count= weighedCount)
+      count= weightedCount)
   cFunction <- match.fun(statsFunction[1])
   dat <- splitMeanCombine(x, cFunction)
   
@@ -439,7 +439,7 @@ statsMedian <- function(surveyorCode, ylabel="Median", ...){
 #' @keywords stats
 #' @family statsFunctions
 #' @export
-statsRank <- function(surveyorCode, top_n=3){
+statsRank <- function(surveyorCode, top_n=3, ...){
   stopifnot(is.surveyorCode(surveyorCode))
   x <- surveyorCode$data
   weight <- NULL; rm(weight) # Dummy to trick R CMD check
@@ -524,7 +524,7 @@ netScore <- function(x){
 #' @keywords stats
 #' @family statsFunctions
 #' @export
-statsNetScore <- function(surveyorCode){
+statsNetScore <- function(surveyorCode, ...){
   stopifnot(is.surveyorCode(surveyorCode))
   x <- surveyorCode$data
   response <- NULL; rm(response) # Dummy to trick R CMD check

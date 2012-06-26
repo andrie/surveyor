@@ -2,7 +2,7 @@
 \alias{statsRank}
 \title{Calculates summary statistics for ranking type questions}
 \usage{
-  statsRank(surveyorCode, top_n = 3)
+  statsRank(surveyorCode, top_n = 3, ...)
 }
 \arguments{
   \item{surveyorCode}{An object of class "surveyorCode".

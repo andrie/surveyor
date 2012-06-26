@@ -105,6 +105,7 @@ is.yesno <- function(s){
 #' @seealso splitBinCombine
 #' @keywords Internal
 splitMeanCombine <- function(dat, statsFunction=weightedMean){
+  weight <- NULL
   single <- identical(unique(dat$question), structure(1L, .Label = "1", class = "factor"))
   question <- response <- value <- cbreak <- NULL  # Dummy to trick R CMD check
   cFunction = match.fun(statsFunction)

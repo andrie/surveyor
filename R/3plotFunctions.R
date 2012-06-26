@@ -1,21 +1,22 @@
 
 
 
-#' Creates surveyorPlot object and adds plot title.
+#' Creates surveyPlot object and adds plot title.
 #'  
-#' Creates surveyorPlot object, a container for either ggplot or lattice graphic. 
+#' Creates surveyPlot object, a container for either ggplot or lattice graphic. 
 #' 
 #' @param plot A ggplot or lattice object 
 #' @param expansion Multiplier for plot vertical dimension
 #' @param plotFunction The plot function that was used to create the plot
-#' @return A surveyorPlot object
+#' @return A surveyPlot object
 #' @keywords internal
-as.surveyorPlot <- function(
+as.surveyPlot <- function(
     plot,
     surveyorStats,
     expansion = 1,
     plotFunction ="",
     plotSize  = par("din"),
+    addPlotTitle = surveyorStats$surveyorDefaults$addPlotTitle,
     ...
 ){
   stopifnot(is.surveyorStats(surveyorStats))
@@ -27,8 +28,7 @@ as.surveyorPlot <- function(
       width=0.8 * nchar(plotTitle) * plotSize[1] / strwidth(plotTitle, units="inches")
   )
   plotTitle <- paste(plotTitle, collapse="\n")
-  #browser()
-  if(surveyorStats$surveyorDefaults$addPlotTitle){
+  if(addPlotTitle){
     if(inherits(plot, "ggplot")){
       plot <- plot + opts(title=plotTitle)
     }
@@ -36,29 +36,42 @@ as.surveyorPlot <- function(
       plot <- update(plot, main=plotTitle)
     }
   }
+  
+  
     
   
   ### Create list ###
   structure(
       list(
-          plot=plot,
-          expansion=expansion,
-          plotFunction=plotFunction,
-          qType = qType(surveyorStats)
+          plot  = plot,
+          expansion    = expansion,
+          plotFunction = plotFunction,
+          qType = qType(surveyorStats),
+          qid   = surveyorStats$qid,
+          data  = surveyorStats$data,
+          nquestion    = surveyorStats$nquestion,
+          formatter    = surveyorStats$formatter
       ),
-      class = "surveyorPlot"
+      class = "surveyPlot"
   )
 }
 
-#' Test object for membership of class "surveyorPlot".
+#' print method for surveyPlot object.
+#' 
+#' @method print surveyPlot
+#' @export
+print.surveyPlot <- function(x, ...) print(x$plot)
+
+
+#' Test object for membership of class "surveyPlot".
 #'  
-#' Test object for membership of class "surveyorPlot".
+#' Test object for membership of class "surveyPlot".
 #' 
 #' @param x Object 
 #' @return TRUE or FALSE
 #' @keywords internal
-is.surveyorPlot <- function(x){
-  inherits(x, "surveyorPlot")
+is.surveyPlot <- function(x){
+  inherits(x, "surveyPlot")
 }
 
 
@@ -193,7 +206,7 @@ plotPoint <- function(s, plotFunction="plotPoint", formatter="formatPercent", ..
 							hjust=1)
 			)
 	
-	as.surveyorPlot(p, s, plotFunction=plotFunction, ...)
+	as.surveyPlot(p, s, plotFunction=plotFunction, ...)
 }
 
 #-------------------------------------------------------------------------------
@@ -218,7 +231,6 @@ plotText <- function(s, plotFunction="plotText", ...){
 #  print(all(s$data$cbreak!=surveyor$crossbreak[[1]]))
 #  p <- ""
 #  flag <- FALSE
-#  #browser()
 #  if(is.list(s$surveyor$crossbreak)){
 #    if(identical(s$surveyor$cbreak, s$surveyor$crossbreak[[1]])) flag <- TRUE
 #  }
@@ -230,12 +242,12 @@ plotText <- function(s, plotFunction="plotText", ...){
     ### Carry on as usual
     unique_resp <- unique(s$data$response)
     unique_resp <- levels(s$data$response)
-    items <- paste("\\item", latexTranslate(unique_resp))
+    items <- paste("\\item", Hmisc:::latexTranslate(unique_resp))
     items <- paste(items, collapse="\n")
 #  }
   p <- paste("\\begin{itemize}", items, "\\end{itemize}\\n", collapse="\\n")
   class(p) <- "text"
-  as.surveyorPlot(p, s, plotFunction=plotFunction, ...)
+  as.surveyPlot(p, s, plotFunction=plotFunction, ...)
 }
 
 #-------------------------------------------------------------------------------
@@ -266,6 +278,8 @@ cutJust <- function(x, breaks, newValues){
 #' @keywords plot
 #' @export
 plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
+  
+  cbreak <- NULL # Trick to fool R CMD check
   
   stopifnot(is.surveyorStats(s))
   if(is.null(s$data$question)) s$data$question <- 1
@@ -303,7 +317,7 @@ plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
   		p <- p + opts(axis.text.x = theme_blank())
   	}
   }
-	
+  
   if(s$surveyorDefaults$fastgraphics){
     #trellis.par.set(ggplot2like(n = 4, h.start = 180))
     qlayout <- c(ifelse(is.factor(f$cbreak), nlevels(f$cbreak), length(unique(f$cbreak))), 1)
@@ -354,8 +368,8 @@ plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
   }
 			
   ifelse(s$surveyorDefaults$fastgraphics, 
-      return(as.surveyorPlot(q, s, plotFunction="plotNetScore", ...)), 
-      return(as.surveyorPlot(p, s, plotFunction="plotNetScore", ...))
+      return(as.surveyPlot(q, s, plotFunction="plotNetScore", ...)), 
+      return(as.surveyPlot(p, s, plotFunction="plotNetScore", ...))
   )
 }
 
