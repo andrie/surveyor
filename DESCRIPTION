@@ -10,9 +10,9 @@ Description: This is a set of tools to analyse, report and
     plot survey data
 Author@R: person("Andrie", "de Vries",
     email="apdevries@gmail.com")
-Version: 0.2-01
+Version: 0.2-02
 URL: www.pentalibra.com
-Date: 2012-06-26
+Date: 2012-06-28
 Imports:
     surveydata (>= 0.1-03),
     reshape2,

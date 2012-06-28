@@ -8,6 +8,8 @@
   \item{surveyorCode}{An object of class "surveyorCode".
   This is a list with the first element being a data frame
   with four columns: cbreak, question, response, weight}
+
+  \item{...}{other arguments not used by this method}
 }
 \value{
   data frame

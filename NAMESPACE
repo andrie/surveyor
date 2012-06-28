@@ -1,4 +1,4 @@
-S3method(print,surveyPlot)
+S3method(print,ggplotmod)
 export(as.surveyor)
 export(as.surveyorCode)
 export(codeArray)

@@ -33,16 +33,19 @@
   s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight)
 }
 
+#------------------------------------------------------------------------------
 
 context("Test plumbing of surveyPlot")
 
 test_that("surveyPlot returns NULL", {
 			
-			r <- surveyPlot(s, "Q1", codeSingle, statsBin, plotBar)
-      expect_is(r, "surveyPlot")
-
-      r <- surveyPlot(s, "Q4", codeArray, statsBin, plotBar)
-      expect_is(r, "surveyPlot")
+			r <- surveyPlot(s, "Q1", statsBin, plotBar)
+      expect_is(r, "list")
+      expect_is(r[[1]], "surveyPlot")
+      
+      r <- surveyPlot(s, "Q4", statsBin, plotBar)
+      expect_is(r, "list")
+      expect_is(r[[1]], "surveyPlot")
       
 		})
 
@@ -54,7 +57,7 @@ context("Test that multiple crossbreaks work")
 test_that("surveyPlot works with multiple crossbreaks", {
       s2 <- as.surveyor(q_data, list(q_data$crossbreak, q_data$crossbreak2), q_data$weight)
       
-			r <- surveyPlot(s2, "Q1", codeSingle, statsBin, plotBar)
+			r <- surveyPlot(s2, "Q1", statsBin, plotBar)
       expect_is(r, "list")
       expect_is(r[[1]], "surveyPlot")
       

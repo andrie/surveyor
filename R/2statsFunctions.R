@@ -433,6 +433,7 @@ statsMedian <- function(surveyorCode, ylabel="Median", ...){
 #' 
 #' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
 #' @param top_n Numeric, indicates how the ranking is summarised
+#' @param ... other arguments not used by this method 
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
 #' For an overview of the surveyor package \code{\link{surveyor}}
@@ -518,6 +519,7 @@ netScore <- function(x){
 #' Code survey data in net score form
 #' 
 #' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
+#' @param ... other arguments not used by this method 
 #' @return data frame
 #' @seealso
 #' For an overview of the surveyor package \code{\link{surveyor}}

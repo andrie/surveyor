@@ -5,6 +5,7 @@ Changes:
 * Refactored surveyor to cleanly separate braid functionality
 * All surveyor braid functionality now lives in a new downstream package surveybraid
 * Removed import of braid
+* Defined new class ggplotmod, derived from ggplot, and aligns plot title with plot instead of plot grid
 
 surveyor 0.1-17 (2012-03-03)
 ---------------

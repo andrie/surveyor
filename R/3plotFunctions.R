@@ -31,6 +31,7 @@ as.surveyPlot <- function(
   if(addPlotTitle){
     if(inherits(plot, "ggplot")){
       plot <- plot + opts(title=plotTitle)
+      class(plot) <- c("ggplotmod", "ggplot")
     }
     if(inherits(plot, "trellis")){
       plot <- update(plot, main=plotTitle)
@@ -56,10 +57,41 @@ as.surveyPlot <- function(
   )
 }
 
+
+#' modified print method for ggplot to align title to plot instead of plotting grid.
+#' 
+#' @method print ggplotmod
+#' @param x plot to display
+#' @param newpage draw new (empty) page first?
+#' @param vp viewport to draw plot in
+#' @param ... other arguments not used by this method 
+#' @export
+print.ggplotmod <- function (x, newpage = is.null(vp), vp = NULL, ...){
+  ggplot2:::set_last_plot(x)
+  if (newpage) 
+    grid.newpage()
+  data <- ggplot_build(x)
+  gtable <- ggplot_gtable(data)
+  gtable$layout[which(gtable$layout$name == "title"), c("l", "r")] <- c(1, max(gtable$layout$r))
+  if (is.null(vp)) {
+    grid.draw(gtable)
+  }
+  else {
+    if (is.character(vp)) 
+      seekViewport(vp)
+    else pushViewport(vp)
+    grid.draw(gtable)
+    upViewport()
+  }
+  invisible(data)
+}
+
+
 #' print method for surveyPlot object.
 #' 
+#' @param x plot to display
+#' @param ... other arguments not used by this method 
 #' @method print surveyPlot
-#' @export
 print.surveyPlot <- function(x, ...) print(x$plot)
 
 

@@ -11,6 +11,8 @@
 
   \item{top_n}{Numeric, indicates how the ranking is
   summarised}
+
+  \item{...}{other arguments not used by this method}
 }
 \value{
   A data frame with three columns: cbreak, variable, value
