@@ -4,6 +4,7 @@
 \usage{
   statsBin(surveyorCode, ylabel = "Respondents",
     stats_method = "statsBin", convert_to_percent = FALSE,
+    formatter = ifelse(convert_to_percent, "formatPercent", "format"),
     ...)
 }
 \arguments{
@@ -21,6 +22,9 @@
   as fractions, rather than counts}
 
   \item{...}{Passed to \code{\link{as.surveyorStats}}}
+
+  \item{formatter}{A formatting function, such as
+  \code{\link{formatPercent}}}
 }
 \value{
   A data frame with three columns: cbreak, variable, value
@@ -39,8 +43,7 @@
   For an overview of the surveyor package
   \code{\link{surveyor}}
 
-  Other statsFunctions: \code{\link{statsBinOld}},
-  \code{\link{statsBinPercent}},
+  Other statsFunctions: \code{\link{statsBinPercent}},
   \code{\link{statsCentral}}, \code{\link{statsCount}},
   \code{\link{statsGuess}}, \code{\link{statsMean}},
   \code{\link{statsMedian}}, \code{\link{statsNetScore}},

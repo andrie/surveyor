@@ -4,7 +4,7 @@
 \usage{
   statsCentral(surveyorCode,
     statsFunction = c("weightedMean", "median", "sum", "count"),
-    ylabel = "Mean", ...)
+    ylabel = "Mean", formatter = "formatRound", ...)
 }
 \arguments{
   \item{surveyorCode}{An object of class "surveyorCode".
@@ -17,6 +17,9 @@
   or \code{\link{weightedCount}}}
 
   \item{ylabel}{y-axis label on plot}
+
+  \item{formatter}{A formatting function, such as
+  \code{\link{formatPercent}}}
 
   \item{...}{Other arguments passed to
   \code{\link{as.surveyorStats}}}
@@ -32,11 +35,11 @@
   \code{\link{surveyor}}
 
   Other statsFunctions: \code{\link{statsBin}},
-  \code{\link{statsBinOld}}, \code{\link{statsBinPercent}},
-  \code{\link{statsCount}}, \code{\link{statsGuess}},
-  \code{\link{statsMean}}, \code{\link{statsMedian}},
-  \code{\link{statsNetScore}}, \code{\link{statsRank}},
-  \code{\link{statsSum}}, \code{\link{statsText}}
+  \code{\link{statsBinPercent}}, \code{\link{statsCount}},
+  \code{\link{statsGuess}}, \code{\link{statsMean}},
+  \code{\link{statsMedian}}, \code{\link{statsNetScore}},
+  \code{\link{statsRank}}, \code{\link{statsSum}},
+  \code{\link{statsText}}
 }
 \keyword{stats}
 

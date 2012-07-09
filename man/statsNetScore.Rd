@@ -2,12 +2,16 @@
 \alias{statsNetScore}
 \title{Code survey data as net score.}
 \usage{
-  statsNetScore(surveyorCode, ...)
+  statsNetScore(surveyorCode, formatter = "formatPercent",
+    ...)
 }
 \arguments{
   \item{surveyorCode}{An object of class "surveyorCode".
   This is a list with the first element being a data frame
   with four columns: cbreak, question, response, weight}
+
+  \item{formatter}{A formatting function, such as
+  \code{\link{formatPercent}}}
 
   \item{...}{other arguments not used by this method}
 }
@@ -22,7 +26,7 @@
   \code{\link{surveyor}}
 
   Other statsFunctions: \code{\link{statsBin}},
-  \code{\link{statsBinOld}}, \code{\link{statsBinPercent}},
+  \code{\link{statsBinPercent}},
   \code{\link{statsCentral}}, \code{\link{statsCount}},
   \code{\link{statsGuess}}, \code{\link{statsMean}},
   \code{\link{statsMedian}}, \code{\link{statsRank}},

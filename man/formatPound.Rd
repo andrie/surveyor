@@ -2,7 +2,7 @@
 \alias{formatPound}
 \title{Rounds to specified level of precision and prefixes a currency symbol.}
 \usage{
-  formatPound(x, digits = 2, nsmall = 2, symbol = "$")
+  NA
 }
 \arguments{
   \item{x}{Numeric vector}
