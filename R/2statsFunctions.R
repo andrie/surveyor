@@ -142,6 +142,7 @@ statsBin <- function(
     ylabel="Respondents", 
     stats_method="statsBin", 
     convert_to_percent=FALSE, 
+    formatter=ifelse(convert_to_percent, "formatPercent", "format"),
 #    autosort = TRUE,
     ...){
   stopifnot(is.surveyorCode(surveyorCode))
@@ -193,92 +194,11 @@ statsBin <- function(
       surveyorCode,
       ylabel=ylabel,
       stats_method=stats_method,
-      formatter=ifelse(convert_to_percent, "formatPercent", "format"),
+      formatter=formatter,
       ...)
 }
 
 
-#' Calculates summary statistics.
-#' 
-#' Takes the result of a code_function, e.g. codeSingle(), and calculates summary values, for direct plotting by a plotFunction, e.g. plotBar()
-#' 
-#' The results are sorted in descending order of value, and "response" is coerced into an ordered factor (unless "response" is already an ordered factor).
-#' 
-#' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
-#' @param ylabel The label to print on y-axis of plots; used downstream
-#' @param stats_method A character vector describing name of stats method.  Used for audit trail
-#' @param convert_to_percent If true, will express results as fractions, rather than counts
-#' @return A data frame with three columns: cbreak, variable, value
-#' @seealso
-#' For an overview of the surveyor package \code{\link{surveyor}}
-#' @keywords stats
-#' @family statsFunctions
-statsBinOld <- function(surveyorCode, ylabel="Respondents", stats_method="statsBin", convert_to_percent=FALSE){
-  stopifnot(is.surveyorCode(surveyorCode))
-  x <- surveyorCode$data
-  
-	if(is.null(x)){
-		return(NULL)
-	}
-	weight <- NULL; rm(weight) # Dummy to trick R CMD check
-	
-  
-#  x <- data.table(x)
-#  print(str(x))
-#  cbweight <- x[, list(weight=sum(weight), names=paste(cbreak, question, sep="_")), 
-#      by=list(cbreak, question)]
-#  cbweight$names <- paste(cbweight$cbreak, cbweight$question, sep="_")
-	
-	if(convert_to_percent){
-    cbweight <- ddply(x, c("cbreak", "question"), summarise, weight=sum(weight))
-    row.names(cbweight) <- paste(cbweight$cbreak, cbweight$question, sep="_")
-    x$weight <- x$weight / cbweight[paste(x$cbreak, x$question, sep="_"), ]$weight
-#    x$weight <- x$weight / with(cbweight, weight[match(paste(x$cbreak, x$question, sep="_"), names)])
-  }
-	
-	
-	if (is.factor(x$response)){
-		if(nlevels(x$response[drop=TRUE])==1) x$response <- as.character(x$response[drop=TRUE])
-	}
-	
-	if (length(unique(x$question))==1){
-		# code single
-		dat <- ddply(x, c("cbreak", "response"), summarise, value=sum(weight))
-#    dat <- x[, list(value=sum(weight)), by=c("cbreak", "response")]
-    #print(str(dat))
-    if (is.factor(x$response)){
-			x$response <- x$response[drop=TRUE]
-			if(is.ordered(x$response)){
-				dat$response <- factor(dat$response, levels=levels(x$response), ordered=TRUE)
-			} else {
-				dat <- reorderResponse(dat)
-			}
-		}		
-		
-	} else {
-		# code array
-		dat <- ddply(x, c("cbreak", "question", "response"), summarise, value=sum(weight))
-#    print(str(x))
-#    dat <- x[, list(value=sum(weight)), by=c("cbreak", "question", "response")]
-#    print(str(dat))
-  dat <- reorderQuestion(dat, reverse=TRUE)
-}
-	
-	# Test for yes/no responses
-	if(is.factor(dat$response) && all(levels(dat$response) %in% c("Yes", "No"))){
-		dat <- dat[dat$response == levels(dat$response)[which(levels(dat$response) == "Yes")], ]
-	}
-	if(is.logical(dat$response)){
-		dat <- dat[dat$response == TRUE, ]
-	}
-	
-	as.surveyorStats(
-			dat,
-      surveyorCode,
-			ylabel=ylabel,
-			stats_method=stats_method,
-			formatter=ifelse(convert_to_percent, "formatPercent", "format"))
-}
 
 #' Calculates summary statistics
 #' 
@@ -363,7 +283,7 @@ statsCount <- function(surveyorCode, ylabel="Count", ...){
 statsCentral <- function(
     surveyorCode, 
     statsFunction=c("weightedMean", "median", "sum", "count"),
-    ylabel="Mean", ...){
+    ylabel="Mean", formatter="formatRound", ...){
   stopifnot(is.surveyorCode(surveyorCode))
 
   x <- surveyorCode$data
@@ -386,9 +306,10 @@ statsCentral <- function(
       dat,
       surveyorCode,
       ylabel=ylabel,
-      formatter="format",
+      formatter=formatter,
       stats_method=statsFunction,
-      scale_breaks=scale_breaks)
+      scale_breaks=scale_breaks,
+      ...)
 }
 
 
@@ -526,7 +447,7 @@ netScore <- function(x){
 #' @keywords stats
 #' @family statsFunctions
 #' @export
-statsNetScore <- function(surveyorCode, ...){
+statsNetScore <- function(surveyorCode, formatter="formatPercent", ...){
   stopifnot(is.surveyorCode(surveyorCode))
   x <- surveyorCode$data
   response <- NULL; rm(response) # Dummy to trick R CMD check
@@ -549,7 +470,7 @@ statsNetScore <- function(surveyorCode, ...){
 			dat,
       surveyorCode,
       ylabel="Net score",
-      formatter="formatPercent",
+      formatter=formatter,
 			stats_method="statsNetScore",
       plotFunction="plotNetScore")
 }
@@ -581,7 +502,7 @@ filter_nocomment <- function(x, remove="^(No|no|NO|Nope|None|none|n.a.|NA|n/a).?
 #' @keywords stats
 #' @family statsFunctions
 #' @export
-statsText <- function(surveyorCode, ...){
+statsText <- function(surveyorCode, formatter="format", ...){
   stopifnot(is.surveyorCode(surveyorCode))
   x <- surveyorCode$data
   
@@ -599,7 +520,7 @@ statsText <- function(surveyorCode, ...){
       x,
       surveyorCode,
       ylabel="NA",
-      formatter="format",
+      formatter=formatter,
       stats_method="statsText",
       plotFunction="plotText")
 }
