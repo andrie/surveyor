@@ -131,6 +131,7 @@ statsGuess <- function(surveyorCode, ...){
 #' @param stats_method A character vector describing name of stats method.  Used for audit trail
 #' @param convert_to_percent If true, will express results as fractions, rather than counts
 #' @param ... Passed to \code{\link{as.surveyorStats}}
+#' @param formatter A formatting function, such as \code{\link{formatPercent}}
 #' @return A data frame with three columns: cbreak, variable, value
 #' @seealso
 #' For an overview of the surveyor package \code{\link{surveyor}}
@@ -273,6 +274,7 @@ statsCount <- function(surveyorCode, ylabel="Count", ...){
 #' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight
 #' @param statsFunction The name of a weighted central tendency function, e.g. \code{\link{weightedMean}}, \code{\link{weightedSum}}, \code{\link{weightedMedian}} or \code{\link{weightedCount}}
 #' @param ylabel y-axis label on plot
+#' @param formatter A formatting function, such as \code{\link{formatPercent}}
 #' @param ... Other arguments passed to \code{\link{as.surveyorStats}}
 #' @return A data frame with three columns: cbreak, question, value
 #' @seealso
@@ -440,6 +442,7 @@ netScore <- function(x){
 #' Code survey data in net score form
 #' 
 #' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
+#' @param formatter A formatting function, such as \code{\link{formatPercent}}
 #' @param ... other arguments not used by this method 
 #' @return data frame
 #' @seealso
@@ -483,7 +486,7 @@ statsNetScore <- function(surveyorCode, formatter="formatPercent", ...){
 #' @param x A regular expression in character format
 #' @param remove A character string passed to grep() 
 #' @export
-filter_nocomment <- function(x, remove="^(No|no|NO|Nope|None|none|n.a.|NA|n/a).?$"){
+filterNocomment <- function(x, remove="^(No|no|NO|Nope|None|none|n.a.|NA|n/a).?$"){
   # This function strips out some content-free answers
   z <- x[!is.na(x)]
   grep(remove, z, invert=TRUE)
@@ -495,6 +498,7 @@ filter_nocomment <- function(x, remove="^(No|no|NO|Nope|None|none|n.a.|NA|n/a).?
 #' Code survey data in text form
 #' 
 #' @param surveyorCode An object of class "surveyorCode".  This is a list with the first element being a data frame with four columns: cbreak, question, response, weight 
+#' @param formatter A formatting function, such as \code{\link{formatPercent}}
 #' @param ... Other arguments passed to \code{\link{as.surveyorStats}}
 #' @return data frame
 #' @seealso
@@ -511,7 +515,7 @@ statsText <- function(surveyorCode, formatter="format", ...){
   }
 
   keep1 <- which(!is.na(x$response))
-  keep2 <- filter_nocomment(x$response)
+  keep2 <- filterNocomment(x$response)
   
   x <- x[intersect(keep1, keep2), ]
   if(nrow(x)==0) x <- surveyorCode$data[1, ]
@@ -522,5 +526,6 @@ statsText <- function(surveyorCode, formatter="format", ...){
       ylabel="NA",
       formatter=formatter,
       stats_method="statsText",
-      plotFunction="plotText")
+      plotFunction="plotText", 
+      ...)
 }
