@@ -209,6 +209,7 @@ codeQuickArray <- function(surveyor, q_id, crossbreak=surveyor$cbreak, wrapWidth
   cbreak <- rep(crossbreak, reps)
   weight <- rep(surveyor$weight, reps)
   #dat <- dat[, q_id]
+  
   if(reps==1){
     to.order <- is.ordered(dat)
     order.levels <- levels(dat)
@@ -220,7 +221,8 @@ codeQuickArray <- function(surveyor, q_id, crossbreak=surveyor$cbreak, wrapWidth
   nrows <- if(reps==1) length(dat) else nrow(dat)
   if (reps==1) {
     class(dat) <- class(dat)[-1]
-    response <- dat
+    response <- unlist(dat)
+    #browser()
     if(!is.numeric(response)) {
       response <- str_wrap(as.character(response), width=wrapWidth)
       order.levels <- str_wrap(as.character(order.levels), width=wrapWidth)
