@@ -65,6 +65,6 @@ formatRound <- function(x, digits=1){
 #' @export 
 #' @keywords internal
 #' @family Formatting functions
-formatPound <- function(x, digits=2, nsmall=2, symbol="$"){
+formatPound <- function(x, digits=2, nsmall=2, symbol="£"){
   paste(symbol, format(x, digits=digits, nsmall=nsmall))
 }
