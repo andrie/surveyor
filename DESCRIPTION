@@ -12,9 +12,9 @@ Author@R: person("Andrie", "de Vries",
     email="apdevries@gmail.com")
 Version: 0.2-02
 URL: www.pentalibra.com
-Date: 2012-06-28
+Date: 2012-07-09
 Imports:
-    surveydata (>= 0.1-03),
+    surveydata (>= 0.1-06),
     reshape2,
     xtable,
     stringr,
@@ -28,7 +28,7 @@ Imports:
     plyr,
     Hmisc
 Suggests:
-    surveydata (>= 0.1-03)
+    surveydata (>= 0.1-06)
 Collate:
     '1codeFunctions.R'
     '2statsFunctions.R'
