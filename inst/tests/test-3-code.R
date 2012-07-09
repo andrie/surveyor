@@ -108,7 +108,7 @@ test_that("codeQuickArray works", {
       expect_is(test, "surveyorCode")
       expect_equal(test$data, rest)
       
-      expect_true(is.null(codeQuickArray(s, "Q999")))
+      expect_error(is.null(codeQuickArray(s, "Q999")))
       
     })
 
