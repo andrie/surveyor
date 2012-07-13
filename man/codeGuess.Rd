@@ -23,8 +23,7 @@
   For an overview of the surveyor package
   \code{\link{surveyor}}
 
-  Other codeFunctions: \code{\link{codeArray}},
-  \code{\link{codeQuickArray}}, \code{\link{codeSingle}}
+  Other codeFunctions: \code{\link{codeQuickArray}}
 }
 \keyword{code}
 

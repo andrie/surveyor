@@ -33,8 +33,7 @@
   For an overview of the surveyor package
   \code{\link{surveyor}}
 
-  Other codeFunctions: \code{\link{codeArray}},
-  \code{\link{codeGuess}}, \code{\link{codeSingle}}
+  Other codeFunctions: \code{\link{codeGuess}}
 }
 \keyword{code}
 

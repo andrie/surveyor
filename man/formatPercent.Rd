@@ -10,7 +10,7 @@
   \item{digits}{Numeric. Number of digits.}
 }
 \description{
-  Multiplies value by 100 and appends % sign, e.g. 0.23 ->
+  Multiplies value by 100 and appends %% sign, e.g. 0.23 ->
   "23%"
 }
 \seealso{
