@@ -13,9 +13,9 @@ Author@R: person("Andrie", "de Vries",
 Version: 0.2-02
 URL: www.pentalibra.com
 Date: 2012-07-09
+ByteCompile: yes
 Imports:
-    surveydata (>= 0.1-06),
-    reshape2,
+    surveydata (>= 0.1-07),
     xtable,
     stringr,
     lattice,
@@ -28,7 +28,7 @@ Imports:
     plyr,
     Hmisc
 Suggests:
-    surveydata (>= 0.1-06)
+    surveydata (>= 0.1-07)
 Collate:
     '1codeFunctions.R'
     '2statsFunctions.R'
