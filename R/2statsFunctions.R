@@ -225,16 +225,16 @@ statsBinPercent <- function(surveyorCode, ...){
       ...)
 }
 
-statsBinPercentOld <- function(surveyorCode, ...){
-  stopifnot(is.surveyorCode(surveyorCode))
-  #x <- surveyorCode$data
-  statsBinOld(
-      surveyorCode,
-      ylabel="Fraction of respondents",
-      stats_method="statsBinPercent",
-      convert_to_percent=TRUE,
-      ...)
-}
+#statsBinPercentOld <- function(surveyorCode, ...){
+#  stopifnot(is.surveyorCode(surveyorCode))
+#  #x <- surveyorCode$data
+#  statsBinOld(
+#      surveyorCode,
+#      ylabel="Fraction of respondents",
+#      stats_method="statsBinPercent",
+#      convert_to_percent=TRUE,
+#      ...)
+#}
 
 
 #' Calculates numeric sum.
