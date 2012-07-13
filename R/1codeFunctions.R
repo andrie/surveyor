@@ -46,106 +46,6 @@ is.surveyorCode <- function(x){
   inherits(x, "surveyorCode")
 }
 
-#' Code survey data in single question form
-#'
-#' Code survey data in single question form (i.e. without subquestions)
-#' 
-#' @param surveyor Surveyor object
-#' @param q_id Question id
-#' @param wrapWidth Position where labels will be wrapped (in character count)
-#' @param ... Passed to surveyorStats
-#' @seealso
-#' For an overview of the surveyor package \code{\link{surveyor}}
-#' @family codeFunctions
-#' @return data frame
-#' @keywords code
-#' @export
-codeSingle <- function(surveyor, q_id,	wrapWidth=50, ...){
-	if(is.numeric(surveyor$sdata[, q_id])){
-		response <- surveyor$sdata[, q_id]
-	} else {
-		response <- str_wrap(as.character(surveyor$sdata[, q_id]), wrapWidth)
-	}	
-	response[response=="NA"] <- NA
-	
-	if (all(is.na(response))){
-		return(NULL)
-	}		
-		
-	x1 <- data.frame(
-			cbreak = surveyor$cbreak,
-			question = rep("1", nrow(surveyor$sdata)),
-			response = response,
-			weight = surveyor$weight,
-			stringsAsFactors = FALSE
-	)
-
-  as.surveyorCode(
-      x1[!is.na(x1$response), ],
-      surveyor,
-      q_id,
-      ...)
-  
-}
-
-#-------------------------------------------------------------------------------
-
-#' Code survey data in array question form
-#'
-#' Code survey data in array question form (i.e. with subquestions)
-#' 
-#' @param surveyor Surveyor object
-#' @param q_id Question id
-#' @param remove_other If true, will remove last column
-#' @param wrapWidth Position where labels will be wrapped (in character count)
-#' @param ... Passed to surveyorStats
-#' @seealso
-#' For an overview of the surveyor package \code{\link{surveyor}}
-#' @family codeFunctions
-#' @return data frame
-#' @keywords code
-#' @export
-codeArray <- function(surveyor, q_id, remove_other=FALSE, wrapWidth=50, ...){
-	# Melt multicoded question in data.frame, and code question text to variable
-	
-	q_data <- surveyor$sdata
-	q_text <- qTextUnique(q_data, q_id)
-	
-	r <- qTextUnique(q_data, q_id)
-	names(r) <- names(varlabels(q_data[, q_id]))
-  
-	if (remove_other==TRUE) r <- tail(r, -1)
-	
-	x <- as.list(q_data[, q_id])
-	x[x=="NA"] <- NA
-	
-  if (allNA(x)){
-		return(NULL)
-	}
-	
-	x$weight <- surveyor$weight
-	
-	x <- quickdf(x)
-	x$cbreak <- surveyor$cbreak
-	x <- melt(x, id.vars=c("cbreak", "weight"), na.rm=TRUE)
-	
-	x$variable <- r[as.character(x$variable)]
-	x$variable <- str_wrap(x$variable, wrapWidth)
-	x1 <- quickdf(list(
-			cbreak=x$cbreak,
-			question=x$variable,
-			response=x$value,
-			weight=x$weight
-#			stringsAsFactors=FALSE
-	))
-
-  as.surveyorCode(
-      x1[!is.na(x1$response), ],
-      surveyor,
-      q_id,
-      ...)
-  
-}
 
 #------------------------------------------------------------------------------
 
@@ -156,18 +56,12 @@ codeArray <- function(surveyor, q_id, remove_other=FALSE, wrapWidth=50, ...){
 #' @param surveyor Surveyor object
 #' @param q_id Question id
 #' @param ... Other parameters passed on to downstream code_* functions
-#' @seealso
-#' For an overview of the surveyor package \code{\link{surveyor}}
+#' @seealso For an overview of the surveyor package \code{\link{surveyor}}
 #' @family codeFunctions
 #' @return data frame
 #' @keywords code
 #' @export
 codeGuess <- function(surveyor, q_id, ...){
-#	if (length(which.q(surveyor$sdata, q_id))==1){
-#		dat <- codeSingle(surveyor, q_id, ...)
-#	} else {
-#		dat <- codeArray(surveyor, q_id, ...)
-#	}
   codeQuickArray(surveyor, q_id, ...)
 }
 
