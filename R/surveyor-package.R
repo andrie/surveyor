@@ -43,10 +43,11 @@
 #' @name surveyor-package
 #' @aliases surveyor surveyor-package
 #' @docType package
-#' @import  surveydata xtable lattice latticeExtra data.table ggplot2 RColorBrewer grid
+#' @import  xtable lattice latticeExtra data.table ggplot2 RColorBrewer grid
 #' @importFrom Hmisc latexTranslate
 #' @importFrom plyr quickdf summarise ddply round_any
 #' @importFrom stringr str_wrap
+#' @importFrom surveydata qText qTextCommon qTextUnique
 #' @title Tools for analysing and reporting on survey objects.
 #' @author Andrie de Vries \email{andrie.de.vries@@pentalibra.com}
 #' @keywords package
