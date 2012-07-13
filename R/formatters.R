@@ -1,8 +1,6 @@
-
-
 #' Formats numeric value as percentage.
 #' 
-#' Multiplies value by 100 and appends % sign, e.g. 0.23 -> "23%"
+#' Multiplies value by 100 and appends %% sign, e.g. 0.23 -> "23%"
 #'
 #' @param x Numeric vector
 #' @param digits Numeric. Number of digits.
@@ -26,9 +24,9 @@ firstSignif <- function(x){
   p <- 10:-10
   sapply(x, function(xt)
         ifelse(xt==0, 
-          0,
-          p[which(abs(xt) >= 10^(p-1) & abs(xt)<10^(p))]
-      )
+            0,
+            p[which(abs(xt) >= 10^(p-1) & abs(xt)<10^(p))]
+        )
   )
 }
 
@@ -65,6 +63,6 @@ formatRound <- function(x, digits=1){
 #' @export 
 #' @keywords internal
 #' @family Formatting functions
-formatPound <- function(x, digits=2, nsmall=2, symbol="£"){
+formatPound <- function(x, digits=2, nsmall=2, symbol="\u00A3"){
   paste(symbol, format(x, digits=digits, nsmall=nsmall))
 }
