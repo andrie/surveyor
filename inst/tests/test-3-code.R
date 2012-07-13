@@ -36,23 +36,23 @@
 
 context("Code functions")
 
-test_that("codeSingle works", {
-      scode <- codeSingle(s, "Q1")
-      expect_is(scode, "surveyorCode")
-      expect_is(scode$data, "data.frame")
-      expect_equal(names(scode$data), names_cqrw)
-      expect_equal(nrow(scode$data), 4)
-      
-    })
-
-test_that("codeArray works", {
-      scode <- codeArray(s, "Q4")
-      expect_is(scode, "surveyorCode")
-      expect_is(scode$data, "data.frame")
-      expect_equal(names(scode$data), names_cqrw)
-      expect_equal(nrow(scode$data), 12)
-      
-    })
+#test_that("codeSingle works", {
+#      scode <- codeSingle(s, "Q1")
+#      expect_is(scode, "surveyorCode")
+#      expect_is(scode$data, "data.frame")
+#      expect_equal(names(scode$data), names_cqrw)
+#      expect_equal(nrow(scode$data), 4)
+#      
+#    })
+#
+#test_that("codeArray works", {
+#      scode <- codeArray(s, "Q4")
+#      expect_is(scode, "surveyorCode")
+#      expect_is(scode$data, "data.frame")
+#      expect_equal(names(scode$data), names_cqrw)
+#      expect_equal(nrow(scode$data), 12)
+#      
+#    })
 
 
 test_that("codeGuess works", {
