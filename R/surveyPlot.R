@@ -11,8 +11,7 @@
 #' @param plotFunction A reference to a function that plots the summarized data
 #' @param onlyBreaks Numeric vector that limits crossbreak processing
 #' @param ... Passed to methods
-#' @export surveyPlot surveyPlot.surveyor
-#' @aliases surveyPlot surveyPlot.surveyor
+#' @export 
 #' @return Depends on method 
 #' @seealso \code{\link{as.surveyor}}
 surveyPlot <- function(
@@ -26,6 +25,9 @@ surveyPlot <- function(
   UseMethod("surveyPlot")
 }
 
+#' @rdname surveyPlot
+#' @method surveyPlot surveyor
+#' @export
 surveyPlot.surveyor <- function(
 		x,
 		qid,

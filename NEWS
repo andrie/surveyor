@@ -1,3 +1,11 @@
+surveyor 0.2-04 (2012-07-14)
+---------------
+
+Changes:
+* Now depends on surveyor and ggplot, rather than importing
+
+
+
 surveyor 0.2-01 (2012-06-25)
 ---------------
 

@@ -11,7 +11,7 @@
 #' 
 #' @param g A surveyorStats object
 #' @return data frame
-#' @keywords internal
+#' @export
 tableGuess <- function(g){
 	
 	g_orig <- g

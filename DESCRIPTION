@@ -10,25 +10,24 @@ Description: This is a set of tools to analyse, report and
     plot survey data
 Author@R: person("Andrie", "de Vries",
     email="apdevries@gmail.com")
-Version: 0.2-03
+Version: 0.2-04
 URL: www.pentalibra.com
-Date: 2012-07-13
+Date: 2012-07-14
 ByteCompile: yes
-Imports:
+Depends:
     surveydata (>= 0.1-07),
+    ggplot2 (>= 0.9)
+Imports:
     xtable,
     stringr,
     lattice,
     latticeExtra,
     data.table,
-    ggplot2 (>= 0.9),
     scales,
     RColorBrewer,
     grid,
     plyr,
     Hmisc
-Suggests:
-    surveydata (>= 0.1-07)
 Collate:
     '1codeFunctions.R'
     '2statsFunctions.R'

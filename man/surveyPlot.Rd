@@ -7,6 +7,12 @@
     plotFunction = "plotGuess",
     codeFunction = "codeQuickArray",
     onlyBreaks = seq_along(x$crossbreak), ...)
+
+  \method{surveyPlot}{surveyor} (x, qid,
+    statsFunction = "statsGuess",
+    plotFunction = "plotGuess",
+    codeFunction = "codeQuickArray",
+    onlyBreaks = seq_along(x$crossbreak), ...)
 }
 \arguments{
   \item{x}{Object}

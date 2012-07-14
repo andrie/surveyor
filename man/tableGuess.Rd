@@ -13,5 +13,4 @@
 \description{
   Prints cbreak information in latex format
 }
-\keyword{internal}
 
