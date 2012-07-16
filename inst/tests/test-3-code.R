@@ -6,9 +6,9 @@
 {
   path <- tempdir()
   latexPath <- file.path(path, "latex")
-  dir.create(latexPath, recursive=TRUE)
+  dir.create(latexPath, recursive=TRUE, showWarnings=FALSE)
   graphPath <- file.path(latexPath, "graphics")
-  dir.create(graphPath, recursive=TRUE)  
+  dir.create(graphPath, recursive=TRUE, showWarnings=FALSE)  
   
   q_data <- data.frame(
       Q1=c("Yes", "No", "Yes", "Yes"),
@@ -28,8 +28,8 @@
   
   names_cqrw <- c("cbreak", "question", "response", "weight")
   
-  q_data <- as.surveydata(q_data)
   varlabels(q_data) <- q_text
+  q_data <- as.surveydata(q_data, renameVarlabels=FALSE)
   s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight)
 }
 
@@ -112,7 +112,6 @@ test_that("codeQuickArray works", {
       
     })
 
-unlink(path, recursive=TRUE)
 
 
 

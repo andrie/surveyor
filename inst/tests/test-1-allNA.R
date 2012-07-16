@@ -2,12 +2,8 @@
 # Author: Andrie
 #------------------------------------------------------------------------------
 
-
-
-
-
-
 context("Validation of allNA and allNull functions")
+
 xl_allNA <- list(
     a = c(NA, NA),
     b = c(NA, NA)

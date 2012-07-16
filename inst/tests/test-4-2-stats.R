@@ -6,9 +6,9 @@
 {
   path <- tempdir()
   latexPath <- file.path(path, "latex")
-  dir.create(latexPath, recursive=TRUE)
+  dir.create(latexPath, recursive=TRUE, showWarnings=FALSE)
   graphPath <- file.path(latexPath, "graphics")
-  dir.create(graphPath, recursive=TRUE)  
+  dir.create(graphPath, recursive=TRUE, showWarnings=FALSE)  
   
   q_data <- data.frame(
       Q1=c("Yes", "No", "Yes", "Yes"),
@@ -28,15 +28,15 @@
   
   names_cqrw <- c("cbreak", "question", "response", "weight")
   
-  q_data <- as.surveydata(q_data)
   varlabels(q_data) <- q_text
+  q_data <- as.surveydata(q_data, renameVarlabels=FALSE)
   s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight)
 }
 
 
 #==============================================================================
 
-context("statsBin")
+context("stats")
 
 test_that("statsBin works with single question", {
       
@@ -79,7 +79,6 @@ test_that("statsBin works with array question", {
         .Names = c("cbreak", "question", "response", "value"), 
         row.names = c(NA, 10L), 
         class = "data.frame")
-    #browser()
       
       expect_is(test, "surveyorStats")
       expect_equal(test$data, rest)
@@ -88,11 +87,11 @@ test_that("statsBin works with array question", {
 
 #==============================================================================
 
-context("statsCentral")
+#context("statsCentral")
 
 test_that("statsCentral works with single question", {
       
-      test <- statsCentral(codeQuickArray(s, "Q4_1"))
+      test1 <- statsCentral(codeQuickArray(s, "Q4_1"))
       rest <- structure(
           list(
               cbreak = structure(1:2, .Label = c("A", "B"), class = "factor"), 
@@ -102,13 +101,14 @@ test_that("statsCentral works with single question", {
         class = "data.frame", row.names = 1:2)
       
       
-      expect_is(test, "surveyorStats")
-      expect_equal(test$data, rest)
+      expect_is(test1, "surveyorStats")
+      #browser()
+      expect_equal(test1$data, rest)
     })
 
 test_that("statsCentral works with array question", {
       
-      test <- statsCentral(codeQuickArray(s, "Q4"))
+      test2 <- statsCentral(codeQuickArray(s, "Q4"))
       rest <- structure(
           list(
               cbreak = structure(
@@ -123,8 +123,8 @@ test_that("statsCentral works with array question", {
           row.names = c(NA, 6L), 
           class = "data.frame")
       
-      expect_is(test, "surveyorStats")
-      expect_equal(test$data, rest)
+      expect_is(test2, "surveyorStats")
+      expect_equal(test2$data, rest)
       
     })
 
@@ -132,11 +132,11 @@ test_that("statsCentral works with array question", {
 
 #==============================================================================
 
-context("statsMean")
+#context("statsMean")
 
 test_that("statsMean works with single question", {
       
-      test <- statsMean(codeQuickArray(s, "Q4_1"))
+      test3 <- statsMean(codeQuickArray(s, "Q4_1"))
       rest <- structure(
           list(
               cbreak = structure(
@@ -152,13 +152,13 @@ test_that("statsMean works with single question", {
           class = "data.frame")
       
       
-      expect_is(test, "surveyorStats")
-      expect_equal(test$data, rest)
+      expect_is(test3, "surveyorStats")
+      expect_equal(test3$data, rest)
     })
 
 test_that("statsMean works with array question", {
       
-      test <- statsMean(codeQuickArray(s, "Q4"))
+      test4 <- statsMean(codeQuickArray(s, "Q4"))
       rest <- structure(
           list(
               cbreak = structure(
@@ -173,15 +173,15 @@ test_that("statsMean works with array question", {
           row.names = c(NA, 6L), 
           class = "data.frame")
       
-      expect_is(test, "surveyorStats")
-      expect_equal(test$data, rest)
+      expect_is(test4, "surveyorStats")
+      expect_equal(test4$data, rest)
       
     })
 
 
 #==============================================================================
 
-context("statsMedian")
+#context("statsMedian")
 
 test_that("statsMedian works with single question", {
       
@@ -222,4 +222,3 @@ test_that("statsMedian works with array question", {
       
     })
 
-unlink(path, recursive=TRUE)
