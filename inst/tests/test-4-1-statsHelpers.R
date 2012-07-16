@@ -7,9 +7,9 @@
 {
   path <- tempdir()
   latexPath <- file.path(path, "latex")
-  dir.create(latexPath, recursive=TRUE)
+  dir.create(latexPath, recursive=TRUE, showWarnings=FALSE)
   graphPath <- file.path(latexPath, "graphics")
-  dir.create(graphPath, recursive=TRUE)  
+  dir.create(graphPath, recursive=TRUE, showWarnings=FALSE)  
   
   q_data <- data.frame(
       Q1=c("Yes", "No", "Yes", "Yes"),
@@ -29,14 +29,14 @@
   
   names_cqrw <- c("cbreak", "question", "response", "weight")
   
-  q_data <- as.surveydata(q_data)
   varlabels(q_data) <- q_text
+  q_data <- as.surveydata(q_data, renameVarlabels=FALSE)
   s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight)
 }
 
 #==============================================================================
 
-context("weighted measures of central tendency")
+context("statsHelpers")
 
 values1 <- c(1:5, 10)
 weights1 <- rep(1, length(values1))
@@ -73,14 +73,15 @@ test_that("weightedCount works", {
     })
 
 
-context("split, apply and combine")
+#context("split, apply and combine")
 
 test_that("splitMeanCombine gives results identical to ddply",{
+      
       test <- splitMeanCombine(codeGuess(s, "Q4_1")$data)
       rest <- rename(
               ddply(
                   codeGuess(s, "Q4_1")$data, 
-                  .(cbreak, question), 
+                  .(cbreak), 
                   function(i)value=weightedMean(i$response, i$weight)),
               c("V1"="value")
           )
@@ -147,4 +148,3 @@ test_that("splitPercentCombine gives results identical to ddply",{
       
     })
 
-unlink(path, recursive=TRUE)
