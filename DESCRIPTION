@@ -10,9 +10,9 @@ Description: This is a set of tools to analyse, report and
     plot survey data
 Author@R: person("Andrie", "de Vries",
     email="apdevries@gmail.com")
-Version: 0.2-04
+Version: 0.2-05
 URL: www.pentalibra.com
-Date: 2012-07-14
+Date: 2012-07-19
 ByteCompile: yes
 Depends:
     surveydata (>= 0.1-07),
