@@ -166,7 +166,9 @@ plotGuess <- function(s, ...){
 }
 
 
-
+#' Create lattice labels.
+#' 
+#' @keywords internal
 latticeLabels <- function(x, y, just=0.5, horizontal=TRUE, stack=TRUE, formatter="format"){
   formatter <- match.fun(formatter)
   if(horizontal){
@@ -186,7 +188,9 @@ latticeLabels <- function(x, y, just=0.5, horizontal=TRUE, stack=TRUE, formatter
   
 }
 
-# Apply Brewer pallete colours to plot
+#' Apply Brewer pallete colours to plot
+#' 
+#' @keywords internal
 plotColours <- function(s, colours=3, 
     set=s$surveyorDefaults$brewerPalette, reverse=s$surveyorDefaults$revBrewerPal){
   cols <- brewer.pal(max(3, colours), set)
