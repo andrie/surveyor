@@ -1,3 +1,13 @@
+surveyor 0.2-05 (2012-07-19)
+---------------
+
+The first version of surveyor that passes R CMD check without warnings
+
+Changes:
+* Added and improved documentation
+* Removed calls to .Internal() in weightedMedian
+
+
 surveyor 0.2-04 (2012-07-14)
 ---------------
 
