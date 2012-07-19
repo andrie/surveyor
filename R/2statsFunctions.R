@@ -12,7 +12,8 @@
 #' @param formatter Name of a formatting function
 #' @param nquestion Number of identifiable questions / responses, used for plot sizing downstream
 #' @param scale_breaks Vector that specifies breaks in ggplot
-#' @param stats_method Character description of calling function name - for audit trail
+#' @param stats_method Character. Ddescription of calling statsFunction name - for audit trail
+#' @param plotFunction Character. Description of plotFunction to use
 #' @param ... Ignored
 #' @return A surveyorStats object
 #' @export
