@@ -324,20 +324,24 @@ weightedMedian <- function (x, w, na.rm = TRUE, interpolate = is.null(ties), tie
     n <- length(x)
     half <- (n + 1)/2
     if (n%%2 == 1) {
-      return(.Internal(psort(x, half))[half])
+      #return(.Internal(psort(x, half))[half])
+      return(sort(x, partial=half)[half])
     }
     else {
       partial <- c(half, half + 1)
-      return(sum(.Internal(psort(x, partial))[partial])/2)
+      #return(sum(.Internal(psort(x, partial))[partial])/2)
+      return(sum(sort(x, partial=partial)[partial])/2)
     }
   }
   if (identical(method, "quick")) {
-    l <- .Internal(qsort(x, TRUE))
+    #l <- .Internal(qsort(x, TRUE))
+    l <- sort.int(x, method="quick", index.return=TRUE)
     x <- .subset2(l, 1)
     w <- .subset(w, .subset2(l, 2))
   }
   else {
-    ord <- .Internal(order(TRUE, FALSE, x))
+    #ord <- .Internal(order(TRUE, FALSE, x))
+    ord <- order(x)
     x <- .subset(x, ord)
     w <- .subset(w, ord)
   }
