@@ -48,7 +48,8 @@
 #' @name surveyor-package
 #' @aliases surveyor surveyor-package
 #' @docType package
-#' @import  xtable lattice latticeExtra data.table ggplot2 RColorBrewer grid
+#' @import  xtable lattice data.table ggplot2 RColorBrewer grid
+#' @importFrom latticeExtra ggplot2like
 #' @importFrom Hmisc latexTranslate
 #' @importFrom plyr quickdf summarise ddply round_any
 #' @importFrom stringr str_wrap
