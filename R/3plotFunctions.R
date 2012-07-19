@@ -1,16 +1,31 @@
 
 
 
-#' Creates surveyPlot object and adds plot title.
+#' Creates surveyorPlot object and adds plot title.
 #'  
-#' Creates surveyPlot object, a container for either ggplot or lattice graphic. 
+#' Creates \code{surveyorPlot} object, a container for either ggplot or lattice graphic. The method \code{print.surveyorPlot} knows how to print the final plot object 
 #' 
-#' @param plot A ggplot or lattice object 
+#' @param plot A \code{ggplot} or \code{lattice} object
+#' @param surveyorStats An \code{\link{as.surveyorStats}} object
 #' @param expansion Multiplier for plot vertical dimension
-#' @param plotFunction The plot function that was used to create the plot
-#' @return A surveyPlot object
-#' @keywords internal
-as.surveyPlot <- function(
+#' @param plotFunction String. The plot function that was used to create the plot. This is used purely to keep an audit trail of how the final output was created.
+#' @param plotSize Numeric vector of length 2, specifying the width and height of the plot (in inches)
+#' @param addPlotTitle If TRUE, adds question text as plot title, otherwise the plot has no title
+#' @param ... Ignored
+#' @return A surveyorPlot object. This is a list of:
+#' \describe{
+#' \item{plot}{A \code{ggplot} or \code{lattice} object}
+#' \item{expansion}{Expansion factor. Used to adjust the vertical scale of the plot when there are many categories}
+#' \item{plotFunction}{String indicating which plot function created the plot. Useful for debugging}
+#' \item{qType}{See also \code{\link{qType}}}
+#' \item{qid}{Question identifier, e.g. "Q4"}
+#' \item{data}{Data used in the plot}
+#' \item{nquestion}{}
+#' \item{formatter}{Formatting function for axis, e.g. \code{\link{formatRound}}}
+#' }
+#' @export
+#' @seealso \code{\link{as.surveyorStats}}, \code{\link{plotGuess}} 
+as.surveyorPlot <- function(
     plot,
     surveyorStats,
     expansion = 1,
@@ -38,9 +53,6 @@ as.surveyPlot <- function(
     }
   }
   
-  
-    
-  
   ### Create list ###
   structure(
       list(
@@ -53,7 +65,7 @@ as.surveyPlot <- function(
           nquestion    = surveyorStats$nquestion,
           formatter    = surveyorStats$formatter
       ),
-      class = "surveyPlot"
+      class = "surveyorPlot"
   )
 }
 
@@ -87,23 +99,23 @@ print.ggplotmod <- function (x, newpage = is.null(vp), vp = NULL, ...){
 }
 
 
-#' print method for surveyPlot object.
+#' print method for surveyorPlot object.
 #' 
 #' @param x plot to display
 #' @param ... other arguments not used by this method 
-#' @method print surveyPlot
-print.surveyPlot <- function(x, ...) print(x$plot)
+#' @method print surveyorPlot
+print.surveyorPlot <- function(x, ...) print(x$plot)
 
 
-#' Test object for membership of class "surveyPlot".
+#' Test object for membership of class "surveyorPlot".
 #'  
-#' Test object for membership of class "surveyPlot".
+#' Test object for membership of class "surveyorPlot".
 #' 
 #' @param x Object 
 #' @return TRUE or FALSE
 #' @keywords internal
-is.surveyPlot <- function(x){
-  inherits(x, "surveyPlot")
+is.surveyorPlot <- function(x){
+  inherits(x, "surveyorPlot")
 }
 
 
@@ -238,7 +250,7 @@ plotPoint <- function(s, plotFunction="plotPoint", formatter="formatPercent", ..
 							hjust=1)
 			)
 	
-	as.surveyPlot(p, s, plotFunction=plotFunction, ...)
+	as.surveyorPlot(p, s, plotFunction=plotFunction, ...)
 }
 
 #-------------------------------------------------------------------------------
@@ -279,7 +291,7 @@ plotText <- function(s, plotFunction="plotText", ...){
 #  }
   p <- paste("\\begin{itemize}", items, "\\end{itemize}\\n", collapse="\\n")
   class(p) <- "text"
-  as.surveyPlot(p, s, plotFunction=plotFunction, ...)
+  as.surveyorPlot(p, s, plotFunction=plotFunction, ...)
 }
 
 #-------------------------------------------------------------------------------
@@ -400,8 +412,8 @@ plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
   }
 			
   ifelse(s$surveyorDefaults$fastgraphics, 
-      return(as.surveyPlot(q, s, plotFunction="plotNetScore", ...)), 
-      return(as.surveyPlot(p, s, plotFunction="plotNetScore", ...))
+      return(as.surveyorPlot(q, s, plotFunction="plotNetScore", ...)), 
+      return(as.surveyorPlot(p, s, plotFunction="plotNetScore", ...))
   )
 }
 

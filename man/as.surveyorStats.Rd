@@ -25,12 +25,18 @@
 
   \item{stats_method}{Character description of calling
   function name - for audit trail}
+
+  \item{...}{Ignored}
 }
 \value{
   A surveyorStats object
 }
 \description{
-  Creates surveyorStats object, used as input to plot
+  A surveyorStats object contains all of the summarised
+  information necessary to create a plot. This is the input
+  data for \code{\link{as.surveyorPlot}}.
 }
-\keyword{internal}
+\seealso{
+  \code{\link{as.surveyorPlot}}, \code{\link{statsGuess}}
+}
 

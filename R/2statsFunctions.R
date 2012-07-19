@@ -4,7 +4,7 @@
 
 #' Creates surveyorStats object, used as input to plot.
 #'  
-#' Creates surveyorStats object, used as input to plot 
+#' A surveyorStats object contains all of the summarised information necessary to create a plot. This is the input data for \code{\link{as.surveyorPlot}}.
 #' 
 #' @param data A data frame 
 #' @param surveyorCode A surveyorCode object
@@ -13,8 +13,10 @@
 #' @param nquestion Number of identifiable questions / responses, used for plot sizing downstream
 #' @param scale_breaks Vector that specifies breaks in ggplot
 #' @param stats_method Character description of calling function name - for audit trail
+#' @param ... Ignored
 #' @return A surveyorStats object
-#' @keywords internal
+#' @export
+#' @seealso \code{\link{as.surveyorPlot}}, \code{\link{statsGuess}}
 as.surveyorStats <- function(
 		data,
     surveyorCode,

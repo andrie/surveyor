@@ -4,15 +4,20 @@
 
 #' Codes and plots a survey question.
 #' 
-#' @param x Object
-#' @param qid Question id
-#' @param codeFunction A reference to a function that processes the question data
-#' @param statsFunction A reference to a function that summarizes the coded data
-#' @param plotFunction A reference to a function that plots the summarized data
+#' This function takes extracts the data from a \code{surveydata} object, then analyses and plots it.
+#' 
+#' This is a generic function, with an implementation for class \code{surveyor}, see also \code{\link{as.surveyor}}. The package \code{surveybraid} implements additional methods for \code{surveybraid} and \code{surveybraidppt}.  See also \code{\link[surveybraid]{as.surveybraid}} and \code{\link[surveybraid]{as.surveybraidppt}}. 
+#' 
+#' @param x Object to plot, of class \code{surveyor}, see also \code{\link{as.surveyor}}
+#' @param qid String. Unique question identifier, e.g. "Q4"
+
+#' @param statsFunction A reference to a function that summarizes the coded data. Defaults to \code{\link{statsGuess}}
+#' @param plotFunction A reference to a function that plots the summarized data. Defaults to \code{\link{plotGuess}}
+#' @param codeFunction A reference to a function that processes the question data. Defaults to \code{\link{codeGuess}}
 #' @param onlyBreaks Numeric vector that limits crossbreak processing
 #' @param ... Passed to methods
 #' @export 
-#' @return Depends on method 
+#' @return Depends on method, but typically a list of \code{\link{as.surveyorPlot}} objects
 #' @seealso \code{\link{as.surveyor}}
 surveyPlot <- function(
     x,

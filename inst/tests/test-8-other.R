@@ -35,7 +35,7 @@
 
 #------------------------------------------------------------------------------
 
-context("Test plumbing of surveyPlot")
+context("Other")
 
 test_that("surveyPlot returns NULL", {
 			
@@ -45,13 +45,12 @@ test_that("surveyPlot returns NULL", {
       
       r <- surveyPlot(s, "Q4", statsBin, plotBar)
       expect_is(r, "list")
-      expect_is(r[[1]], "surveyPlot")
+      expect_is(r[[1]], "surveyorPlot")
       
 		})
 
 #------------------------------------------------------------------------------
 
-context("Test that multiple crossbreaks work")
 
 
 test_that("surveyPlot works with multiple crossbreaks", {
@@ -59,7 +58,7 @@ test_that("surveyPlot works with multiple crossbreaks", {
       
 			r <- surveyPlot(s2, "Q1", statsBin, plotBar)
       expect_is(r, "list")
-      expect_is(r[[1]], "surveyPlot")
+      expect_is(r[[1]], "surveyorPlot")
       
 		})
 

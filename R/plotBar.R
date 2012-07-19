@@ -125,8 +125,8 @@ plotBar <- function(s, plotFunction="plotBar", ...){
 	}
 		
 	ifelse(s$surveyorDefaults$fastgraphics,
-      return(as.surveyPlot(q, s, plotFunction=plotFunction, ...)), 
-      return(as.surveyPlot(p, s, plotFunction=plotFunction, ...))
+      return(as.surveyorPlot(q, s, plotFunction=plotFunction, ...)), 
+      return(as.surveyorPlot(p, s, plotFunction=plotFunction, ...))
   )
 }
 
