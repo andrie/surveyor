@@ -24,7 +24,9 @@
 #' \item{formatter}{Formatting function for axis, e.g. \code{\link{formatRound}}}
 #' }
 #' @export
-#' @seealso \code{\link{as.surveyorStats}}, \code{\link{plotGuess}} 
+#' @seealso \code{\link{as.surveyorStats}}, \code{\link{plotGuess}}
+#' @seealso \code{\link{surveyPlot}} to plot a surveyor object
+#' @family surveyPlot arguments
 as.surveyorPlot <- function(
     plot,
     surveyorStats,

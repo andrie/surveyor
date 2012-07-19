@@ -28,6 +28,9 @@
   \code{\link{statsMean}}, \code{\link{statsMedian}},
   \code{\link{statsNetScore}}, \code{\link{statsRank}},
   \code{\link{statsSum}}, \code{\link{statsText}}
+
+  Other surveyPlot arguments:
+  \code{\link{as.surveyorPlot}}, \code{\link{codeGuess}}
 }
 \keyword{stats}
 

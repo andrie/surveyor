@@ -6,18 +6,25 @@
     weight = sdata$weight, defaults = surveyorDefaults())
 }
 \arguments{
-  \item{sdata}{surveydata object}
+  \item{sdata}{surveydata object. See also
+  \code{\link[surveydata]{as.surveydata}}}
 
-  \item{crossbreak}{List of factors that contain crossbreak
-  data.}
+  \item{crossbreak}{Named list of factors that contain
+  crossbreak data. Each factor must have the same length as
+  the columns in the \code{surveydata} object}
 
-  \item{weight}{Numeric vector with weighting data}
+  \item{weight}{Numeric vector with weighting data. Must
+  have the same length as the columns in the
+  \code{surveydata} object}
 
   \item{defaults}{Surveyor defaults.  See also
   \code{\link{surveyorDefaults}}}
 }
 \value{
-  A list object of class surveyor
+  A list object of class \code{surveyor}: \describe{
+  \item{sdata}{surveydata object. See also
+  \code{\link[surveydata]{as.surveydata}}} \item{cbreak}{}
+  \item{plot_title}{} \item{weight}{} \item{defaults}{} }
 }
 \description{
   A surveyor object describes the data and meta-data in the

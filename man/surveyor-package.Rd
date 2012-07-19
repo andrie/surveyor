@@ -12,8 +12,10 @@
 
   \itemize{ \item Initialise data and create surveyor
   object: \code{\link{as.surveyor}} \item Define default
-  settings : \code{\link{surveyorDefaults}} \item Plot
-  question: \code{\link{surveyPlot}} }
+  settings : \code{\link{surveyorDefaults}} }
+
+  Plot survey question: \itemize{ \item
+  \code{\link{surveyPlot}} }
 
   Coding functions: \itemize{ \item \code{\link{codeGuess}}
   \item \code{\link{codeQuickArray}} }
@@ -24,10 +26,11 @@
   \code{\link{statsRank}} \item \code{\link{statsNetScore}}
   \item \code{\link{statsSum}} }
 
-  Plot functions: \itemize{ \item \code{\link{plotBar}}
-  \item \code{\link{plotColumn}} \item
-  \code{\link{plotPoint}} \item \code{\link{plotText}}
-  \item \code{\link{plotNetScore}} }
+  Plot functions: \itemize{ \item \code{\link{plotGuess}}
+  \item \code{\link{plotBar}} \item
+  \code{\link{plotColumn}} \item \code{\link{plotPoint}}
+  \item \code{\link{plotText}} \item
+  \code{\link{plotNetScore}} }
 }
 \author{
   Andrie de Vries \email{andrie.de.vries@pentalibra.com}

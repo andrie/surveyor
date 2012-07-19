@@ -10,6 +10,8 @@
 #' @param df A data frame containing at least two columns: response and value 
 #' @return A data frame
 #' @keywords internal
+#' @seealso \code{\link{as.surveyorStats}}
+#' @family stats helper functions
 reorderResponse <- function(df){
   resp_levels  <- df[order(df$value, decreasing=TRUE), ]$response
   resp_levels <- unique(resp_levels)
@@ -24,6 +26,8 @@ reorderResponse <- function(df){
 #' @param df A data frame containing at least two columns: response and value 
 #' @return A data frame
 #' @keywords internal
+#' @seealso \code{\link{as.surveyorStats}}
+#' @family stats helper functions
 reorderQuestion <- function(df, reverse=FALSE){
   q_levels  <- df[order(df$value, decreasing=TRUE), ]$question
   q_levels <- unique(q_levels)
@@ -40,6 +44,8 @@ reorderQuestion <- function(df, reverse=FALSE){
 #' @param x A list, data frame or vector 
 #' @return TRUE if all values are NA, FALSE otherwise
 #' @keywords internal
+#' @seealso \code{\link{as.surveyorStats}}
+#' @family stats helper functions
 allNA <- function(x){
   if (inherits(x, "list") || inherits(x, "data.frame")){
     return(all(as.logical(sapply(x, function(y) all(is.na(y))))))
@@ -53,6 +59,8 @@ allNA <- function(x){
 #' 
 #' @param x A list, data frame or vector 
 #' @return TRUE if all values are NULL, FALSE otherwise
+#' @seealso \code{\link{as.surveyorStats}}
+#' @family stats helper functions
 #' @keywords internal
 allNull <- function(x){
   if (inherits(x, "list") || inherits(x, "data.frame")){
@@ -64,6 +72,8 @@ allNull <- function(x){
 #' Determines question type as single/grid question and single/multi response.
 #' 
 #' @param s A surveyorStats object
+#' @seealso \code{\link{as.surveyorStats}}
+#' @family stats helper functions
 #' @keywords internal
 qType <- function(s){
   stopifnot(is.surveyorStats(s))
@@ -82,6 +92,8 @@ qType <- function(s){
 #' 
 #' @param s A surveyorStats object
 #' @keywords internal
+#' @seealso \code{\link{as.surveyorStats}}
+#' @family stats helper functions
 is.yesno <- function(s){
   stopifnot(is.surveyorStats(s))
   ifelse(!is.null(s$data$response), x <- s$data$response, return(FALSE))  
@@ -104,6 +116,8 @@ is.yesno <- function(s){
 #' @param statsFunction A function that calculates a weighed statistic, such as \code{\link{weightedMean}}, \code{\link{weightedMedian}}, \code{\link{weightedSum}} or \code{\link{weightedCount}}
 #' @seealso splitBinCombine
 #' @keywords Internal
+#' @seealso \code{\link{as.surveyorStats}}
+#' @family stats helper functions
 splitMeanCombine <- function(dat, statsFunction=weightedMean){
   weight <- NULL
   single <- any(identical(unique(dat$question), structure(1L, .Label = "1", class = "factor")) ,
@@ -143,6 +157,8 @@ splitMeanCombine <- function(dat, statsFunction=weightedMean){
 #' @inheritParams splitMeanCombine
 #' @seealso splitMeanCombine
 #' @keywords Internal
+#' @seealso \code{\link{as.surveyorStats}}
+#' @family stats helper functions
 splitBinCombine <- function(dat, statsFunction=weightedCount){
   
   single <- length(unique(dat$question)) == 1
@@ -184,6 +200,8 @@ splitBinCombine <- function(dat, statsFunction=weightedCount){
 #' @inheritParams splitMeanCombine
 #' @seealso splitMeanCombine
 #' @keywords Internal
+#' @seealso \code{\link{as.surveyorStats}}
+#' @family stats helper functions
 splitPercentCombine <- function(dat, statsFunction=weightedCount){
   
   cFunction = match.fun(statsFunction)
@@ -211,6 +229,8 @@ splitPercentCombine <- function(dat, statsFunction=weightedCount){
 #' @param w a vector of weights the same length as x giving the weights to use for each element of x. Negative weights are treated as zero weights. Default value is equal weight to all values.#
 #' @param na.rm a logical value indicating whether NA values in x should be stripped before the computation proceeds, or not. If NA, no check at all for NAs is done. Default value is NA (for efficiency).
 #' @family "central tendency functions"
+#' @family stats helper functions
+#' @seealso \code{\link{as.surveyorStats}}
 #' @export 
 weightedCount <- function(x, w, na.rm=TRUE){
   notNA <- !(is.na(x) | is.na(w))
@@ -226,6 +246,8 @@ weightedCount <- function(x, w, na.rm=TRUE){
 #' @param w a vector of weights the same length as x giving the weights to use for each element of x. Negative weights are treated as zero weights. Default value is equal weight to all values.#
 #' @param na.rm a logical value indicating whether NA values in x should be stripped before the computation proceeds, or not. If NA, no check at all for NAs is done. Default value is NA (for efficiency).
 #' @family "central tendency functions"
+#' @family stats helper functions
+#' @seealso \code{\link{as.surveyorStats}}
 #' @export 
 weightedSum <- function(x, w, na.rm=TRUE){
   notNA <- !(is.na(x) | is.na(w))
@@ -240,6 +262,8 @@ weightedSum <- function(x, w, na.rm=TRUE){
 #' @param w a vector of weights the same length as x giving the weights to use for each element of x. Negative weights are treated as zero weights. Default value is equal weight to all values.#
 #' @param na.rm a logical value indicating whether NA values in x should be stripped before the computation proceeds, or not. If NA, no check at all for NAs is done. Default value is NA (for efficiency).
 #' @family "central tendency functions"
+#' @family stats helper functions
+#' @seealso \code{\link{as.surveyorStats}}
 #' @export 
 weightedMean <- function(x, w, na.rm=TRUE){
   notNA <- !(is.na(x) | is.na(w))
@@ -260,6 +284,8 @@ weightedMean <- function(x, w, na.rm=TRUE){
 #' @param ... Not used.
 #' @note This function is a duplicate from \code{\link[aroma.light]{weightedMedian}} in the aroma.light package
 #' @family "central tendency functions"
+#' @family stats helper functions
+#' @seealso \code{\link{as.surveyorStats}}
 #' @export 
 weightedMedian <- function (x, w, na.rm = TRUE, interpolate = is.null(ties), ties = NULL, 
     method = c("quick", "shell"), ...) 

@@ -49,7 +49,19 @@
   aroma.light package
 }
 \seealso{
+  \code{\link{as.surveyorStats}}
+
   Other "central tendency functions":
+  \code{\link{weightedCount}}, \code{\link{weightedMean}},
+  \code{\link{weightedSum}}
+
+  Other stats helper functions: \code{\link{allNA}},
+  \code{\link{allNull}}, \code{\link{is.yesno}},
+  \code{\link{qType}}, \code{\link{reorderQuestion}},
+  \code{\link{reorderResponse}},
+  \code{\link{splitBinCombine}},
+  \code{\link{splitMeanCombine}},
+  \code{\link{splitPercentCombine}},
   \code{\link{weightedCount}}, \code{\link{weightedMean}},
   \code{\link{weightedSum}}
 }

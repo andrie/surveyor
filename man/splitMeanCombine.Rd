@@ -19,6 +19,17 @@
 }
 \seealso{
   splitBinCombine
+
+  \code{\link{as.surveyorStats}}
+
+  Other stats helper functions: \code{\link{allNA}},
+  \code{\link{allNull}}, \code{\link{is.yesno}},
+  \code{\link{qType}}, \code{\link{reorderQuestion}},
+  \code{\link{reorderResponse}},
+  \code{\link{splitBinCombine}},
+  \code{\link{splitPercentCombine}},
+  \code{\link{weightedCount}}, \code{\link{weightedMean}},
+  \code{\link{weightedMedian}}, \code{\link{weightedSum}}
 }
 \keyword{Internal}
 

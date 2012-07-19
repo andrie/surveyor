@@ -18,6 +18,7 @@
 #' @return A surveyorStats object
 #' @export
 #' @seealso \code{\link{as.surveyorPlot}}, \code{\link{statsGuess}}
+#' @seealso \code{\link{surveyPlot}} to plot a surveyor object
 as.surveyorStats <- function(
 		data,
     surveyorCode,
@@ -98,6 +99,7 @@ identify_netScore <- function(x, match_words = NULL){
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @keywords stats
 #' @family statsFunctions
+#' @family surveyPlot arguments
 #' @export
 statsGuess <- function(surveyorCode, ...){
   stopifnot(is.surveyorCode(surveyorCode))

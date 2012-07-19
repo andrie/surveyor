@@ -14,5 +14,17 @@
 \description{
   Sorts data.frame question in descending order by value
 }
+\seealso{
+  \code{\link{as.surveyorStats}}
+
+  Other stats helper functions: \code{\link{allNA}},
+  \code{\link{allNull}}, \code{\link{is.yesno}},
+  \code{\link{qType}}, \code{\link{reorderResponse}},
+  \code{\link{splitBinCombine}},
+  \code{\link{splitMeanCombine}},
+  \code{\link{splitPercentCombine}},
+  \code{\link{weightedCount}}, \code{\link{weightedMean}},
+  \code{\link{weightedMedian}}, \code{\link{weightedSum}}
+}
 \keyword{internal}
 

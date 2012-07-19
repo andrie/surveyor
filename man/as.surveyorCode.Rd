@@ -27,4 +27,7 @@
 \description{
   Creates object of class "surveyorCode".
 }
+\seealso{
+  \code{\link{surveyPlot}} to plot a surveyor object
+}
 

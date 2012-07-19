@@ -24,6 +24,9 @@
   \code{\link{surveyor}}
 
   Other codeFunctions: \code{\link{codeQuickArray}}
+
+  Other surveyPlot arguments:
+  \code{\link{as.surveyorPlot}}, \code{\link{statsGuess}}
 }
 \keyword{code}
 

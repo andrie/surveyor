@@ -6,11 +6,18 @@
 #' 
 #' A surveyor object describes the data and meta-data in the survey that will be analysed by the analysis and reporting functions in the surveyor package.
 #' 
-#' @param sdata surveydata object
-#' @param crossbreak List of factors that contain crossbreak data.  
-#' @param weight Numeric vector with weighting data
+#' @param sdata surveydata object. See also \code{\link[surveydata]{as.surveydata}}
+#' @param crossbreak Named list of factors that contain crossbreak data. Each factor must have the same length as the columns in the \code{surveydata} object  
+#' @param weight Numeric vector with weighting data. Must have the same length as the columns in the \code{surveydata} object 
 #' @param defaults Surveyor defaults.  See also \code{\link{surveyorDefaults}}
-#' @return A list object of class surveyor
+#' @return A list object of class \code{surveyor}:
+#' \describe{
+#' \item{sdata}{surveydata object. See also \code{\link[surveydata]{as.surveydata}}}
+#' \item{cbreak}{}
+#' \item{plot_title}{}
+#' \item{weight}{}
+#' \item{defaults}{}
+#' }
 #' @export
 #' @examples
 #' library(surveydata)
@@ -54,7 +61,7 @@ as.surveyor <- function(
 			list(
 					sdata      = sdata, 
 					cbreak     = cbreak,
-          plot_title = NULL,
+#          plot_title = NULL,
 					crossbreak = crossbreak,
 					weight     = weight,
 					defaults   = defaults

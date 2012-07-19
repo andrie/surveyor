@@ -11,8 +11,12 @@
 #' 
 #' \itemize{
 #' \item Initialise data and create surveyor object: \code{\link{as.surveyor}} 
-#' \item Define default settings : \code{\link{surveyorDefaults}} 
-#' \item Plot question: \code{\link{surveyPlot}} 
+#' \item Define default settings : \code{\link{surveyorDefaults}}
+#' }
+#' 
+#' Plot survey question:
+#' \itemize{ 
+#' \item \code{\link{surveyPlot}} 
 #' }
 #' 
 #' Coding functions:
@@ -33,6 +37,7 @@
 #' 
 #' Plot functions: 
 #' \itemize{
+#' \item \code{\link{plotGuess}} 
 #' \item \code{\link{plotBar}} 
 #' \item \code{\link{plotColumn}} 
 #' \item \code{\link{plotPoint}} 

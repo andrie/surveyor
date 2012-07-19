@@ -23,8 +23,11 @@
   \item{scale_breaks}{Vector that specifies breaks in
   ggplot}
 
-  \item{stats_method}{Character description of calling
-  function name - for audit trail}
+  \item{stats_method}{Character. Ddescription of calling
+  statsFunction name - for audit trail}
+
+  \item{plotFunction}{Character. Description of
+  plotFunction to use}
 
   \item{...}{Ignored}
 }
@@ -38,5 +41,7 @@
 }
 \seealso{
   \code{\link{as.surveyorPlot}}, \code{\link{statsGuess}}
+
+  \code{\link{surveyPlot}} to plot a surveyor object
 }
 

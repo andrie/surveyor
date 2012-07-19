@@ -48,5 +48,10 @@
 }
 \seealso{
   \code{\link{as.surveyorStats}}, \code{\link{plotGuess}}
+
+  \code{\link{surveyPlot}} to plot a surveyor object
+
+  Other surveyPlot arguments: \code{\link{codeGuess}},
+  \code{\link{statsGuess}}
 }
 

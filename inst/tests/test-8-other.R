@@ -41,7 +41,7 @@ test_that("surveyPlot returns NULL", {
 			
 			r <- surveyPlot(s, "Q1", statsBin, plotBar)
       expect_is(r, "list")
-      expect_is(r[[1]], "surveyPlot")
+      expect_is(r[[1]], "surveyorPlot")
       
       r <- surveyPlot(s, "Q4", statsBin, plotBar)
       expect_is(r, "list")

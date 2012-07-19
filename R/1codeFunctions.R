@@ -6,6 +6,7 @@
 #' @param qid Question identifier, e.g. "Q4"
 #' @param ... Passed to surveyorStats
 #' @export
+#' @seealso \code{\link{surveyPlot}} to plot a surveyor object
 #' @return 
 #' An object of class "surveyorCode"
 #' \describe{
@@ -58,6 +59,7 @@ is.surveyorCode <- function(x){
 #' @param ... Other parameters passed on to downstream code_* functions
 #' @seealso For an overview of the surveyor package \code{\link{surveyor}}
 #' @family codeFunctions
+#' @family surveyPlot arguments
 #' @return data frame
 #' @keywords code
 #' @export
