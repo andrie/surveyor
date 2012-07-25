@@ -76,15 +76,26 @@ allNull <- function(x){
 #' @family stats helper functions
 #' @keywords internal
 qType <- function(s){
-  stopifnot(is.surveyorStats(s))
-  if(is.null(s$data)) return(NULL)
-  if (is.null(s$data$question)){
-    x <- ifelse (is.null(s$data$response), "singleQ_singleResponse", "singleQ_multiResponse")
-  } else {
-    x <- ifelse(is.null(s$data$response), "gridQ_singleResponse", "gridQ_multiResponse")
+  #stopifnot(is.surveyorStats(s))
+  
+  qDataType <- function(data){
+    if (is.null(data$question)){
+      x <- ifelse (is.null(data$response), "singleQ_singleResponse", "singleQ_multiResponse")
+    } else {
+      x <- ifelse(is.null(data$response), "gridQ_singleResponse", "gridQ_multiResponse")
+    }
+    if(x=="gridQ_multiResponse" && is.yesno(s)) x <- "gridQ_singleResponse"
+    x
+    
   }
-  if(x=="gridQ_multiResponse" && is.yesno(s)) x <- "gridQ_singleResponse"
-  x
+    
+  if(is.surveyorStats(s)){
+    if(is.null(s$data)) return(NULL)
+    qDataType(s$data)
+  } else {
+    qDataType(s)
+  }
+
 }
 
 
@@ -95,8 +106,9 @@ qType <- function(s){
 #' @seealso \code{\link{as.surveyorStats}}
 #' @family stats helper functions
 is.yesno <- function(s){
-  stopifnot(is.surveyorStats(s))
-  ifelse(!is.null(s$data$response), x <- s$data$response, return(FALSE))  
+  #stopifnot(is.surveyorStats(s))
+  if(is.surveyorStats(s)) dat <- s$data else dat <- s
+  ifelse(!is.null(dat$response), x <- dat$response, return(FALSE))  
   ret <- FALSE
   if(is.factor(x)){
     if(length(levels(x))==2){
