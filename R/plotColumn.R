@@ -102,12 +102,12 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
             breaks=s$scale_breaks) +
         opts(
             legend.position="none",
-            axis.title.y = theme_blank()
+            axis.title.x = theme_blank()
         ) +
         labs(fill="Response")
     
     ### Add labels ###
-    if(qType %in% c("singleQ_multiResponse", "gridQ_singleResponse"))
+    if(qType %in% c("singleQ_singleResponse", "singleQ_multiResponse", "gridQ_singleResponse"))
       p <- p + geom_text(aes_string(label="labelsValue", vjust="labelsJust"), size=3)
 		
     ### Add legend for multiple response ### 
