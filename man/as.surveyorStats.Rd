@@ -32,7 +32,20 @@
   \item{...}{Ignored}
 }
 \value{
-  A surveyorStats object
+  A surveyorStats object. This is a list of: \describe{
+  \item{data}{A data frame containing the summarized data}
+  \item{surveyorDefaults}{A list with
+  \code{\link{surveyorDefaults}}} \item{plotTitle}{The plot
+  title to display} \item{qid}{Question id}
+  \item{ylabel}{Plot y-axis label}
+  \item{formatter}{Formatting function to use}
+  \item{nquestion}{Number of subquestions. Used to
+  determine vertical size of plot}
+  \item{scale_breaks}{Scale breaks}
+  \item{stats_method}{stats function - used for audit
+  trail} \item{plotFunction}{plot function to use. See also
+  \code{\link{plotGuess}}} \item{qtype}{Question type, as
+  returned by \code{\link{qType}}} }
 }
 \description{
   A surveyorStats object contains all of the summarised
