@@ -15,7 +15,20 @@
 #' @param stats_method Character. Ddescription of calling statsFunction name - for audit trail
 #' @param plotFunction Character. Description of plotFunction to use
 #' @param ... Ignored
-#' @return A surveyorStats object
+#' @return A surveyorStats object. This is a list of:
+#' \describe{
+#' \item{data}{A data frame containing the summarized data}
+#' \item{surveyorDefaults}{A list with \code{\link{surveyorDefaults}}}
+#' \item{plotTitle}{The plot title to display}
+#' \item{qid}{Question id}
+#' \item{ylabel}{Plot y-axis label}
+#' \item{formatter}{Formatting function to use}
+#' \item{nquestion}{Number of subquestions. Used to determine vertical size of plot}
+#' \item{scale_breaks}{Scale breaks}
+#' \item{stats_method}{stats function - used for audit trail}
+#' \item{plotFunction}{plot function to use. See also \code{\link{plotGuess}}}
+#' \item{qtype}{Question type, as returned by \code{\link{qType}}}
+#' }
 #' @export
 #' @seealso \code{\link{as.surveyorPlot}}, \code{\link{statsGuess}}
 #' @seealso \code{\link{surveyPlot}} to plot a surveyor object
@@ -36,9 +49,10 @@ as.surveyorStats <- function(
         !is.null(data$question), 
         length(unique(data$question)),
         length(unique(data$response)))
+  sdata <- quickdf(data)
 	structure(
 			list(
-				data=quickdf(data), 
+				data=sdata, 
         surveyorDefaults = surveyorCode$surveyorDefaults,
         plotTitle = surveyorCode$plotTitle,
         qid = surveyorCode$qid,
@@ -47,7 +61,8 @@ as.surveyorStats <- function(
 				nquestion=nquestion,
 				scale_breaks=scale_breaks,
 				stats_method=stats_method,
-        plotFunction=plotFunction
+        plotFunction=plotFunction,
+        qType=qType(sdata)
 			),
 			class = "surveyorStats"
 	)
@@ -62,6 +77,31 @@ as.surveyorStats <- function(
 #' @keywords internal
 is.surveyorStats <- function(x){
   inherits(x, "surveyorStats")
+}
+
+#' Print surveyorStats object.
+#'
+#' @param x surveyorStats object to print
+#' @param ... Other arguments to pass to print method
+#' @export 
+print.surveyorStats <- function(x, ...){
+  cat("Data\n")
+  print(x$data, ...)
+  cat("\nSurveyor Defaults\n")
+  xx <- x[[2]]
+  print(
+      data.matrix(cbind(var=names(xx), value=unname(xx))), 
+      quote=FALSE, 
+      ...
+  )
+  cat("\nOther\n")
+  xx <- x[-(1:2)]
+  print(
+      data.matrix(cbind(var=names(xx), value=unname(xx))),
+      quote=FALSE,
+      rownames=FALSE,
+      ...
+  )
 }
 
 
