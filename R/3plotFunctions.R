@@ -71,6 +71,15 @@ as.surveyorPlot <- function(
   )
 }
 
+#' Display structure of surveyorPlot object.
+#' 
+#' Structure is displayed to maximum of 2 levels
+#' 
+#' @param x surveyorPlot object
+#' @param max.level Passed to argument \code{max.level} in \code{\link{str}}. Defaults to 2, to limit the amount of information returned by \code{ggplot} and \code{lattice} 
+#' @param ... Other arguments passed to \code{\link{str}}
+#' @seealso \code{\link{str}}
+str.surveyorPlot <- function(x, max.level=2, ...) NextMethod("str", max.level=max.level, ...)
 
 #' modified print method for ggplot to align title to plot instead of plotting grid.
 #' 
