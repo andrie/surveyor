@@ -73,7 +73,7 @@ varlabels(qData) <- c(
     "crossbreak",
     "crossbreak2",
     "weight")
-qData <- as.surveydata(qData)
+qData <- as.surveydata(qData, renameVarlabels=TRUE)
 @
 
 Next, set up a surveyor object.  For the sake of illustrating the different options, we create two surveyor objects:
@@ -83,7 +83,7 @@ Next, set up a surveyor object.  For the sake of illustrating the different opti
 \end{itemize}
 
 <<>>=
-s <- as.surveyor(qData, qData$crossbreak, qData$weight)
+s <- as.surveyor(qData, crossbreak=list(groups=qData$crossbreak), qData$weight)
 sg <- surveyorUpdateDefaults(s, addPlotTitle = TRUE)
 sl <- surveyorUpdateDefaults(sg, fastgraphics=TRUE)
 
@@ -99,32 +99,32 @@ sl <- surveyorUpdateDefaults(sg, fastgraphics=TRUE)
 
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotBar(statsBin(codeQuickArray(sg, "Q1")))
+x <- plotBar(statsBin(codeGuess(sg, "Q1")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotBar(statsBin(codeQuickArray(sg, "Q2")))
+x <- plotBar(statsBin(codeGuess(sg, "Q2")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotBar(statsBin(codeQuickArray(sg, "Q3")))
+x <- plotBar(statsBin(codeGuess(sg, "Q3")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotBar(statsBin(codeQuickArray(sg, "Q4")))
+x <- plotBar(statsBin(codeGuess(sg, "Q4")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotBar(statsBin(codeQuickArray(sg, "Q5")))
+x <- plotBar(statsBin(codeGuess(sg, "Q5")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotBar(statsBin(codeQuickArray(sg, "Q6")))
+x <- plotBar(statsBin(codeGuess(sg, "Q6")))
 print(x$plot)
 @
 
@@ -134,33 +134,33 @@ print(x$plot)
 
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotBar(statsBin(codeQuickArray(sl, "Q1")))
+x <- plotBar(statsBin(codeGuess(sl, "Q1")))
 print(x$plot)
 @
 
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotBar(statsBin(codeQuickArray(sl, "Q2")))
+x <- plotBar(statsBin(codeGuess(sl, "Q2")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotBar(statsBin(codeQuickArray(sl, "Q3")))
+x <- plotBar(statsBin(codeGuess(sl, "Q3")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotBar(statsBin(codeQuickArray(sl, "Q4")))
+x <- plotBar(statsBin(codeGuess(sl, "Q4")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotBar(statsBin(codeQuickArray(sl, "Q5")))
+x <- plotBar(statsBin(codeGuess(sl, "Q5")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotBar(statsBin(codeQuickArray(sl, "Q6")))
+x <- plotBar(statsBin(codeGuess(sl, "Q6")))
 print(x$plot)
 @
 
@@ -174,32 +174,32 @@ print(x$plot)
 
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotColumn(statsBin(codeQuickArray(sg, "Q1")))
+x <- plotColumn(statsBin(codeGuess(sg, "Q1")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotColumn(statsBin(codeQuickArray(sg, "Q2")))
+x <- plotColumn(statsBin(codeGuess(sg, "Q2")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotColumn(statsBin(codeQuickArray(sg, "Q3")))
+x <- plotColumn(statsBin(codeGuess(sg, "Q3")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotColumn(statsBin(codeQuickArray(sg, "Q4")))
+x <- plotColumn(statsBin(codeGuess(sg, "Q4")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotColumn(statsBin(codeQuickArray(sg, "Q5")))
+x <- plotColumn(statsBin(codeGuess(sg, "Q5")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotColumn(statsBin(codeQuickArray(sg, "Q6")))
+x <- plotColumn(statsBin(codeGuess(sg, "Q6")))
 print(x$plot)
 @
 
@@ -209,33 +209,33 @@ print(x$plot)
 
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotColumn(statsBin(codeQuickArray(sl, "Q1")))
+x <- plotColumn(statsBin(codeGuess(sl, "Q1")))
 print(x$plot)
 @
 
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotColumn(statsBin(codeQuickArray(sl, "Q2")))
+x <- plotColumn(statsBin(codeGuess(sl, "Q2")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotColumn(statsBin(codeQuickArray(sl, "Q3")))
+x <- plotColumn(statsBin(codeGuess(sl, "Q3")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotColumn(statsBin(codeQuickArray(sl, "Q4")))
+x <- plotColumn(statsBin(codeGuess(sl, "Q4")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotColumn(statsBin(codeQuickArray(sl, "Q5")))
+x <- plotColumn(statsBin(codeGuess(sl, "Q5")))
 print(x$plot)
 @
 
 <<fig=TRUE, width=4, height=2, include=TRUE, keep.source=TRUE>>=
-x <- plotColumn(statsBin(codeQuickArray(sl, "Q6")))
+x <- plotColumn(statsBin(codeGuess(sl, "Q6")))
 print(x$plot)
 @
 
