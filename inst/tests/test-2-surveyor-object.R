@@ -3,6 +3,10 @@
 # Author: Andrie
 #------------------------------------------------------------------------------
 
+
+context("Surveyor class objects")
+
+
 {
   path <- tempdir()
   latexPath <- file.path(path, "latex")
@@ -17,9 +21,9 @@
   		Q4_1 = c(1, 2, 1, 2), 
   		Q4_3=c(3, 4, 4, 3), 
   		Q4_2=c(5, 5, 6, 6), 
-  		crossbreak=c("A", "A", "B", "B"), 
-  		crossbreak2=c("D", "E", "D", "E"),
-  		weight=c(0.9, 1.1, 0.8, 1.2)
+      crossbreak=factor(c("A", "A", "B", "B")), 
+      crossbreak2=factor(c("D", "E", "D", "E")),
+      weight=c(0.9, 1.1, 0.8, 1.2)
   )
   q_text <- c("Question 1", 
   		"Question 4: red", "Question 4: blue", "Question 4: green", 
@@ -32,7 +36,7 @@
   
   varlabels(q_data) <- q_text
   q_data <- as.surveydata(q_data, renameVarlabels=FALSE)
-  s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight)
+  s <- as.surveyor(q_data, crossbreak=list(breaks=q_data$crossbreak), q_data$weight)
   
 }
 
@@ -43,14 +47,13 @@
 
 #------------------------------------------------------------------------------
 
-context("Surveyor class objects")
 
 test_that("Surveyor objects are defined properly", {
 			
 			expect_is(s, "surveyor")
 			expect_is(s$sdata, "surveydata")
 			expect_equal(s$sdata, q_data)
-      expect_equal(s$crossbreak, q_data$crossbreak)
+      expect_equal(unlist(unname(s$crossbreak)), q_data$crossbreak)
       expect_equal(s$weight, q_data$weight)
       expect_equal(is.surveyor(s), TRUE)
       expect_equal(is.surveyor(q_data), FALSE)

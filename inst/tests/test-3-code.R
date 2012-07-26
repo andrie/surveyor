@@ -3,6 +3,10 @@
 # Author: Andrie
 #------------------------------------------------------------------------------
 
+
+context("Code functions")
+
+
 {
   path <- tempdir()
   latexPath <- file.path(path, "latex")
@@ -15,8 +19,8 @@
       Q4_1 = c(1, 2, 1, 2), 
       Q4_3=c(3, 4, 4, 3), 
       Q4_2=c(5, 5, 6, 6), 
-      crossbreak=c("A", "A", "B", "B"), 
-      crossbreak2=c("D", "E", "D", "E"),
+      crossbreak=factor(c("A", "A", "B", "B")), 
+      crossbreak2=factor(c("D", "E", "D", "E")),
       weight=c(0.9, 1.1, 0.8, 1.2)
   )
   q_text <- c("Question 1", 
@@ -30,11 +34,10 @@
   
   varlabels(q_data) <- q_text
   q_data <- as.surveydata(q_data, renameVarlabels=FALSE)
-  s <- as.surveyor(q_data, q_data$crossbreak, q_data$weight)
+  s <- as.surveyor(q_data, crossbreak=list(breaks=q_data$crossbreak), q_data$weight)
 }
 
 
-context("Code functions")
 
 #test_that("codeSingle works", {
 #      scode <- codeSingle(s, "Q1")
