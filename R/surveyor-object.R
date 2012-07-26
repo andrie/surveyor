@@ -7,7 +7,7 @@
 #' A surveyor object describes the data and meta-data in the survey that will be analysed by the analysis and reporting functions in the surveyor package.
 #' 
 #' @param sdata surveydata object. See also \code{\link[surveydata]{as.surveydata}}
-#' @param crossbreak Named list of factors that contain crossbreak data. Each factor must have the same length as the columns in the \code{surveydata} object  
+#' @param crossbreak List of named factors that contain crossbreak data. Each factor must have the same length as the columns in the \code{surveydata} object  
 #' @param weight Numeric vector with weighting data. Must have the same length as the columns in the \code{surveydata} object 
 #' @param defaults Surveyor defaults.  See also \code{\link{surveyorDefaults}}
 #' @return A list object of class \code{surveyor}:
@@ -25,7 +25,7 @@
 #' qtext <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
 #' varlabels(sdata) <- qtext
 #' sdata <- as.surveydata(sdata, renameVarlabels=TRUE)
-#' s <- as.surveyor(sdata, crossbreak=c("aa", "bb"), weight=c(1,1))
+#' s <- as.surveyor(sdata, crossbreak=list(breaks=factor(c("aa", "bb"))), weight=c(1,1))
 as.surveyor <- function(
 		sdata, 
 		crossbreak = sdata$crossbreak,
@@ -36,19 +36,21 @@ as.surveyor <- function(
 		stop("Surveyor: sdata must be a surveydata object")
 	}
 	
-	if (is.list(crossbreak)) {
-		if (any(lapply(crossbreak, length) != nrow(sd))) {
-			stop ("Surveyor object: each element in crossbreak list must match sdata in length")
-		} else {
-			cbreak <- unlist(crossbreak[1])
-		}
-	} else {
-		if (length(crossbreak) != nrow(sdata)){
-			stop("Surveyor object: crossbreak must match sdata in length")
-		} else {
-			cbreak <- crossbreak
-		}
-	}
+#	if (is.list(crossbreak)) {
+#		if (any(lapply(crossbreak, length) != nrow(sdata))) {
+#			stop ("Surveyor object: each element in crossbreak list must match sdata in length")
+#		} else {
+#			cbreak <- unlist(crossbreak[1])
+#		}
+#	} else {
+#		if (length(crossbreak) != nrow(sdata)){
+#			stop("Surveyor object: crossbreak must match sdata in length")
+#		} else {
+#			cbreak <- crossbreak
+#		}
+#	}
+  
+  if(!isValidCrossbreak(crossbreak, nrow=nrow(sdata))) stop("Invalid crossbreak")
 
 	if (length(weight) != nrow(sdata)){
 		stop("Surveyor object: Weight must match sdata in length")
@@ -60,14 +62,42 @@ as.surveyor <- function(
 	structure(
 			list(
 					sdata      = sdata, 
-					cbreak     = cbreak,
-#          plot_title = NULL,
+#					cbreak     = cbreak,
 					crossbreak = crossbreak,
 					weight     = weight,
 					defaults   = defaults
 			), 
 			class = "surveyor"
 	)
+}
+
+#' Tests that crossbreak is valid.
+#' 
+#' A crossbreak object must be a list, and each element must be a named vector
+#' @param x A crossbreak object to test
+#' @param surveyorObject A surveyor object
+#' @param nrow The required length of the crossbreak, i.e. the number of rows in the surveydata object
+#' @param throwErrors Logical. If TRUE, throws errors, else simply returns TRUE or FALSE
+#' @keywords internal
+isValidCrossbreak <- function(x, surveyorObject, nrow=nrow(surveyorObject$sdata), throwErrors=TRUE){
+  if(!is.list(x)){
+    if(throwErrors) stop("crossbreak must be a list")
+    return(FALSE)
+  }
+  if (any(lapply(x, length) != nrow)) {
+    if(throwErrors) stop ("Each element in crossbreak list must match sdata in length")
+    return(FALSE)
+  } 
+#  if (!all(sapply(x, is.factor))) {
+#    if(throwErrors) stop ("Each element in crossbreak list must be a factor")
+#    return(FALSE)
+#  } 
+  if(any(is.null(sapply(x, names)))){
+    if(throwErrors) stop ("Each element in crossbreak list must be a named vector")
+    return(FALSE)
+  }
+  # it is a list, and all elements are the correct length, so return TRUE
+  TRUE
 }
 
 
@@ -82,14 +112,15 @@ as.surveyor <- function(
 #' sdata <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
 #' varlabels(sdata) <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
 #' sdata <- as.surveydata(sdata, renameVarlabels=TRUE)
-#' s <- as.surveyor(sdata, crossbreak=c("aa", "bb"), weight=c(1,1))
+#' s <- as.surveyor(sdata, crossbreak=list(breaks=factor(c("aa", "bb"))), weight=c(1,1))
 #' is.surveyor(s) # TRUE
 #' is.surveyor("String") #FALSE           
 is.surveyor <- function(x){
   if (!inherits(x, "surveyor")) return(FALSE)
   if(all(
       is.surveydata(x$sdata),
-      !is.null(x$crossbreak),
+      #!is.null(x$crossbreak),
+      isValidCrossbreak(x$crossbreak, nrow=nrow(x$sdata), throwErrors=FALSE),
       !is.null(x$weight),
       !is.null(x$defaults)
     )) TRUE else FALSE

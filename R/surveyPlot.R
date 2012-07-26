@@ -14,6 +14,7 @@
 #' @param statsFunction A reference to a function that summarizes the coded data. Defaults to \code{\link{statsGuess}}
 #' @param plotFunction A reference to a function that plots the summarized data. Defaults to \code{\link{plotGuess}}
 #' @param codeFunction A reference to a function that processes the question data. Defaults to \code{\link{codeGuess}}
+#' @param crossbreak A list of crossbreak vectors (each must be a named factor).  See also \code{\link{as.surveyor}}
 #' @param onlyBreaks Numeric vector that limits crossbreak processing
 #' @param ... Passed to methods
 #' @export 
@@ -25,6 +26,7 @@ surveyPlot <- function(
     statsFunction = "statsGuess",
     plotFunction = "plotGuess",
     codeFunction = "codeQuickArray",
+    crossbreak,
     onlyBreaks=seq_along(x$crossbreak),
     ...){
   UseMethod("surveyPlot")
@@ -39,6 +41,7 @@ surveyPlot.surveyor <- function(
 		statsFunction = "statsGuess",
 		plotFunction = "plotGuess",
     codeFunction = "codeQuickArray",
+    crossbreak=x$crossbreak,
     onlyBreaks=seq_along(x$crossbreak),
     ...){
   
@@ -82,7 +85,8 @@ surveyPlot.surveyor <- function(
         function(i){
     			#surveyor$cbreak <- unlist(surveyor$crossbreak[i])
           #surveyor$cbreakname <- names(surveyor$crossbreak[i])
-    			plotQone(crossbreak=unlist(surveyor$crossbreak[i]))
+    			#plotQone(crossbreak=unlist(surveyor$crossbreak[i]))
+          plotQone(crossbreak=crossbreak[[i]])
         }
       )	
 #    for (i in onlyBreaks) {

@@ -93,7 +93,7 @@ quickStack <- function(x) unlist(unname(x))
 #' @return data frame
 #' @keywords code
 #' @export
-codeQuickArray <- function(surveyor, q_id, crossbreak=surveyor$cbreak, wrapWidth=50,
+codeQuickArray <- function(surveyor, q_id, crossbreak=surveyor$crossbreak[[1]], wrapWidth=50,
     autosortQuestion=FALSE, ...){
   dat <- surveyor$sdata[, q_id]
   if(is.data.frame(dat)) reps <- ncol(dat) else reps <- 1
