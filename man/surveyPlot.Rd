@@ -5,13 +5,14 @@
 \usage{
   surveyPlot(x, qid, statsFunction = "statsGuess",
     plotFunction = "plotGuess",
-    codeFunction = "codeQuickArray",
+    codeFunction = "codeQuickArray", crossbreak,
     onlyBreaks = seq_along(x$crossbreak), ...)
 
   \method{surveyPlot}{surveyor} (x, qid,
     statsFunction = "statsGuess",
     plotFunction = "plotGuess",
     codeFunction = "codeQuickArray",
+    crossbreak = x$crossbreak,
     onlyBreaks = seq_along(x$crossbreak), ...)
 }
 \arguments{
@@ -30,6 +31,9 @@
   \item{codeFunction}{A reference to a function that
   processes the question data. Defaults to
   \code{\link{codeGuess}}}
+
+  \item{crossbreak}{A list of crossbreak vectors (each must
+  be a named factor).  See also \code{\link{as.surveyor}}}
 
   \item{onlyBreaks}{Numeric vector that limits crossbreak
   processing}

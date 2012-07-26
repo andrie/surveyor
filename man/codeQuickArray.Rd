@@ -3,7 +3,7 @@
 \title{Code survey data in single or array question form.}
 \usage{
   codeQuickArray(surveyor, q_id,
-    crossbreak = surveyor$cbreak, wrapWidth = 50,
+    crossbreak = surveyor$crossbreak[[1]], wrapWidth = 50,
     autosortQuestion = FALSE, ...)
 }
 \arguments{

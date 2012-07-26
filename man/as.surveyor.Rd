@@ -9,7 +9,7 @@
   \item{sdata}{surveydata object. See also
   \code{\link[surveydata]{as.surveydata}}}
 
-  \item{crossbreak}{Named list of factors that contain
+  \item{crossbreak}{List of named factors that contain
   crossbreak data. Each factor must have the same length as
   the columns in the \code{surveydata} object}
 
@@ -37,6 +37,6 @@ sdata <- data.frame(Q1=c(11, 12), Q4_1 = c(1,2), Q4_2=c(3,4), Q4_3=c(5,6))
 qtext <- c("Question 1", "Question 4: red", "Question 4: yellow", "Question 4: blue")
 varlabels(sdata) <- qtext
 sdata <- as.surveydata(sdata, renameVarlabels=TRUE)
-s <- as.surveyor(sdata, crossbreak=c("aa", "bb"), weight=c(1,1))
+s <- as.surveyor(sdata, crossbreak=list(breaks=factor(c("aa", "bb"))), weight=c(1,1))
 }
 
