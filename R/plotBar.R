@@ -71,7 +71,7 @@ plotBar <- function(s, plotFunction="plotBar", ...){
             )
         ),
         between=list(x=0.5, y=0.5),
-        col=plotColours(s, colours=length(q$panel.args)),
+        col=plotColours(s, colours=length(q$panel.args), ...),
         xlab=s$ylabel,
         horizontal=TRUE,
         panel=function(x, y, ...){
@@ -96,7 +96,7 @@ plotBar <- function(s, plotFunction="plotBar", ...){
       p <- p + geom_text(aes_string(label="labelsValue", hjust="labelsJust"), size=3)
     
     # Plot options 
-  p <- p + 
+    p <- p + 
 				theme_surveyor(s$surveyorDefaults$defaultThemeSize) +
 				coord_flip() + 
 				scale_y_continuous(
@@ -116,8 +116,13 @@ plotBar <- function(s, plotFunction="plotBar", ...){
       p <- p + opts(legend.position="right")
 
     # Deal with too many colours 
-    if(length(unique(f$response)) > 8) p <- p + scale_fill_hue()
-		if (qType %in% c("singleQ_multiResponse", "gridQ_multiResponse", "gridQ_singleResponse")){
+    if(length(unique(f$response)) > 8) {
+      p <- p + scale_fill_hue()
+    } else {
+      fillColours <- plotColours(s, colours=nlevels(factor(f$value)), ...)
+      p <- p + scale_fill_manual(values=fillColours)
+    }
+    if (qType %in% c("singleQ_multiResponse", "gridQ_multiResponse", "gridQ_singleResponse")){
 			p <- p + opts(
 					axis.text.x=theme_text(size=s$surveyorDefaults$defaultThemeSize*0.5, angle=90)
 			)

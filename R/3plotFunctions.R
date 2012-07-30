@@ -201,10 +201,10 @@ latticeLabels <- function(x, y, just=0.5, horizontal=TRUE, stack=TRUE, formatter
 #' 
 #' @keywords internal
 plotColours <- function(s, colours=3, 
-    set=s$surveyorDefaults$brewerPalette, reverse=s$surveyorDefaults$revBrewerPal){
-  cols <- brewer.pal(max(3, colours), set)
+    brewerPalette=s$surveyorDefaults$brewerPalette, revBrewerPal=s$surveyorDefaults$revBrewerPal, ...){
+  cols <- brewer.pal(max(3, colours), brewerPalette)
   colours <- seq_len(colours)
-  if(reverse) colours <- rev(colours)
+  if(revBrewerPal) colours <- rev(colours)
   #message(paste(cols, collapse=" - "))
   cols[colours]
 }
@@ -398,7 +398,7 @@ plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
             )
         ),
         between=list(x=0.5),
-        col=plotColours(s, colours=length(q$panel.args)),
+        col=plotColours(s, colours=length(q$panel.args), ...),
         xlab=s$ylabel,
         scales=list(
             x=list(

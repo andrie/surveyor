@@ -71,7 +71,7 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
             )
         ),
         between=list(x=0.5, y=0.5),
-        col=plotColours(s, colours=length(q$panel.args)),
+        col=plotColours(s, colours=length(q$panel.args), ...),
         ylab=s$ylabel,
         horizontal=FALSE,
         panel=function(x, y, ...){
@@ -115,7 +115,12 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
       p <- p + opts(legend.position="right")
     
     ### Deal with too many colours ###
-    if(length(unique(f$response)) > 8) p <- p + scale_fill_hue()
+    if(length(unique(f$response)) > 8) {
+      p <- p + scale_fill_hue()
+    } else {
+      fillColours <- plotColours(s, colours=nlevels(factor(f$value)), ...)
+      p <- p + scale_fill_manual(values=fillColours)
+    }
     if (qType == "singleQ_multiResponse"){
       p <- p + opts(
           axis.text.x=theme_text(size=s$surveyorDefaults$defaultThemeSize*0.9, angle=0)
