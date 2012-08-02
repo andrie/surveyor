@@ -38,6 +38,8 @@ Collate:
     'formatters.R'
     'plotBar.R'
     'plotColumn.R'
+    'plotPoint.R'
+    'plotNetScore.R'
     'redefine.R'
     'surveyor-object.R'
     'surveyor-package.R'
