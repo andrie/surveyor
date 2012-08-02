@@ -127,13 +127,14 @@ codeQuickArray <- function(surveyor, q_id, crossbreak=surveyor$crossbreak[[1]], 
     response <- quickStack(dat)
   }
   
-#  browser()
   if(to.order) response <- factor(response, levels=order.levels, ordered=TRUE)
+
+  #browser()
   
   ret <- data.frame(
       cbreak,
       question = if(!autosortQuestion){
-        factor(rep(question, each=nrows), levels=question, ordered=TRUE)
+        factor(rep(question, each=nrows), levels=unique(question), ordered=TRUE)
       } else {
         rep(questionText, each=nrows)
       },
