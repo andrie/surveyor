@@ -26,7 +26,7 @@ basic.column.lattice <- function(f, qType){
 basic.column.ggplot <- function(f, qType){
   p <- switch(qType,
     singleQ_singleResponse =
-        ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(value)")),
+        ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(cbreak)")),
     singleQ_multiResponse =
         ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(value)")),
     gridQ_singleResponse = 
@@ -118,8 +118,16 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
     if(length(unique(f$response)) > 8) {
       p <- p + scale_fill_hue()
     } else {
-      fillColours <- plotColours(s, colours=nlevels(factor(f$value)), ...)
+      #browser()
+    
+      if(qType == "singleQ_singleResponse"){
+        nColours <- nlevels(factor(f$cbreak)) + any(is.na(f$cbreak))
+      } else {
+        nColours <- nlevels(factor(f$value)) + any(is.na(f$value))
+      }
+      fillColours <- plotColours(s, colours=nColours, ...)
       p <- p + scale_fill_manual(values=fillColours)
+    
     }
     if (qType == "singleQ_multiResponse"){
       p <- p + opts(

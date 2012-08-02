@@ -119,7 +119,12 @@ plotBar <- function(s, plotFunction="plotBar", ...){
     if(length(unique(f$response)) > 8) {
       p <- p + scale_fill_hue()
     } else {
-      fillColours <- plotColours(s, colours=nlevels(factor(f$value)), ...)
+      if(qType == "gridQ_multiResponse"){
+        nColours <- nlevels(factor(f$response)) + any(is.na(f$response))
+      } else {
+        nColours <- nlevels(factor(f$cbreak)) + any(is.na(f$cbreak))
+      }
+      fillColours <- plotColours(s, colours=nColours, ...)
       p <- p + scale_fill_manual(values=fillColours)
     }
     if (qType %in% c("singleQ_multiResponse", "gridQ_multiResponse", "gridQ_singleResponse")){
