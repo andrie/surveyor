@@ -1,3 +1,11 @@
+surveyor 0.2-07 (2012-08-03)
+---------------
+
+Changes:
+* Modified code to honour the brewerPalette argument - plot colour can now be changed
+* Fixed incorrect text colour in plotPoint
+* Added unit tests for plot colour, by examining contents of ggplot_build() object
+
 surveyor 0.2-06 (2012-07-29)
 ---------------
 
