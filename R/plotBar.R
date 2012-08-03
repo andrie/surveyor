@@ -116,17 +116,20 @@ plotBar <- function(s, plotFunction="plotBar", ...){
       p <- p + opts(legend.position="right")
 
     # Deal with too many colours 
-    if(length(unique(f$response)) > 8) {
-      p <- p + scale_fill_hue()
-    } else {
-      if(qType == "gridQ_multiResponse"){
-        nColours <- nlevels(factor(f$response)) + any(is.na(f$response))
+    if(qType == "gridQ_multiResponse"){
+      if(length(unique(f$response)) > 8) {
+        p <- p + scale_fill_hue()
       } else {
-        nColours <- nlevels(factor(f$cbreak)) + any(is.na(f$cbreak))
+        nColours <- nlevels(factor(f$response)) + any(is.na(f$response))
+        fillColours <- plotColours(s, colours=nColours, ...)
+        p <- p + scale_fill_manual(values=fillColours)
       }
+    } else {
+      nColours <- nlevels(factor(f$cbreak)) + any(is.na(f$cbreak))
       fillColours <- plotColours(s, colours=nColours, ...)
       p <- p + scale_fill_manual(values=fillColours)
     }
+    
     if (qType %in% c("singleQ_multiResponse", "gridQ_multiResponse", "gridQ_singleResponse")){
 			p <- p + opts(
 					axis.text.x=theme_text(size=s$surveyorDefaults$defaultThemeSize*0.5, angle=90)

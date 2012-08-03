@@ -30,7 +30,7 @@ basic.column.ggplot <- function(f, qType){
     singleQ_multiResponse =
         ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(value)")),
     gridQ_singleResponse = 
-        ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(value)")),
+        ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(cbreak)")),
     gridQ_multiResponse = 
         ggplot(f, aes_string(x="factor(cbreak)", y="value", fill="factor(value)")),
     stop("plotBar: Invalid value of qType.  This should never happen")
@@ -120,7 +120,7 @@ plotColumn <- function(s, plotFunction="plotColumn", ...){
     } else {
       #browser()
     
-      if(qType == "singleQ_singleResponse"){
+      if(qType %in% c("singleQ_singleResponse", "gridQ_singleResponse")){
         nColours <- nlevels(factor(f$cbreak)) + any(is.na(f$cbreak))
       } else {
         nColours <- nlevels(factor(f$value)) + any(is.na(f$value))

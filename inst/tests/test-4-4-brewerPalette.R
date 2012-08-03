@@ -52,20 +52,25 @@ expectedColours <- function(x, n=3, brewerPalette=x$defaults$brewerPalette, keep
 }
 
 # Helper function to get actual plot colours
-getFillColours <- function(p){
-  pp <- ggplot_build(p)
-  sort(unique(pp$data[[1]][, "fill"]))
+getFillColours <- function(p, attr=c("fill", "colour")){
+  attr <- match.arg(attr)
+  pp <- suppressWarnings(ggplot_build(p))
+  sort(unique(pp$data[[1]][, attr]))
 }
 
 
 test_that("default brewerPalette works with default palette", {
       
       x1 <- surveyPlot(s, "Q1")[[1]]$plot
+#      class(x1)
       x2 <- surveyPlot(s, "Q2")[[1]]$plot
       x3 <- surveyPlot(s, "Q3")[[1]]$plot
       x4 <- surveyPlot(s, "Q4")[[1]]$plot
       
       expColours <- expectedColours(s, keep=2)
+#      options(warn=2)
+#      getFillColours(x1)
+#      traceback()
       
       expect_equal(getFillColours(x1), expColours)
       expect_equal(getFillColours(x2), expColours)
@@ -81,7 +86,7 @@ test_that("default brewerPalette works with different plot types", {
       x3 <- surveyPlot(s, "Q3", plotFunction=plotNetScore, brewerPalette="BuPu")[[1]]$plot
       x4 <- surveyPlot(s, "Q3", plotFunction=plotPoint, brewerPalette="BuPu")[[1]]$plot
       
-      expColours <- expectedColours(brewerPalette="BuPu", n=2, keep=2)
+      expColours <- expectedColours(brewerPalette="BuPu", n=3, keep=2)
       expColours
       x1
       x2
@@ -90,12 +95,12 @@ test_that("default brewerPalette works with different plot types", {
       getFillColours(x1)
       getFillColours(x2)
       getFillColours(x3)
-      getFillColours(x4)
+      getFillColours(x4, attr="colour")
       
       expect_equal(getFillColours(x1), expColours)
       expect_equal(getFillColours(x2), expColours)
       expect_equal(getFillColours(x3), expColours)
-      expect_equal(getFillColours(x4), expColours)
+      expect_equal(getFillColours(x4, attr="colour"), expColours)
       
     })
 
@@ -108,15 +113,15 @@ test_that("default brewerPalette works with custom palette", {
       x4 <- surveyPlot(s, "Q4", brewerPalette="BuPu")[[1]]$plot
       
       expColours <- expectedColours(brewerPalette="BuPu", n=3, keep=2)
-      expColours
-      x1
-      x2
-      x3
-      x4
-      getFillColours(x1)
-      getFillColours(x2)
-      getFillColours(x3)
-      getFillColours(x4)
+#      expColours
+#      x1
+#      x2
+#      x3
+#      x4
+#      getFillColours(x1)
+#      getFillColours(x2)
+#      getFillColours(x3)
+#      getFillColours(x4)
       
       expect_equal(getFillColours(x1), expColours)
       expect_equal(getFillColours(x2), expColours)

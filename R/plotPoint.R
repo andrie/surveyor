@@ -4,7 +4,6 @@
 
 
 # TODO: create lattice equivalents for plotPoint
-# TODO: create plotPoint charts for each qType
 
 #' Plot data in bubble chart format
 #'
@@ -25,22 +24,24 @@ plotPoint <- function(s, plotFunction="plotPoint", formatter="formatPercent", ..
   if (is.null(f$question)){
     # Plot single question
     p <- ggplot(f, aes(x=" ", y=response, size=value, 
-            colour=factor(cbreak), fill=factor(cbreak)))
+            colour=factor(cbreak)))
   } else {
     # Plot array question 
     if(is.null(f$response)) {
       p <- ggplot(f, aes(x=question, y=value,  
-              colour=factor(cbreak), fill=factor(cbreak)))
+              colour=factor(cbreak)))
     } else {
       p <- ggplot(f, aes(x=question, y=response, size=value, 
-              colour=factor(cbreak), fill=factor(cbreak)))
+              colour=factor(cbreak)))
     }
   }
   labeldata <- within(f, label <- formatValues(f$value, formatter))
   p <- p + 
       theme_surveyor(s$surveyorDefaults$defaultThemeSize) +
       geom_point(stat="sum") +
-      geom_text(data=labeldata, aes_string(label="label"), size=3, vjust=2) +
+      geom_text(data=labeldata, aes_string(label="label"), 
+          size=s$surveyorDefaults$defaultThemeSize / 12 * 4, 
+          vjust=2, colour="black") +
       coord_flip() + 
       quiet +
       ylab(s$ylabel) +
@@ -55,7 +56,7 @@ plotPoint <- function(s, plotFunction="plotPoint", formatter="formatPercent", ..
   
   nColours <- nlevels(factor(f$cbreak)) + any(is.na(f$cbreak))
   fillColours <- plotColours(s, colours=nColours, ...)
-  p <- p + scale_fill_manual(values=fillColours)
+  p <- p + scale_colour_manual(values=fillColours)
   
   as.surveyorPlot(p, s, plotFunction=plotFunction, ...)
 }
