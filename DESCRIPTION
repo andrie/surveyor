@@ -12,7 +12,7 @@ Author@R: person("Andrie", "de Vries",
     email="apdevries@gmail.com")
 Version: 0.2-07
 URL: www.pentalibra.com
-Date: 2012-08-03
+Date: 2012-08-07
 ByteCompile: yes
 Depends:
     surveydata (>= 0.1-07)
