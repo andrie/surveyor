@@ -2,7 +2,7 @@
 \alias{print.surveyorStats}
 \title{Print surveyorStats object.}
 \usage{
-  print.surveyorStats(x, ...)
+  \method{print}{surveyorStats} (x, ...)
 }
 \arguments{
   \item{x}{surveyorStats object to print}

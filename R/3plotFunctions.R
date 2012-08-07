@@ -115,6 +115,7 @@ print.ggplotmod <- function (x, newpage = is.null(vp), vp = NULL, ...){
 #' @param x plot to display
 #' @param ... other arguments not used by this method 
 #' @method print surveyorPlot
+#' @export
 print.surveyorPlot <- function(x, ...) print(x$plot)
 
 

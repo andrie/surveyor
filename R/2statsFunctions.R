@@ -83,7 +83,7 @@ is.surveyorStats <- function(x){
 #'
 #' @param x surveyorStats object to print
 #' @param ... Other arguments to pass to print method
-#' @export 
+#' @method print surveyorStats 
 print.surveyorStats <- function(x, ...){
   cat("Data\n")
   print(x$data, ...)
