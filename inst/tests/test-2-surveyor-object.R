@@ -64,4 +64,36 @@ test_that("Surveyor objects are defined properly", {
 			
 		})
 
+#------------------------------------------------------------------------------
+
+
+test_that("Subset returns correct object", {
+      
+      ss <- s
+      
+      x1 <- subset(ss, subset=Q1=="Yes")
+      x2 <- subset(ss, subset=Q1=="No")
+      x3 <- subset(ss, subset=Q1==NA)
+      x4 <- subset(ss)
+      x4
+      
+      expect_is(x1, "surveyor")
+      expect_is(x2, "surveyor")
+      expect_is(x3, "surveyor")
+      expect_is(x4, "surveyor")
+      
+      expect_equal(x1$sdata, with(s$sdata, s$sdata[Q1=="Yes", ]))
+      expect_equal(x2$sdata, with(s$sdata, s$sdata[Q1=="No", ]))
+      expect_equal(x3$sdata, with(s$sdata, s$sdata[Q1==NA, ]))
+      expect_equal(x4, ss)
+      
+      expect_equal(x1$weight, with(s$sdata, s$sdata$weight[Q1=="Yes"]))
+      expect_equal(x2$weight, with(s$sdata, s$sdata$weight[Q1=="No"]))
+      expect_equal(x3$weight, with(s$sdata, s$sdata$weight[Q1==NA]))
+
+      expect_equal(x1$crossbreak, list(breaks=with(s$sdata, s$sdata$crossbreak[Q1=="Yes"])))
+      expect_equal(x2$crossbreak, list(breaks=with(s$sdata, s$sdata$crossbreak[Q1=="No"])))
+      expect_equal(x3$crossbreak, list(breaks=with(s$sdata, s$sdata$crossbreak[Q1==NA])))
+      
+    })
 

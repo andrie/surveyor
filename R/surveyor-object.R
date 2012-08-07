@@ -218,11 +218,34 @@ surveyorUpdateDefaults <- function(
 #' @param x surveyor object
 #' @param ... ignored
 #' @method print surveyor
+#' @export
 print.surveyor <- function(x, ...){
 	cat("Surveyor\n\n")
 	print.listof(x)
 }
 
+
+#' Subsetting surveyor objects.
+#' 
+#' Returns subset of surveyor object by applying the subset to the data, weight as well as crossbreak elements of the surveyor object.
+#' @param x Surveyor object
+#' @param subset Subset to evaluate. This is evaluated in the environment of the surveyor data, i.e. \code{x$sdata}
+#' @param ... Ignored
+#' @method subset surveyor
+#' @export
+#' @return surveyor object
+subset.surveyor <- function(x, subset, ...){
+  if(missing(subset))
+    r <- TRUE
+  else {
+    e <- substitute(subset)
+    r <- eval(e, x$sdata, parent.frame())
+  }
+  x$sdata <- x$sdata[r, ]
+  x$weight <- x$weight[r]
+  x$crossbreak <- lapply(x$crossbreak, function(x)x[r])
+  x
+}
 
 
 
