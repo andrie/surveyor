@@ -14,6 +14,11 @@
 #' \item Define default settings : \code{\link{surveyorDefaults}}
 #' }
 #' 
+#' Subset surveyor object:
+#' \itemize{
+#' \item \code{\link{subset.surveyor}}
+#' }
+#' 
 #' Plot survey question:
 #' \itemize{ 
 #' \item \code{\link{surveyPlot}} 
@@ -53,6 +58,7 @@
 #' @importFrom Hmisc latexTranslate
 #' @importFrom plyr quickdf summarise ddply round_any
 #' @importFrom stringr str_wrap
+#' @importFrom reshape2 dcast
 #' @title Tools for analysing and reporting on survey objects.
 #' @author Andrie de Vries \email{andrie.de.vries@@pentalibra.com}
 #' @keywords package
