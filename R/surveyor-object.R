@@ -127,6 +127,20 @@ is.surveyor <- function(x){
 }
 
 
+#' Display the structure of a surveyor object.
+#' 
+#' Method for \code{\link[utils]{str}} to display surveyor object. The only modification is to limit the list length to display, thus de-emphasizing the \code{surveydata} element.
+#' 
+#' @param object Surveyor object
+#' @param list.len Numeric. Maximum number of list elements to display within a level. Passed to `\code{\link[utils]{str}}
+#' @param ... Other arguments passed to \code{\link[utils]{str}}
+#' @method str surveyor
+#' @export 
+str.surveyor <- function(object, list.len=10, ...){
+  NextMethod("str", list.len=list.len, ...)
+}
+
+
 #-------------------------------------------------------------------------------
 
 #surveyorDefaults <- function(surveyor){
@@ -181,27 +195,15 @@ surveyorDefaults <- function(
 #' @export 
 surveyorUpdateDefaults <- function(
     surveyor,
-#    outputType = NULL,
     defaultThemeSize = NULL,
-#    plotType = NULL,
     fastgraphics = NULL,
-#    graphicFormat = NULL,
     addPlotTitle = NULL,
     brewerPalette = NULL,
     revBrewerPal = NULL,
     printTable = NULL
 ){
-#  if(!is.null(outputType)){
-#      if(outputType=="ppt") graphicFormat <- "wmf"
-#      if(outputType %in% c("ppt", "device") & missing(addPlotTitle)) addPlotTitle <- TRUE
-#    }
-  
-
-#  if(!missing(outputType))         surveyor$defaults$outputType <- outputType
   if(!missing(defaultThemeSize))   surveyor$defaults$defaultThemeSize <- defaultThemeSize
-  #if(!missing(plotType))           surveyor$defaults$fastgraphics <- plotType[1]=="lattice"
   if(!missing(fastgraphics))       surveyor$defaults$fastgraphics <- fastgraphics
-#  if(!missing(graphicFormat))      surveyor$defaults$graphicFormat <- graphicFormat
   if(!missing(addPlotTitle))       surveyor$defaults$addPlotTitle <- addPlotTitle
   if(!missing(brewerPalette))      surveyor$defaults$brewerPalette <- brewerPalette
   if(!missing(revBrewerPal))       surveyor$defaults$revBrewerPal <- revBrewerPal
