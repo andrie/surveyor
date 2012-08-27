@@ -21,8 +21,8 @@
 
   Other plotFunctions: \code{\link{plotBar}},
   \code{\link{plotBarSum}}, \code{\link{plotGuess}},
-  \code{\link{plotNetScore}}, \code{\link{plotPoint}},
-  \code{\link{plotText}}
+  \code{\link{plotNetScore}}, \code{\link{plotNull}},
+  \code{\link{plotPoint}}, \code{\link{plotText}}
 }
 \keyword{plot}
 

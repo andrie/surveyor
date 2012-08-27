@@ -25,8 +25,8 @@
 
   Other plotFunctions: \code{\link{plotBar}},
   \code{\link{plotBarSum}}, \code{\link{plotColumn}},
-  \code{\link{plotGuess}}, \code{\link{plotPoint}},
-  \code{\link{plotText}}
+  \code{\link{plotGuess}}, \code{\link{plotNull}},
+  \code{\link{plotPoint}}, \code{\link{plotText}}
 }
 \keyword{plot}
 

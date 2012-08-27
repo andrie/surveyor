@@ -38,7 +38,7 @@ basic.bar.ggplot <- function(f, qType){
 }
 
 
-#' Plot data in bar chart format
+#' Plot data in bar chart format.
 #'
 #' @param s A surveyorStats object
 #' @param plotFunction Character vector: Identifies the name of the plot function used to create the plot

@@ -23,7 +23,7 @@
   Other plotFunctions: \code{\link{plotBar}},
   \code{\link{plotBarSum}}, \code{\link{plotColumn}},
   \code{\link{plotGuess}}, \code{\link{plotNetScore}},
-  \code{\link{plotPoint}}
+  \code{\link{plotNull}}, \code{\link{plotPoint}}
 }
 \keyword{plot}
 

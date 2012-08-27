@@ -1,6 +1,6 @@
 \name{plotBar}
 \alias{plotBar}
-\title{Plot data in bar chart format}
+\title{Plot data in bar chart format.}
 \usage{
   plotBar(s, plotFunction = "plotBar", ...)
 }
@@ -13,7 +13,7 @@
   \item{...}{ignored}
 }
 \description{
-  Plot data in bar chart format
+  Plot data in bar chart format.
 }
 \seealso{
   For an overview of the surveyor package
@@ -21,8 +21,8 @@
 
   Other plotFunctions: \code{\link{plotBarSum}},
   \code{\link{plotColumn}}, \code{\link{plotGuess}},
-  \code{\link{plotNetScore}}, \code{\link{plotPoint}},
-  \code{\link{plotText}}
+  \code{\link{plotNetScore}}, \code{\link{plotNull}},
+  \code{\link{plotPoint}}, \code{\link{plotText}}
 }
 \keyword{plot}
 

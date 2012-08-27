@@ -14,6 +14,9 @@
   object: \code{\link{as.surveyor}} \item Define default
   settings : \code{\link{surveyorDefaults}} }
 
+  Subset surveyor object: \itemize{ \item
+  \code{\link{subset.surveyor}} }
+
   Plot survey question: \itemize{ \item
   \code{\link{surveyPlot}} }
 
