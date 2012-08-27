@@ -61,10 +61,12 @@ surveyPlot.surveyor <- function(
       nothing_to_plot <- FALSE
       g <- match.fun(statsFunction)(f, ...)
       g$data <- subset(g$data, subset=!is.na("value")) # Remove NA values from g
-      h <- match.fun(plotFunction)(g, ...)
-      h
-      
+      if(!suppressWarnings(is.na(plotFunction))){
+        match.fun(plotFunction)(g, ...)
+      } else {
+        g
       }
+    }
   }
   
   #-------
