@@ -1,3 +1,11 @@
+surveyor 0.2-08 (2012-08-27)
+---------------
+
+New features:
+* Added surveyPlotApply() function
+* Added str.surveyor() method
+
+
 surveyor 0.2-07 (2012-08-05)
 ---------------
 
