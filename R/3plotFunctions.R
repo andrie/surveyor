@@ -93,7 +93,8 @@ print.ggplotmod <- function (x, newpage = is.null(vp), vp = NULL, ...){
   ggplot2:::set_last_plot(x)
   if (newpage) 
     grid.newpage()
-  data <- ggplot_build(x)
+
+  data <- suppressWarnings(ggplot_build(x))
   gtable <- ggplot_gtable(data)
   gtable$layout[which(gtable$layout$name == "title"), c("l", "r")] <- c(1, max(gtable$layout$r))
   if (is.null(vp)) {
