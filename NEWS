@@ -3,6 +3,9 @@ surveyor 0.2-08 (2012-08-27)
 
 New features:
 * Added surveyPlotApply() function
+* Added surveyTable() function
+* Added surveyTableApply() function
+* Added plotNull() to create NULL plot
 * Added str.surveyor() method
 
 
