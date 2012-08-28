@@ -2,13 +2,17 @@
 \alias{plotText}
 \title{Plot data as text.}
 \usage{
-  plotText(s, plotFunction = "plotText", ...)
+  plotText(s, plotFunction = "plotText",
+    textOutput = c("latex", "text"), ...)
 }
 \arguments{
   \item{s}{A surveyorStats object}
 
   \item{plotFunction}{Character vector: Identifies the name
   of the plot function used to create the plot}
+
+  \item{textOutput}{Use \code{latex} for latex ouput, or
+  \code{text} for normal text ouput}
 
   \item{...}{Ignored}
 }

@@ -227,34 +227,27 @@ plotColours <- function(s, colours=3,
 #'
 #' @param s A surveyorStats object
 #' @param plotFunction Character vector: Identifies the name of the plot function used to create the plot
+#' @param textOutput Use \code{latex} for latex ouput, or \code{text} for normal text ouput
 #' @param ... Ignored
 #' @seealso
 #' For an overview of the surveyor package \code{\link{surveyor}}
 #' @family plotFunctions
 #' @keywords plot
 #' @export
-plotText <- function(s, plotFunction="plotText", ...){
+plotText <- function(s, plotFunction="plotText", textOutput = c("latex", "text"), ...){
   stopifnot(is.surveyorStats(s))
-  ### Only print if cbreak equal to first crossbreak in surveyor
-#  print(is.list(surveyor$crossbreak))
-#  print(all(s$data$cbreak!=surveyor$crossbreak[[1]]))
-#  p <- ""
-#  flag <- FALSE
-#  if(is.list(s$surveyor$crossbreak)){
-#    if(identical(s$surveyor$cbreak, s$surveyor$crossbreak[[1]])) flag <- TRUE
-#  }
-#  
-#  if(!is.list(s$surveyor$crossbreak)) flag <- TRUE
-#  
-#  if(flag){
-    #if(s$data$cbreak != surveyor$crossbreak) return(NULL)
-    ### Carry on as usual
-    unique_resp <- unique(s$data$response)
+  if(is.factor(s$data$response)){
     unique_resp <- levels(s$data$response)
+  } else {
+    unique_resp <- unique(s$data$response)
+  }
+  if(match.arg(textOutput) == "latex"){
     items <- paste("\\item", Hmisc:::latexTranslate(unique_resp))
     items <- paste(items, collapse="\n")
-#  }
-  p <- paste("\\begin{itemize}", items, "\\end{itemize}\\n", collapse="\\n")
+    p <- paste("\\begin{itemize}", items, "\\end{itemize}\\n", collapse="\\n")
+  } else {
+    p <- paste(unique_resp, collapse="\n")
+  }
   class(p) <- "text"
   as.surveyorPlot(p, s, plotFunction=plotFunction, ...)
 }

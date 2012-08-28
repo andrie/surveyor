@@ -19,12 +19,14 @@ context("stats")
       Q4_1 = c(1, 2, 1, 2), 
       Q4_3=c(3, 4, 4, 3), 
       Q4_2=c(5, 5, 6, 6), 
+      Q4_other = c(NA, "some text", NA, "some more text"),
       crossbreak=factor(c("A", "A", "B", "B")), 
       crossbreak2=factor(c("D", "E", "D", "E")),
       weight=c(0.9, 1.1, 0.8, 1.2)
   )
   q_text <- c("Question 1", 
       "Question 4: red", "Question 4: blue", "Question 4: green", 
+      "Question 4: other",
       "crossbreak",
       "crossbreak2",
       "weight")
@@ -259,5 +261,28 @@ test_that("statsMedian works with array question", {
       expect_is(test, "surveyorStats")
       expect_equal(test$data, rest)
       
+    })
+
+#==============================================================================
+
+#context("statsText")
+
+test_that("statsText works as expected", {
+      
+      test <- statsText(codeQuickArray(s, "Q4_other"))
+      rest <- structure(
+          list(
+              cbreak = structure(1:2, .Label = c("A", "B"), class = "factor"), 
+              question = structure(c(1L, 1L), .Label = "1", class = "factor"), 
+              response = structure(c(2L, 1L), 
+                  .Label = c("some more text", "some text"), 
+                  class = "factor"), 
+              weight = c(1.1, 1.2)), 
+          .Names = c("cbreak", "question", "response", "weight"), 
+          row.names = 1:2, class = "data.frame")
+      
+      
+      expect_is(test, "surveyorStats")
+      expect_equal(test$data, rest)
     })
 
