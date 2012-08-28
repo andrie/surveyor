@@ -40,7 +40,7 @@ plotPoint <- function(s, plotFunction="plotPoint", formatter="formatPercent", ..
       theme_surveyor(s$surveyorDefaults$defaultThemeSize) +
       geom_point(stat="sum") +
       geom_text(data=labeldata, aes_string(label="label"), 
-          size=s$surveyorDefaults$defaultThemeSize / 12 * 4, 
+          size=s$surveyorDefaults$defaultThemeSize * 0.25, 
           vjust=2, colour="black") +
       coord_flip() + 
       quiet +

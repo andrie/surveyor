@@ -37,7 +37,7 @@ plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
         geom_text(
             aes_string(label="round(value*100, 0)",
                 hjust="hjust"),
-            size=3) +
+            size=s$surveyorDefaults$defaultThemeSize * 0.25) +
         coord_flip(ylim=c(-1,1)) +
         opts(
             legend.position="none",
@@ -54,8 +54,12 @@ plotNetScore <- function(s, plotFunction="plotNetScore", width=50, ...){
     fillColours <- plotColours(s, colours=nColours, ...)
     p <- p + scale_fill_manual(values=fillColours)
     
-    if (length(unique(f$cbreak)) > 1){
+    if (length(unique(f$cbreak)) > 3){
       p <- p + opts(axis.text.x = theme_blank())
+    } else {
+      p <- p + opts(axis.text.x = theme_text(
+              size=s$surveyorDefaults$defaultThemeSize * 10/14,
+              angle = 90, hjust = 1, vjust=c(1, 0.5, 0))) 
     }
   }
   

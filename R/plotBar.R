@@ -93,7 +93,8 @@ plotBar <- function(s, plotFunction="plotBar", ...){
     p <- p + geom_bar(stat="identity") 
     # Add labels
     if(qType %in% c("singleQ_multiResponse", "gridQ_singleResponse") || is.yesno(s))
-      p <- p + geom_text(aes_string(label="labelsValue", hjust="labelsJust"), size=3)
+      p <- p + geom_text(aes_string(label="labelsValue", hjust="labelsJust"), 
+                         size=s$surveyorDefaults$defaultThemeSize*0.25)
     
     # Plot options 
     p <- p + 
