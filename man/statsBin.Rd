@@ -5,7 +5,7 @@
   statsBin(surveyorCode, ylabel = "Respondents",
     stats_method = "statsBin", convert_to_percent = FALSE,
     formatter = ifelse(convert_to_percent, "formatPercent", "format"),
-    ...)
+    autosort = FALSE, ...)
 }
 \arguments{
   \item{surveyorCode}{An object of class "surveyorCode".
@@ -20,6 +20,9 @@
 
   \item{convert_to_percent}{If true, will express results
   as fractions, rather than counts}
+
+  \item{autosort}{Logical. If TRUE, sorts questions in
+  order of response}
 
   \item{...}{Passed to \code{\link{as.surveyorStats}}}
 

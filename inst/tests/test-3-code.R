@@ -37,41 +37,20 @@ context("Code functions")
   s <- as.surveyor(q_data, crossbreak=list(breaks=q_data$crossbreak), q_data$weight)
 }
 
-
-
-#test_that("codeSingle works", {
-#      scode <- codeSingle(s, "Q1")
-#      expect_is(scode, "surveyorCode")
-#      expect_is(scode$data, "data.frame")
-#      expect_equal(names(scode$data), names_cqrw)
-#      expect_equal(nrow(scode$data), 4)
-#      
-#    })
-#
-#test_that("codeArray works", {
-#      scode <- codeArray(s, "Q4")
-#      expect_is(scode, "surveyorCode")
-#      expect_is(scode$data, "data.frame")
-#      expect_equal(names(scode$data), names_cqrw)
-#      expect_equal(nrow(scode$data), 12)
-#      
-#    })
-
-
 test_that("codeGuess works", {
-      test <- codeGuess(s, "Q1")
-      rest <- codeQuickArray(s, "Q1")
-      expect_equal(test, rest)
+      test1 <- codeGuess(s, "Q1")
+      rest1 <- codeQuickArray(s, "Q1")
+      expect_equal(test1, rest1)
 
-      test <- codeGuess(s, "Q4")
-      rest <- codeQuickArray(s, "Q4")
-      expect_equal(test, rest)
+      test2 <- codeGuess(s, "Q4")
+      rest2 <- codeQuickArray(s, "Q4")
+      expect_equal(test2, rest2)
     })
 
 
 test_that("codeQuickArray works", {
-      test <- codeQuickArray(s, "Q1")
-      rest <- structure(
+      test1 <- codeQuickArray(s, "Q1")
+      rest1 <- structure(
           list(
               cbreak = structure(
                   c(1L, 1L, 2L, 2L), 
@@ -79,7 +58,8 @@ test_that("codeQuickArray works", {
                   class = "factor"), 
               question = structure(c(1L, 1L, 1L, 1L), 
                   .Label = "1", 
-                  class = c("ordered", "factor")), 
+                  #class = c("ordered", "factor")),
+                  class = "factor"),
               response = structure(c(2L,1L, 2L, 2L), 
                   .Label = c("No", "Yes"), 
                   class = "factor"), 
@@ -89,18 +69,20 @@ test_that("codeQuickArray works", {
         row.names = c(NA, 4L), 
         class = "data.frame")
       
-      expect_is(test, "surveyorCode")
-      expect_equal(test$data, rest)
+      expect_is(test1, "surveyorCode")
+      expect_equal(test1$data, rest1)
       
-      test <- codeQuickArray(s, "Q4")
-      rest <- structure(
+      test2 <- codeQuickArray(s, "Q4")
+      rest2 <- structure(
           list(
               cbreak = structure(
                   c(1L, 1L, 2L, 2L, 1L, 1L, 2L, 2L, 1L, 1L, 2L, 2L), 
                   .Label = c("A", "B"), 
                   class = "factor"), 
               question = structure(c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L), 
-                  .Label = c("red", "blue", "green"), class = c("ordered", "factor")), 
+                  .Label = c("red", "blue", "green"), 
+                  #class = c("ordered", "factor")), 
+                  class = "factor"),
               response = c(1, 2, 1, 2, 3, 4, 4, 3, 5, 5, 6, 6), 
               weight = c(0.9, 1.1, 0.8, 1.2, 0.9, 1.1, 0.8, 1.2, 0.9, 1.1, 0.8, 1.2)
           ), 
@@ -108,8 +90,27 @@ test_that("codeQuickArray works", {
         row.names = c(NA, 12L), 
         class = "data.frame")
       
-      expect_is(test, "surveyorCode")
-      expect_equal(test$data, rest)
+      expect_is(test2, "surveyorCode")
+      expect_equal(test2$data, rest2)
+      
+      
+      test3 <- codeQuickArray(s, "Q4_1")
+      rest3 <- structure(
+          list(
+              cbreak = structure(c(1L, 1L, 2L, 2L), 
+                  .Label = c("A", "B"), 
+                  class = "factor"), 
+              question = structure(c(1L, 1L, 1L, 1L), 
+                  .Label = "1", 
+                  class = "factor"), 
+              response = c(1, 2, 1, 2), 
+              weight = c(0.9, 1.1, 0.8, 1.2)), 
+          .Names = c("cbreak", "question", "response", "weight"), 
+          row.names = c(NA, 4L), class = "data.frame")
+      
+      expect_is(test3, "surveyorCode")
+      expect_equal(test3$data, rest3)
+      
       
       expect_error(is.null(codeQuickArray(s, "Q999")))
       

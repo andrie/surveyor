@@ -175,6 +175,7 @@ statsGuess <- function(surveyorCode, ...){
 #' @param ylabel The label to print on y-axis of plots; used downstream
 #' @param stats_method A character vector describing name of stats method.  Used for audit trail
 #' @param convert_to_percent If true, will express results as fractions, rather than counts
+#' @param autosort Logical. If TRUE, sorts questions in order of response
 #' @param ... Passed to \code{\link{as.surveyorStats}}
 #' @param formatter A formatting function, such as \code{\link{formatPercent}}
 #' @return A data frame with three columns: cbreak, variable, value
@@ -189,7 +190,7 @@ statsBin <- function(
     stats_method="statsBin", 
     convert_to_percent=FALSE, 
     formatter=ifelse(convert_to_percent, "formatPercent", "format"),
-#    autosort = TRUE,
+    autosort = FALSE,
     ...){
   stopifnot(is.surveyorCode(surveyorCode))
   x <- surveyorCode$data
@@ -211,16 +212,18 @@ statsBin <- function(
     # code single
     if (is.factor(x$response)){
       x$response <- x$response[drop=TRUE]
-      if(is.ordered(x$response)){
-        dat$response <- factor(dat$response, levels=levels(x$response), ordered=TRUE)
-      } else {
-        dat <- reorderResponse(dat)
-      }
+#      if(is.ordered(x$response)){
+#        dat$response <- factor(dat$response, levels=levels(x$response), ordered=TRUE)
+#      } else {
+#        dat <- reorderResponse(dat)
+#      }
+      if(autosort) dat <- reorderResponse(dat)
     }   
     
   } else {
     # code array
-    if(!is.ordered(dat$question)) dat <- reorderQuestion(dat, reverse=TRUE)
+    #if(!is.ordered(dat$question)) dat <- reorderQuestion(dat, reverse=TRUE)
+    if(autosort) dat <- reorderQuestion(dat, reverse=TRUE)
   }
   
   # Test for yes/no responses

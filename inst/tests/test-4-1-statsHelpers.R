@@ -102,48 +102,41 @@ test_that("splitMeanCombine gives results identical to ddply",{
 
 
 test_that("splitBinCombine gives results identical to ddply",{
-      test <- splitBinCombine(codeGuess(s, "Q4_1")$data)
-      rest <- rename(
-          ddply(
-              codeGuess(s, "Q4_1")$data, 
-              .(cbreak, response), 
-              function(i)value=weightedCount(i$response, i$weight)),
-          c("V1"="value")
-      )
-      expect_equal(test, rest)
+      test1 <- splitBinCombine(codeGuess(s, "Q4_1")$data)
+      rest1 <- ddply(
+          codeGuess(s, "Q4_1")$data, 
+          .(cbreak, response), 
+          summarise,
+          value=weightedCount(response, weight))
       
-      test <- splitBinCombine(codeGuess(s, "Q4")$data)
-      rest <- rename(
-          ddply(
+      expect_equal(test1, rest1)
+      
+      test2 <- splitBinCombine(codeGuess(s, "Q4")$data)
+      rest2 <- ddply(
               codeGuess(s, "Q4")$data, 
-              .(cbreak, question, response), 
-              function(i)value=weightedCount(i$response, i$weight)),
-          c("V1"="value")
-      )
-      expect_equal(test, rest)
+              .(cbreak, question, response),
+              summarise,
+              value=weightedCount(response, weight))
+      expect_equal(test2, rest2)
       
       
     })
 
 test_that("splitPercentCombine gives results identical to ddply",{
       test <- splitPercentCombine(codeGuess(s, "Q4_1")$data)
-      rest <- rename(
-          ddply(
+      rest <- ddply(
               codeGuess(s, "Q4_1")$data, 
               .(cbreak, question), 
-              function(i)value=sum(i$weight)),
-          c("V1"="weight")
-      )
+              summarise,
+              weight=sum(weight))
       expect_equal(test, rest)
       
       test <- splitPercentCombine(codeGuess(s, "Q4")$data)
-      rest <- rename(
-          ddply(
+      rest <- ddply(
               codeGuess(s, "Q4")$data, 
               .(cbreak, question), 
-              function(i)value=sum(i$weight)),
-          c("V1"="weight")
-      )
+              summarise,
+              weight=sum(weight))
       expect_equal(test, rest)
       
       

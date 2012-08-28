@@ -15,7 +15,7 @@
 reorderResponse <- function(df){
   resp_levels  <- df[order(df$value, decreasing=TRUE), ]$response
   resp_levels <- unique(resp_levels)
-  df$response <- factor(df$response, levels=resp_levels, ordered=TRUE)
+  df$response <- factor(df$response, levels=resp_levels)#, ordered=TRUE)
   df
 }
 
@@ -32,7 +32,7 @@ reorderQuestion <- function(df, reverse=FALSE){
   q_levels  <- df[order(df$value, decreasing=TRUE), ]$question
   q_levels <- unique(q_levels)
   if(reverse) q_levels <- rev(q_levels)
-  df$question <- factor(df$question, levels=q_levels, ordered=TRUE)
+  df$question <- factor(df$question, levels=q_levels)#, ordered=TRUE)
   df
 }
 

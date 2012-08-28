@@ -4,7 +4,7 @@
 \usage{
   codeQuickArray(surveyor, q_id,
     crossbreak = surveyor$crossbreak[[1]], wrapWidth = 50,
-    autosortQuestion = FALSE, ...)
+    ...)
 }
 \arguments{
   \item{surveyor}{Surveyor object}
@@ -15,9 +15,6 @@
 
   \item{wrapWidth}{Position where labels will be wrapped.
   Passed to \code{\link[stringr]{str_wrap}}}
-
-  \item{autosortQuestion}{Logical. If TRUE, sorts questions
-  in order of response}
 
   \item{...}{Other parameters passed on to downstream code*
   functions}

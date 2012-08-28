@@ -43,8 +43,28 @@ context("stats")
 
 test_that("statsBin works with single question", {
       
-      test <- statsBin(codeQuickArray(s, "Q1"))
-      rest <- structure(
+      test1 <- statsBin(codeQuickArray(s, "Q1"), autosort=FALSE)
+      rest1 <- structure(
+          list(
+              cbreak = structure(
+                  1:2, 
+                  .Label = c("A", "B"), 
+                  class = "factor"), 
+              response = structure(
+                  c(2L, 2L),
+                  .Label = c("No", "Yes"),
+                  class = c("factor")), 
+              value = c(0.9, 2)), 
+          .Names = c("cbreak", "response", "value"), 
+          row.names = 1:2, 
+          class = "data.frame")
+      
+      
+      expect_is(test1, "surveyorStats")
+      expect_equal(test1$data, rest1)
+      
+      test2 <- statsBin(codeQuickArray(s, "Q1"), autosort=TRUE)
+      rest2 <- structure(
           list(
               cbreak = structure(
                   1:2, 
@@ -53,21 +73,22 @@ test_that("statsBin works with single question", {
               response = structure(
                   c(1L, 1L),
                   .Label = c("Yes", "No"),
-                  class = c("ordered", "factor")), 
+                  class = c("factor")), 
               value = c(0.9, 2)), 
           .Names = c("cbreak", "response", "value"), 
           row.names = 1:2, 
           class = "data.frame")
       
       
-      expect_is(test, "surveyorStats")
-      expect_equal(test$data, rest)
+      expect_is(test2, "surveyorStats")
+      expect_equal(test2$data, rest2)
+      
     })
       
 test_that("statsBin works with array question", {
       
-      test <- statsBin(codeQuickArray(s, "Q4"))
-      rest <- structure(
+      test1 <- statsBin(codeQuickArray(s, "Q4"), autosort=FALSE)
+      rest1 <- structure(
           list(
               cbreak = structure(
                   c(1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L),
@@ -75,7 +96,7 @@ test_that("statsBin works with array question", {
                   class = "factor"), 
               question = structure(c(1L, 1L, 2L, 2L, 3L, 1L, 1L, 2L, 2L, 3L), 
                   .Label = c("red", "blue", "green"), 
-                  class = c("ordered", "factor")), 
+                  class = "factor"), 
               response = c("1", "2", "3", "4", "5", "1", "2", "3", "4", "6"), 
               value = c(0.9, 1.1, 0.9, 1.1, 2, 0.8, 1.2, 1.2, 0.8, 2)
           ), 
@@ -83,9 +104,30 @@ test_that("statsBin works with array question", {
         row.names = c(NA, 10L), 
         class = "data.frame")
       
-      expect_is(test, "surveyorStats")
-      expect_equal(test$data, rest)
+      expect_is(test1, "surveyorStats")
+      expect_equal(test1$data, rest1)
       
+      test2 <- statsBin(codeQuickArray(s, "Q4"), autosort=TRUE)
+      rest2 <- structure(
+          list(
+              cbreak = structure(
+                  c(1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L),
+                  .Label = c("A", "B"), 
+                  class = "factor"), 
+              question = structure(c(2L, 2L, 1L, 1L, 3L, 2L, 2L, 1L, 1L, 3L), 
+                  .Label = c("blue", "red", "green"), 
+                  class = "factor"), 
+              response = c("1", "2", "3", "4", "5", "1", "2", "3", "4", "6"), 
+              value = c(0.9, 1.1, 0.9, 1.1, 2, 0.8, 1.2, 1.2, 0.8, 2)
+          ), 
+          .Names = c("cbreak", "question", "response", "value"), 
+          row.names = c(NA, 10L), 
+          class = "data.frame")
+      
+      expect_is(test2, "surveyorStats")
+      expect_equal(test2$data, rest2)
+      
+
     })
 
 #==============================================================================
@@ -111,7 +153,7 @@ test_that("statsCentral works with single question", {
 test_that("statsCentral works with array question", {
       
       test2 <- statsCentral(codeQuickArray(s, "Q4"))
-      rest <- structure(
+      rest2 <- structure(
           list(
               cbreak = structure(
                   c(1L, 1L, 1L, 2L, 2L, 2L), 
@@ -119,14 +161,14 @@ test_that("statsCentral works with array question", {
                   class = "factor"), 
               question = structure(c(1L, 2L, 3L, 1L, 2L, 3L), 
                   .Label = c("red", "blue", "green"),
-                  class = c("ordered", "factor")), 
+                  class = "factor"), 
               value = c(1.55, 3.55, 5, 1.6, 3.4, 6)), 
           .Names = c("cbreak", "question", "value"), 
           row.names = c(NA, 6L), 
           class = "data.frame")
       
       expect_is(test2, "surveyorStats")
-      expect_equal(test2$data, rest)
+      expect_equal(test2$data, rest2)
       
     })
 
@@ -165,7 +207,7 @@ test_that("statsMean works with array question", {
                   class = "factor"), 
               question = structure(c(1L, 2L, 3L, 1L, 2L, 3L), 
                   .Label = c("red", "blue", "green"),
-                  class = c("ordered", "factor")), 
+                  class = "factor"), 
               value = c(1.55, 3.55, 5, 1.6, 3.4, 6)), 
           .Names = c("cbreak", "question", "value"), 
           row.names = c(NA, 6L), 
@@ -208,7 +250,7 @@ test_that("statsMedian works with array question", {
               question = structure(
                   c(1L, 2L, 3L, 1L,  2L, 3L), 
                   .Label = c("red", "blue", "green"), 
-                  class = c("ordered", "factor")),  
+                  class = "factor"),  
               value = c(1.55, 3.55, 5, 1.6, 3.4, 6)), 
           .Names = c("cbreak", "question", "value"), 
           row.names = c(NA, 6L), 
