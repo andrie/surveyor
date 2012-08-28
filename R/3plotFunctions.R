@@ -32,7 +32,7 @@ as.surveyorPlot <- function(
     surveyorStats,
     expansion = 1,
     plotFunction ="",
-    plotSize  = par("din"),
+    plotSize  = surveyorStats$surveyorDefaults$defaultThemeSize,
     addPlotTitle = surveyorStats$surveyorDefaults$addPlotTitle,
     ...
 ){
@@ -40,9 +40,10 @@ as.surveyorPlot <- function(
   ### Adds plot title ###
   args <- list(...)
   plotTitle <- surveyorStats$plotTitle
+  pTitleWidth <- strwidth(plotTitle, units="inches", cex=surveyorStats$surveyorDefaults$defaultThemeSize / 6)
   plotTitle <- strwrap(
       plotTitle, 
-      width=0.8 * nchar(plotTitle) * plotSize[1] / strwidth(plotTitle, units="inches")
+      width=0.8 * nchar(plotTitle) * plotSize[1] / pTitleWidth 
   )
   plotTitle <- paste(plotTitle, collapse="\n")
   if(addPlotTitle){
